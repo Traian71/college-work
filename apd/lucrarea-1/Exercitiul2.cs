@@ -3,7 +3,7 @@ using System.Threading;
 
 namespace ConsoleApplication1
 {
-    class Program
+    class Exercitiul2
     {
         public static void ThreadFunction1()
         {
@@ -20,7 +20,7 @@ namespace ConsoleApplication1
             Console.WriteLine("ChildThread 3: this is the third child thread");
         }
 
-        static void Main(string[] args)
+        public static void Run()
         {
             Console.WriteLine("MainThread: creating child threads");
             Thread thread1 = new Thread(ThreadFunction1);

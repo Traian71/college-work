@@ -3,7 +3,7 @@ using System.Threading;
 
 namespace ConsoleApplication1
 {
-    class Program
+    class Exercitiul7
     {
         private static int N = 10;
         private static int[] V = { 12, 5, 8, 21, 3, 17, 9, 14, 6, 11 };
@@ -18,7 +18,7 @@ namespace ConsoleApplication1
             mutex.ReleaseMutex();
         }
 
-        static void Main(string[] args)
+        public static void Run()
         {
             Thread[] childThreads = new Thread[N];
             for (int i = 0; i < N; i++)

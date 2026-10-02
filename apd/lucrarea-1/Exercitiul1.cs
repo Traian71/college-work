@@ -3,14 +3,14 @@ using System.Threading;
 
 namespace ConsoleApplication1
 {
-    class Program
+    class Exercitiul1
     {
         public static void ThreadFunction()
         {
             Console.WriteLine(string.Format("ChildThread {0}: this is child thread", Thread.CurrentThread.ManagedThreadId));
         }
 
-        static void Main(string[] args)
+        public static void Run()
         {
             Console.WriteLine("MainThread: creating child threads");
             for (int i = 0; i < 5; i++)

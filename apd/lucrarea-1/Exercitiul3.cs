@@ -3,7 +3,7 @@ using System.Threading;
 
 namespace ConsoleApplication1
 {
-    class Program
+    class Exercitiul3
     {
         private static int N = 8;
         private static int[] A = { 1, 2, 3, 4, 5, 6, 7, 8 };
@@ -17,7 +17,7 @@ namespace ConsoleApplication1
             C[i] = A[i] + B[i];
         }
 
-        static void Main(string[] args)
+        public static void Run()
         {
             Thread[] childThreads = new Thread[N];
             for (int i = 0; i < N; i++)
