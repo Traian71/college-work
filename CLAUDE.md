@@ -7,7 +7,7 @@ wrote in about an hour.
   pseudocode and a flowchart. No complexity analysis, correctness proofs, test tables, traces,
   code implementations or extra diagrams unless the task asks for them.
 - **Max 2 pages** unless the task or I say otherwise.
-- **No extra files.** A task folder holds the deliverable (PDF) and its source (`README.md`), nothing
+- **No extra files.** A task folder holds only the deliverable (PDF, PNG, code), no Markdown/README, nothing
   else: no scripts, tests, image exports or zips.
 - **Plain student style.** Short explanations, simple formatting. No table of contents, no
   specification tables, no "documentation" structure.
