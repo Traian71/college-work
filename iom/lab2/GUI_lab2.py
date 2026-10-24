@@ -12,6 +12,7 @@ def energie(x):
     return np.sum(x**2)
 
 def treceri_zero(x):
+    # fereastra dreptunghiulara w(n) = 1/(2N)
     return np.sum(np.abs(np.diff(np.sign(x)))) / (2 * len(x))
 
 def autocorelatie(x):
@@ -22,17 +23,18 @@ def autocorelatie(x):
     return R
 
 def ton_fundamental(R, fs):
-    # cautam maximul autocorelatiei pentru perioade corespunzatoare lui F0 intre 60 si 400 Hz
-    kmin = int(fs / 400)
+    # maximul autocorelatiei pentru perioade corespunzatoare lui F0 intre 60 si 500 Hz
+    kmin = int(fs / 500)
     kmax = min(int(fs / 60), len(R) - 1)
     k = kmin + np.argmax(R[kmin:kmax + 1])
     return fs / k
 
 def categorie(F0):
+    # barbati 85-180 Hz, femei 165-255 Hz, copii 250-650 Hz
     if F0 < 165:
-        return "barbat"
-    elif F0 < 255:
-        return "femeie"
+        return "vorbitor de sex masculin"
+    elif F0 <= 255:
+        return "vorbitor de sex feminin"
     else:
         return "copil"
 

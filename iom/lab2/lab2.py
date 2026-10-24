@@ -39,7 +39,7 @@ def energie(x):
     return np.sum(x**2)
 
 def treceri_zero(x):
-    # nr. de schimbari de semn raportat la lungimea cadrului
+    # fereastra dreptunghiulara w(n) = 1/(2N)
     return np.sum(np.abs(np.diff(np.sign(x)))) / (2 * len(x))
 
 def autocorelatie(x):
@@ -57,9 +57,9 @@ Es = energie(cadru_s)
 Zs = treceri_zero(cadru_s)
 Rs = autocorelatie(cadru_s)
 
-# maximul autocorelatiei normate dupa k = 20 (perioade intre 2.5 ms si 16 ms)
-ka = 20 + np.argmax(Ra[20:134])
-ks = 20 + np.argmax(Rs[20:134])
+# maximul autocorelatiei normate pentru k intre 16 si 133 (F0 intre 60 si 500 Hz)
+ka = 16 + np.argmax(Ra[16:134])
+ks = 16 + np.argmax(Rs[16:134])
 
 print('Ea =', round(Ea, 3), '; Za =', round(Za, 3), '; Ra =', round(Ra[ka] / Ra[0], 2), 'la k =', ka)
 print('Es =', round(Es, 3), '; Zs =', round(Zs, 3), '; Rs =', round(Rs[ks] / Rs[0], 2), 'la k =', ks)
