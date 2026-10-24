@@ -1,4 +1,4 @@
-#%% 1) Citirea si interpretarea unui semnal vocal
+#%% 1
 from scipy.io import wavfile
 import matplotlib.pyplot as plt
 import numpy as np
@@ -13,63 +13,61 @@ plt.show()
 
 a = data[9600:9760]
 
-#%% 2) Extragerea cate unui cadru de 20 ms din "a" si "s"
-N = int(0.02 * fs)      # 20 ms la fs = 8000 Hz -> 160 esantioane
+#%% 2
+N = int(0.02 * fs)
 
-start_a = 9600          # mijlocul lui "a" (aprox. 1.14 - 1.30 s)
-stop_a = start_a + N    # 9760
-start_s = 10960         # mijlocul lui "s" (aprox. 1.33 - 1.43 s)
-stop_s = start_s + N    # 11120
+start_a = 9600
+stop_a = start_a + N
+a = data[start_a:stop_a]
 
-cadru_a = data[start_a:stop_a]
-cadru_s = data[start_s:stop_s]
+start_s = 10960
+stop_s = start_s + N
+s = data[start_s:stop_s]
 
-plt.figure('cadru a')
-plt.plot(cadru_a)
-plt.title('Cadrul "a" [9600:9760]')
+plt.figure('a')
+plt.plot(a)
 plt.show()
 
-plt.figure('cadru s')
-plt.plot(cadru_s)
-plt.title('Cadrul "s" [10960:11120]')
+plt.figure('s')
+plt.plot(s)
 plt.show()
 
-#%% 3) Parametrii de timp scurt
+#%% 3
 def energie(x):
-    return np.sum(x**2)
+    E = 0
+    for m in range(len(x)):
+        E = E + x[m]**2
+    return E
 
 def treceri_zero(x):
-    # fereastra dreptunghiulara w(n) = 1/(2N)
-    return np.sum(np.abs(np.diff(np.sign(x)))) / (2 * len(x))
+    Z = 0
+    for m in range(1, len(x)):
+        Z = Z + abs(np.sign(x[m]) - np.sign(x[m-1]))
+    return Z / (2 * len(x))
 
 def autocorelatie(x):
     N = len(x)
     R = np.zeros(N)
     for k in range(N):
-        R[k] = np.sum(x[0:N-k] * x[k:N])
+        for m in range(N - k):
+            R[k] = R[k] + x[m] * x[m+k]
     return R
 
-Ea = energie(cadru_a)
-Za = treceri_zero(cadru_a)
-Ra = autocorelatie(cadru_a)
+Ea = energie(a)
+Za = treceri_zero(a)
+Ra = autocorelatie(a)
 
-Es = energie(cadru_s)
-Zs = treceri_zero(cadru_s)
-Rs = autocorelatie(cadru_s)
+Es = energie(s)
+Zs = treceri_zero(s)
+Rs = autocorelatie(s)
 
-# maximul autocorelatiei normate pentru k intre 16 si 133 (F0 intre 60 si 500 Hz)
-ka = 16 + np.argmax(Ra[16:134])
-ks = 16 + np.argmax(Rs[16:134])
+print('Ea =', Ea, 'Za =', Za)
+print('Es =', Es, 'Zs =', Zs)
 
-print('Ea =', round(Ea, 3), '; Za =', round(Za, 3), '; Ra =', round(Ra[ka] / Ra[0], 2), 'la k =', ka)
-print('Es =', round(Es, 3), '; Zs =', round(Zs, 3), '; Rs =', round(Rs[ks] / Rs[0], 2), 'la k =', ks)
-# Ea = 6.69 ; Za = 0.244 ; Ra = 0.7 la k = 29
-# Es = 0.018 ; Zs = 0.425 ; Rs = 0.14 la k = 27
-# "a" (sonor): energie mare, putine treceri prin zero, autocorelatie periodica
-# "s" (nesonor): energie mica, multe treceri prin zero, autocorelatie fara maxime clare
+plt.figure('Ra')
+plt.plot(Ra)
+plt.show()
 
-plt.figure('autocorelatie')
-plt.plot(Ra / Ra[0], label='a')
-plt.plot(Rs / Rs[0], label='s')
-plt.legend()
+plt.figure('Rs')
+plt.plot(Rs)
 plt.show()
