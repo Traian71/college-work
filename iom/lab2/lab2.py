@@ -71,3 +71,34 @@ plt.show()
 plt.figure('Rs')
 plt.plot(Rs)
 plt.show()
+
+#%% 5
+cale = 'semnale/semnal_propriu.wav'
+fs,data = wavfile.read(cale)
+data = data / max(abs(data))
+
+plt.figure('semnal propriu')
+plt.plot(data)
+plt.show()
+
+a = data[7600:7600 + N]
+s = data[8840:8840 + N]
+
+Ea = energie(a)
+Za = treceri_zero(a)
+Ra = autocorelatie(a)
+
+Es = energie(s)
+Zs = treceri_zero(s)
+Rs = autocorelatie(s)
+
+print('Ea =', Ea, 'Za =', Za)
+print('Es =', Es, 'Zs =', Zs)
+
+plt.figure('Ra propriu')
+plt.plot(Ra)
+plt.show()
+
+plt.figure('Rs propriu')
+plt.plot(Rs)
+plt.show()
