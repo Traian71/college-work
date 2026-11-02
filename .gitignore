@@ -9,3 +9,7 @@ __pycache__/
 ~*.docx
 ~*.xlsx
 ~*.pptx
+
+# installers over GitHub's 100 MB limit, see arhiva/inginerie-software/lab3/context.md
+inginerie-software/LAB3/Borland Together Archtect 2006.zip
+inginerie-software/LAB3/jdk-8u73-windows-i586.exe
