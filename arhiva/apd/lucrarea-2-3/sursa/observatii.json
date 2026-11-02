@@ -1,0 +1,5 @@
+{
+  "ex4": "Timpul scade clar până la N = 3 (S ≈ 2,32). După aceea speedup-ul crește foarte puțin și oscilează între 2,1 și 3,2, deci nu ajunge la 8, numărul de procesoare logice. Peste 8 threaduri nu se mai câștigă aproape nimic, pentru că threadurile în plus doar își împart aceleași nuclee.",
+  "din": "Varianta dinamică este mai rapidă pentru toate valorile lui N (de exemplu la N = 4: 204 ms față de 402 ms). La varianta statică primul thread primește imaginile mari de la începutul listei, iar celelalte termină repede și stau, pe când la varianta dinamică fiecare thread ia o imagine nouă imediat ce a terminat-o pe cea anterioară.",
+  "ex5": "Pentru toate tipurile de imagini variantele paralele sunt de aproximativ 2,5–5,5 ori mai rapide decât cea serială. La imaginile mici timpii sunt de doar câteva milisecunde, așa că speedup-ul mare de acolo nu este foarte sigur. Când imaginile au aceeași dimensiune, varianta statică și cea dinamică dau timpi aproape egali (125/121 ms și 338/345 ms), pentru că partițiile sunt deja echilibrate."
+}

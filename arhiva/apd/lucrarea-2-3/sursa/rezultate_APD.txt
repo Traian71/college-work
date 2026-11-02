@@ -1,0 +1,36 @@
+Procesoare logice: 8
+Sistem: Unix 26.7.1
+
+EX4 - imagini medii (40 x 500x500)
+serial: 318 ms
+N=1: 327 ms, speedup = 0,97
+N=2: 202 ms, speedup = 1,57
+N=3: 137 ms, speedup = 2,32
+N=4: 148 ms, speedup = 2,15
+N=5: 148 ms, speedup = 2,15
+N=6: 128 ms, speedup = 2,48
+N=7: 134 ms, speedup = 2,37
+N=8: 136 ms, speedup = 2,34
+N=9: 134 ms, speedup = 2,37
+N=10: 138 ms, speedup = 2,30
+N=11: 116 ms, speedup = 2,74
+N=12: 122 ms, speedup = 2,61
+N=13: 122 ms, speedup = 2,61
+N=14: 112 ms, speedup = 2,84
+N=15: 101 ms, speedup = 3,15
+N=16: 103 ms, speedup = 3,09
+N=17: 124 ms, speedup = 2,56
+N=18: 124 ms, speedup = 2,56
+N=19: 113 ms, speedup = 2,81
+N=20: 106 ms, speedup = 3,00
+
+EX4 DINAMIC - imagini mixte (16 imagini, 100x100 ... 2000x2000)
+serial: 593 ms
+N=2: static 527 ms, dinamic 294 ms
+N=4: static 402 ms, dinamic 204 ms
+N=8: static 264 ms, dinamic 189 ms
+
+EX5 - N=4
+mici: serial 44 ms, static 10 ms, dinamic 8 ms
+medii: serial 307 ms, static 125 ms, dinamic 121 ms
+mari: serial 895 ms, static 338 ms, dinamic 345 ms
