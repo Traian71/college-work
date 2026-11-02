@@ -1,0 +1,157 @@
+<h1>Lucrarea 2 – Implementarea algoritmilor paraleli. Condiții de paralelism</h1>
+<p class="sub">Laborator Algoritmi Paraleli și Distribuiți – rezolvarea exercițiilor</p>
+
+<h2>Exercițiul 1</h2>
+<p>Pentru o singură imagine avem task-urile: A – citirea căii fișierului, B – încărcarea imaginii, C – transformarea în nivele de gri, D – salvarea imaginii. Mulțimile de intrare (I) și ieșire (O):</p>
+<ul>
+  <li>A: I<sub>A</sub> = {sourceDirectory}, O<sub>A</sub> = {fileName}</li>
+  <li>B: I<sub>B</sub> = {fileName}, O<sub>B</sub> = {image}</li>
+  <li>C: I<sub>C</sub> = {image}, O<sub>C</sub> = {image}</li>
+  <li>D: I<sub>D</sub> = {image, finalDirectory}, O<sub>D</sub> = {fișierul salvat}</li>
+</ul>
+<p>Graful dependențelor:</p>
+<div class="graf g1">{{G1}}</div>
+<p>O<sub>A</sub> ∩ I<sub>B</sub> = {fileName} ≠ Φ, O<sub>B</sub> ∩ I<sub>C</sub> = {image} ≠ Φ, O<sub>C</sub> ∩ I<sub>D</sub> = {image} ≠ Φ, deci între task-uri există dependențe prin succesiune (A → B → C → D) și condițiile lui Bernstein nu sunt îndeplinite. Fiecare task are nevoie de rezultatul celui dinainte, așa că pentru o singură imagine problema <b>nu se poate paraleliza</b> la nivel de task-uri. Doar în interiorul lui C pixelii sunt independenți între ei, dar toți se află în același obiect Bitmap.</p>
+
+<h2>Exercițiul 2</h2>
+<p>Pentru un set de imagini, Task A (lista de fișiere) se execută o singură dată, apoi pentru fiecare imagine i se execută lanțul B<sub>i</sub> → C<sub>i</sub> → D<sub>i</sub>:</p>
+<div class="graf g2">{{G2}}</div>
+<p>Lanțurile pentru imagini diferite lucrează pe fișiere și obiecte Bitmap diferite, deci pentru i ≠ j: I<sub>i</sub> ∩ O<sub>j</sub> = Φ, I<sub>j</sub> ∩ O<sub>i</sub> = Φ, O<sub>i</sub> ∩ O<sub>j</sub> = Φ. Condițiile lui Bernstein sunt îndeplinite, așa că după Task A imaginile <b>se pot procesa în paralel</b>: fiecare thread preia o parte din imagini.</p>
+
+<h2>Exercițiul 3</h2>
+<p>Lista de imagini se împarte în N partiții consecutive. Threadul cu indexul <code>tid</code> procesează imaginile de la <code>tid·n/N</code> până la <code>(tid+1)·n/N − 1</code>, unde n este numărul de imagini:</p>
+<pre>
+//atentie la calea de pe disk unde se afla imaginile!!!
+public static string sourceDirectory = @"C:\Studenti\SourceImages";
+public static string finalDirectory = @"C:\Studenti\FinalImages";
+public static string[] fileEntries; //lista partajata
+public static int N;
+
+public static void ThreadFunction(object parameter)
+{
+    int tid = (int)parameter;
+    int start = tid * fileEntries.Length / N;
+    int stop = (tid + 1) * fileEntries.Length / N;
+
+    for (int i = start; i &lt; stop; i++)
+    {
+        string fileName = fileEntries[i];
+        using (Bitmap image = new Bitmap(fileName)) //Task B
+        {
+            for (int x = 0; x &lt; image.Width; x++)  //Task C
+            {
+                for (int y = 0; y &lt; image.Height; y++)
+                {
+                    Color pixelColor = image.GetPixel(x, y);
+                    int gray = (pixelColor.R + pixelColor.G + pixelColor.B) / 3;
+                    Color newColor = Color.FromArgb(gray, gray, gray);
+                    image.SetPixel(x, y, newColor);
+                }
+            }
+            image.Save(Path.Combine(finalDirectory, Path.GetFileName(fileName))); //Task D
+        }
+    }
+}
+</pre>
+<p>Cu trei threaduri (varianta cu două threaduri este la fel, fără <code>th3</code> și cu <code>N = 2</code>):</p>
+<pre>
+static void Main(string[] args)
+{
+    fileEntries = Directory.GetFiles(sourceDirectory, "*.bmp").OrderBy(x =&gt; x).ToArray(); //Task A
+    N = 3;
+
+    Thread th1 = new Thread(ThreadFunction);
+    Thread th2 = new Thread(ThreadFunction);
+    Thread th3 = new Thread(ThreadFunction);
+    th1.Start(0); //parametru - indexul partitiei
+    th2.Start(1);
+    th3.Start(2);
+    th1.Join();
+    th2.Join();
+    th3.Join();
+}
+</pre>
+<p>Cu N threaduri, unde N se dă ca parametru la rularea aplicației (în Visual Studio: Project → Properties → Debug → Command line arguments):</p>
+<pre>
+static void Main(string[] args)
+{
+    fileEntries = Directory.GetFiles(sourceDirectory, "*.bmp").OrderBy(x =&gt; x).ToArray(); //Task A
+    N = int.Parse(args[0]);
+
+    Thread[] threads = new Thread[N];
+    for (int i = 0; i &lt; N; i++)
+    {
+        threads[i] = new Thread(ThreadFunction);
+        threads[i].Start(i); //parametru - indexul partitiei
+    }
+    for (int i = 0; i &lt; N; i++)
+    {
+        threads[i].Join();
+    }
+}
+</pre>
+
+<h2>Exercițiul 4 – timpul de execuție</h2>
+<p>Am măsurat cu <code>Stopwatch</code> varianta serială (bucla <code>foreach</code> de la exercițiul 2) și varianta paralelă de la exercițiul 3, pentru N = 1 … 20:</p>
+<pre>
+Stopwatch timer = new Stopwatch();
+timer.Start();
+foreach (string fileName in fileEntries)
+{
+    ... //Task B, C, D - varianta seriala
+}
+timer.Stop();
+Console.WriteLine("Serial: Elapsed = {0} (ms)", timer.Elapsed.TotalMilliseconds);
+
+for (N = 1; N &lt;= 20; N++)
+{
+    timer.Restart();
+    ... //lansarea si asteptarea celor N threaduri, ca la exercitiul 3
+    timer.Stop();
+    Console.WriteLine("N = {0}: Elapsed = {1} (ms)", N, timer.Elapsed.TotalMilliseconds);
+}
+</pre>
+<p>{{EX4_INTRO}}</p>
+{{EX4_TABEL}}
+<p>{{EX4_OBS}}</p>
+
+<h2>Exercițiul 4 – alocarea dinamică a task-urilor</h2>
+<p>Threadurile nu mai primesc o partiție fixă. Fiecare thread ia din listă următoarea imagine neprocesată, o marchează ca preluată (șir gol) și, după ce o termină, ia alta. Accesul la listă se face exclusiv, cu <code>lock</code>:</p>
+<pre>
+static object _lock = new object();
+
+public static void ThreadFunction(object parameter)
+{
+    int tid = (int)parameter;
+    while (true)
+    {
+        string fileName = string.Empty;
+        lock (_lock)
+        {
+            for (int i = 0; i &lt; fileEntries.Length &amp;&amp; fileName == string.Empty; i++)
+            {
+                if (fileEntries[i] != string.Empty)
+                {
+                    fileName = fileEntries[i];
+                    fileEntries[i] = string.Empty; //imaginea a fost preluata
+                }
+            }
+        }
+        if (fileName == string.Empty)
+            break; //nu mai sunt imagini de procesat
+
+        using (Bitmap image = new Bitmap(fileName)) //Task B
+        {
+            ... //Task C si Task D, ca la exercitiul 3
+        }
+    }
+}
+</pre>
+<p>{{DIN_INTRO}}</p>
+{{DIN_TABEL}}
+<p>{{DIN_OBS}}</p>
+
+<h2>Exercițiul 5</h2>
+<p>{{EX5_INTRO}}</p>
+{{EX5_TABEL}}
+<p>{{EX5_OBS}}</p>

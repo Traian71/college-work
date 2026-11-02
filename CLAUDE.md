@@ -8,7 +8,7 @@ wrote in about an hour.
   code implementations or extra diagrams unless the task asks for them.
 - **Max 2 pages** unless the task or I say otherwise.
 - **No extra files.** A task folder holds only the deliverable (PDF, PNG, code), no Markdown/README, nothing
-  else: no scripts, tests, image exports or zips.
+  else: no scripts, tests, image exports or zips. Everything else goes in `arhiva/` (see below).
 - **Plain student style.** Short explanations, simple formatting. No table of contents, no
   specification tables, no "documentation" structure.
 - **Ask before adding anything extra.** One line, before building it, not after.
@@ -25,3 +25,19 @@ wrote in about an hour.
 - **Mac chat (Claude Code running locally on the Mac)** only takes over those handoffs. It runs the steps,
   pushes to `main` and copies the deliverable to my Desktop.
 - Mac: the repo is at `~/Desktop/college-work`. `dotnet` may not be on PATH (Rider's SDK). Use Chrome for PDFs.
+
+## Git is the backup: push everything
+
+The container gets wiped, so whatever isn't pushed is lost. At the end of every task (and after every fix),
+push everything to `main`, not just the deliverable.
+
+- `arhiva/<materie>/<task>/` holds everything except the deliverable:
+  - `context.md`: what the task asked (verbatim if possible), the due date, where the deliverable is and what was
+    uploaded, the decisions and my requests along the way, and the status. Keep it short and update it when
+    something changes.
+  - `materiale/`: every file I sent for the task (lab PDFs, sheets, teacher code, screenshots of the task,
+    recordings, zips), exactly as received. Save them here at the start of the task, before working.
+  - `sursa/`: working files (generators, HTML/Markdown sources, measurement outputs, old versions).
+- If I ask about an old task, read its `arhiva/.../context.md` first.
+- The Mac chat does the same for anything it produces (e.g. measurement results).
+
