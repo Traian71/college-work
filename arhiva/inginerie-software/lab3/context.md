@@ -26,4 +26,4 @@
     installs, so the diagrams were written in **PlantUML** instead (paste each `@startuml` block into
     plantuml.com/plantuml to edit/re-export). The four renders were stitched into one PNG with headless Chrome.
   - Moodle accepted image files only, so the hand-in is `diagrame-tema20.png`.
-- **Status:** PNG ready on 30 Oct 2026 for upload; whether it was uploaded isn't recorded.
+- **Status:** uploaded to Moodle (IS_Laborator_3); the submission confirmation arrived on Mon 2 Nov 2026 around 13:18.

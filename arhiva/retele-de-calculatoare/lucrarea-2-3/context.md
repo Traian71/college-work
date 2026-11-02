@@ -77,4 +77,5 @@ open-source connector **cisco-pt-mcp** (github.com/muhammadbalawal/cisco-pt-mcp,
   the same workspace and removed).
 
 - **Status (2 Nov 2026):** PDF complete (5 pages, all 5 Packet Tracer screenshots), copied to the Desktop.
-  Ready to upload on Moodle (deadline was 1 Nov, so it will be late). Upload not confirmed yet.
+  **Uploaded** by Traian on Mon 2 Nov 2026, 14:13 as `Lucrarea_2_3_RC.pdf`: "Submitted for grading", Moodle marks
+  it **14 h 14 min late**. Not graded yet.
