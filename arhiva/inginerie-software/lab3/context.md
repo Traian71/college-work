@@ -15,4 +15,15 @@
   - `jdk-8u73-windows-i586.exe`: Java 8u73 for 32-bit Windows, 190,314,072 bytes (Oracle Java archive).
     SHA-256 `c98792ea96512b03238a60616a5cefe936832718d6453fff2a545615fbdf0d87`.
   If they're lost, get them again from the teacher / Moodle (Together) and the Oracle Java archive (JDK 8u73).
-- **Status:** unknown whether anything was handed in. No chat context was saved for this lab.
+- **How it was decided (Mac chat, 30 Oct 2026):**
+  - The allocation sheet gives FILE-MITIŢĂ Traian (441A) number **20**. The lab sheet itself only has 5.1 (read
+    the tutorial) and 5.2 (Library-like project), so 20 was taken to mean **Tema 20 from the lab 2 list** (factory
+    administration, same model as the lab 2 class diagram). This was an assumption, not confirmed by the teacher.
+  - Project name used: `FabricaFileMititaTraian` (following the `LibraryNumePrenume` rule).
+  - Together can't run on the Mac: the zip also has `MACOSX/TEC_ARCHITECT_2006_MAC_OSX.ZIP`, but its launcher is a
+    PowerPC binary needing Apple Java 1.3+, dead on Apple Silicon. Options considered: Visual Paradigm CE (native,
+    can sync sequence → communication), or Windows 11 ARM in UTM to run the Windows installer. I didn't want
+    installs, so the diagrams were written in **PlantUML** instead (paste each `@startuml` block into
+    plantuml.com/plantuml to edit/re-export). The four renders were stitched into one PNG with headless Chrome.
+  - Moodle accepted image files only, so the hand-in is `diagrame-tema20.png`.
+- **Status:** PNG ready on 30 Oct 2026 for upload; whether it was uploaded isn't recorded.
