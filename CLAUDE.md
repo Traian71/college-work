@@ -7,6 +7,8 @@ wrote in about an hour.
   pseudocode and a flowchart. No complexity analysis, correctness proofs, test tables, traces,
   code implementations or extra diagrams unless the task asks for them.
 - **Max 2 pages** unless the task or I say otherwise.
+- **Deliverable format is whatever the teacher asks for in that lab** (e.g. an Excel workbook if the
+  lab says Excel). When the lab doesn't say, use a PDF.
 - **No extra files.** A task folder holds only the deliverable (PDF, PNG, code), no Markdown/README, nothing
   else: no scripts, tests, image exports or zips. Everything else goes in `arhiva/` (see below).
 - **Plain student style.** Short explanations, simple formatting. No table of contents, no
@@ -24,7 +26,8 @@ wrote in about an hour.
   path, the exact steps, what to push and what to give back. It does this only when it's needed.
 - **Mac chat (Claude Code running locally on the Mac)** only takes over those handoffs. It runs the steps,
   pushes to `main` and copies the deliverable to my Desktop.
-- Mac: the repo is at `~/Desktop/college-work`. `dotnet` may not be on PATH (Rider's SDK). Use Chrome for PDFs.
+- Mac: the repo is at `~/college/college-work` (the only clone, there's none on the Desktop). `dotnet` is at
+  `~/.dotnet/dotnet`, not on PATH. Use Chrome for PDFs.
 
 ## Git is the backup: push everything
 
@@ -40,4 +43,6 @@ push everything to `main`, not just the deliverable.
   - `sursa/`: working files (generators, HTML/Markdown sources, measurement outputs, old versions).
 - If I ask about an old task, read its `arhiva/.../context.md` first.
 - The Mac chat does the same for anything it produces (e.g. measurement results).
+- Only skip what can be recreated and isn't material: `.DS_Store`, Office lock files, virtual envs, `bin/`, `obj/`,
+  `__pycache__` (all in `.gitignore`). Files over 100 MB can't go to GitHub: ask me, and note them in `context.md`.
 
