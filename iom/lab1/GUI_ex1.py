@@ -4,6 +4,7 @@
 #   - afișează forma de undă și frecvența de eșantionare (în câmpuri separate)
 #   - permite introducerea duratei ferestrei de analiză (în ms)
 #   - calculează numărul de eșantioane dintr-o fereastră
+#   - redesenează graficul între doi indici de eșantion (capete incluse)
 # =============================================================================
 
 # --- Importuri ---------------------------------------------------------------
@@ -32,6 +33,8 @@ class WavApp(tk.Tk):
         # Pornesc ca None pentru că nu am încărcat încă niciun fișier.
         self.semnal = None   # vectorul de eșantioane (numpy array)
         self.fs = None       # frecvența de eșantionare, în Hz
+        self.primul_esantion = 0
+        self.ultimul_esantion = 0
 
         # Creăm toate widgeturile (etichete, câmpuri, butoane, grafic)
         self._construieste_interfata()
@@ -90,6 +93,18 @@ class WavApp(tk.Tk):
         self.var_nr = tk.StringVar()
         ttk.Entry(rand4, textvariable=self.var_nr, state="readonly", width=15).pack(side="left")
 
+        # ---------- Rândul 5: intervalul afișat pe grafic ----------
+        rand5 = ttk.Frame(cadru)
+        rand5.pack(fill="x", pady=3)
+        ttk.Label(rand5, text="Primul eșantion (de la 0):").pack(side="left")
+        self.var_primul = tk.StringVar(value="0")
+        ttk.Entry(rand5, textvariable=self.var_primul, width=10).pack(side="left", padx=(5, 12))
+        ttk.Label(rand5, text="Ultimul eșantion:").pack(side="left")
+        self.var_ultimul = tk.StringVar()
+        ttk.Entry(rand5, textvariable=self.var_ultimul, width=10).pack(side="left", padx=5)
+        ttk.Button(rand5, text="Redesenează graficul", command=self.redeseneaza_intervalul) \
+            .pack(side="left", padx=5)
+
         # ---------- Graficul (forma de undă) ----------
         # Figure(figsize=(lățime, înălțime) în inci, dpi=pixeli pe inch)
         self.fig = Figure(figsize=(7, 4), dpi=100)
@@ -136,6 +151,10 @@ class WavApp(tk.Tk):
         self.var_cale.set(cale)                   # calea fișierului
         self.var_fs.set(str(self.fs))             # frecvența de eșantionare
         self.var_nr.set("")                       # golim rezultatul vechi (aparținea fișierului anterior)
+        self.primul_esantion = 0
+        self.ultimul_esantion = len(self.semnal) - 1
+        self.var_primul.set("0")
+        self.var_ultimul.set(str(self.ultimul_esantion))
         self._deseneaza()                         # desenăm forma de undă
 
     @staticmethod
@@ -172,6 +191,9 @@ class WavApp(tk.Tk):
         if canale > 1:
             date = date[::canale]
 
+        if len(date) == 0:
+            raise ValueError("Fișierul WAV nu conține eșantioane.")
+
         return date, fs
 
     def calculeaza(self):
@@ -194,18 +216,49 @@ class WavApp(tk.Tk):
         self.var_nr.set(str(nr))
         self._deseneaza(durata_ms / 1000)         # evidențiem prima fereastră pe grafic
 
+    def redeseneaza_intervalul(self):
+        """Validează indicii introduși și afișează eșantioanele dintre ei."""
+        if self.semnal is None:
+            messagebox.showwarning("Atenție", "Încărcați mai întâi un fișier WAV.")
+            return
+
+        try:
+            primul = int(self.var_primul.get())
+            ultimul = int(self.var_ultimul.get())
+        except ValueError:
+            messagebox.showerror("Eroare", "Indicii eșantioanelor trebuie să fie numere întregi.")
+            return
+
+        if not 0 <= primul <= ultimul < len(self.semnal):
+            messagebox.showerror(
+                "Eroare",
+                f"Introduceți un interval între 0 și {len(self.semnal) - 1}, "
+                "cu primul eșantion cel mult egal cu ultimul.",
+            )
+            return
+
+        self.primul_esantion = primul
+        self.ultimul_esantion = ultimul
+        self._deseneaza()
+
     def _deseneaza(self, durata_fereastra=None):
         """Desenează forma de undă. Dacă se dă durata ferestrei (în secunde),
         evidențiază pe grafic prima fereastră."""
         self._reseteaza_grafic()
 
-        # Axa timpului: indicii 0, 1, 2, ..., N-1 împărțiți la fs dau momentele în secunde
-        t = np.arange(len(self.semnal)) / self.fs
-        self.ax.plot(t, self.semnal, linewidth=0.7)
+        # Capătul din dreapta al feliei Python este exclus, de aceea adăugăm 1.
+        indici = np.arange(self.primul_esantion, self.ultimul_esantion + 1)
+        t = indici / self.fs
+        self.ax.plot(t, self.semnal[self.primul_esantion:self.ultimul_esantion + 1],
+                     linewidth=0.7,
+                     marker="o" if self.primul_esantion == self.ultimul_esantion else None)
 
         if durata_fereastra is not None:
-            # axvspan colorează o zonă verticală, de la x=0 la x=durata_fereastra
-            self.ax.axvspan(0, durata_fereastra, color="orange", alpha=0.3,
+            # Evidențiem prima fereastră din intervalul afișat.
+            inceput = self.primul_esantion / self.fs
+            sfarsit = min(inceput + durata_fereastra,
+                          self.ultimul_esantion / self.fs)
+            self.ax.axvspan(inceput, sfarsit, color="orange", alpha=0.3,
                             label="Prima fereastră")
             self.ax.legend(loc="upper right")
 
