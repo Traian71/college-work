@@ -56,7 +56,10 @@ Subrețelele au masca **255.255.255.252** (/30):
 
 Switch-ul se numește **FileMititaT441A**, stațiile **FT01**, **FT02**. Rețeaua 192.168.0.0/30 (masca
 255.255.255.252) are doar 4 adrese: rețeaua .0, broadcast .3 și două adrese de stație, deci în această configurație
-pot exista **doar 2 stații**: FT01 = 192.168.0.1 și FT02 = 192.168.0.2. Ping de la FT01 la FT02:
+pot exista **doar 2 stații**: FT01 = 192.168.0.1 și FT02 = 192.168.0.2.
+
+Ping-urile din Packet Tracer le-am făcut cu *Add Simple PDU* (ICMP); rezultatul apare în lista din dreapta jos
+(Successful / Failed). Ping de la FT01 la FT02:
 
 ![Lucrarea 2, exercițiul 5](capturi/l2-ex5.png)
 
@@ -83,7 +86,7 @@ etaj (15 stații + 1 port pentru legătură) și un switch central la etajul 2, 
 cât mai scurte (câte un etaj).
 
 Toate stațiile sunt în rețeaua 192.168.0.0/16 (masca 255.255.0.0): etajul 1 – 192.168.1.1 – .3, etajul 2 –
-192.168.2.1 – .3, etajul 3 – 192.168.3.1 – .3. Ping de la o stație de la etajul 1 la etajele 2 și 3 merge:
+192.168.2.1 – .3, etajul 3 – 192.168.3.1 – .3. Ping de la E1-PC1 la etajele 2 și 3 (E2-PC1, E3-PC1) merge:
 
 ![Lucrarea 3, exercițiul 1](capturi/l3-ex1.png)
 
@@ -99,7 +102,7 @@ Păstrăm switch-urile și cablurile, schimbăm doar adresele. Un etaj are nevoi
 | 3 | 192.168.0.64/27 | 192.168.0.65 – 192.168.0.94 | 192.168.0.95 | .65 – .67 |
 
 Stațiile de la același etaj comunică. Spre alt etaj adresa e în altă subrețea și nu există router (default
-gateway), deci ping-ul dă „Request timed out”:
+gateway), deci ping-ul nu reușește (Failed). Ping E1-PC1 → E1-PC2 și E1-PC1 → E2-PC1:
 
 ![Lucrarea 3, exercițiul 2](capturi/l3-ex2.png)
 
@@ -125,6 +128,7 @@ end
 show vlan brief
 ```
 
-Ping în același VLAN (192.168.10.1 → .2) merge, iar între VLAN-uri (192.168.10.1 → .3) dă timeout:
+Ping în același VLAN (P1 192.168.10.1 → P2 .2) merge, iar între VLAN-uri (P1 → S1 .3) nu merge (Failed), deși
+stațiile sunt în aceeași rețea IP:
 
 ![Lucrarea 3, exercițiul 3](capturi/l3-ex3.png)

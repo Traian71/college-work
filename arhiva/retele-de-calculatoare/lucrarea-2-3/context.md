@@ -65,5 +65,16 @@ open-source connector **cisco-pt-mcp** (github.com/muhammadbalawal/cisco-pt-mcp,
 - Screen Recording is allowed for Claude, so `screencapture` works for the screenshots (fallback if the connector
   fails: osascript clicks, which would also need Accessibility).
 
-- **Status (2 Nov 2026):** calculations done, PDF draft built with placeholders; connector set up, waiting for
-  the PT extension to be added and a new chat to build the 5 networks. Not uploaded yet.
+- After restarting the Claude app the tools loaded; the bridge window was opened via osascript (Accessibility
+  allowed). Screenshots: `screencapture -l<window id>` of the PT window (resized to 1150×760 pt), window id from a
+  small CoreGraphics Swift helper (not kept).
+- Gotchas: `sendPdu` switches PT to simulation mode, so time only moves with `stepSimulation` (~100 steps). Pings
+  sent before spanning tree brought the switch-to-switch links up showed "Failed" first, then "Successful" when
+  re-run (the 4 rows in `l2-ex6.png`). Removing a PC deletes its PDUs (used to clear the list between exercises).
+- Results seen in PT 9.0.1 on 2 Nov 2026: L2 ex5 FT01→FT02 Successful; ex6 FT01→FT09 Successful; L3 ex1
+  E1-PC1→E2-PC1 and →E3-PC1 Successful; ex2 E1-PC1→E1-PC2 Successful, E1-PC1→E2-PC1 Failed; ex3 P1→P2
+  Successful, P1→S1 Failed (VLAN 2 vs 3). The .pkt files weren't saved (networks were built one after another in
+  the same workspace and removed).
+
+- **Status (2 Nov 2026):** PDF complete (5 pages, all 5 Packet Tracer screenshots), copied to the Desktop.
+  Ready to upload on Moodle (deadline was 1 Nov, so it will be late). Upload not confirmed yet.

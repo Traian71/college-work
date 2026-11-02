@@ -23,9 +23,10 @@ html = """<!doctype html><html lang="ro"><head><meta charset="utf-8">
   th { background: #eee; }
   pre { background: #f4f4f4; padding: 6px 10px; font-size: 9pt; line-height: 1.25; }
   code { font-family: Menlo, monospace; font-size: 9pt; }
-  img { max-width: 100%%; max-height: 120mm; display: block; margin: 6px 0; border: 1px solid #ccc; }
+  img { max-width: 100%%; max-height: 92mm; display: block; margin: 6px 0; border: 1px solid #ccc; }
   .lipsa { border: 1px dashed #999; color: #777; padding: 30px; text-align: center; margin: 6px 0; }
   h3, table, pre, img { break-inside: avoid; }
+  h2, h3 { break-after: avoid; }
 </style></head><body><div id="c"></div>
 <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
 <script>
