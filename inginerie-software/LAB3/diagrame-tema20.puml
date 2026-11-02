@@ -1,0 +1,109 @@
+' Tema 20 - Sistem pentru administrarea unei fabrici
+' Fiecare bloc @startuml ... @enduml e o diagrama separata (se lipeste pe rand in plantuml.com)
+
+@startuml use-case
+title Fabrica Use Case
+left to right direction
+skinparam dpi 150
+actor "Manager" as M <<manager>>
+actor "Operator" as O
+rectangle "Sistem administrare fabrică" {
+  usecase "Adaugă secție" as UC1
+  usecase "Adaugă linie de producție" as UC2
+  usecase "Mută mașină pe altă linie" as UC3
+  usecase "Supraveghează mașină" as UC4
+  usecase "Înregistrează intervenție" as UC5
+}
+M -- UC1
+M -- UC2
+M -- UC3
+UC4 -- O
+UC5 -- O
+@enduml
+
+@startuml clase
+title Diagrama de clase - Fabrica
+left to right direction
+skinparam dpi 150
+class Fabrica {
+  -nume : String
+  -adresa : String
+  +adaugaSectie(s : Sectie)
+  +eliminaSectie(s : Sectie)
+}
+class Sectie {
+  -cod : String
+  -denumire : String
+  +adaugaLinie(l : LinieProductie)
+  +eliminaLinie(l : LinieProductie)
+}
+class LinieProductie {
+  -cod : String
+  -denumire : String
+  -stare : String
+  +adaugaMasina(m : Masina)
+  +eliminaMasina(m : Masina)
+}
+class Masina {
+  -serie : String
+  -model : String
+  -stare : String
+  +mutaPeLinie(l : LinieProductie)
+  +inlocuiesteCu(m : Masina)
+  +getStare() : String
+}
+class Operator {
+  -nume : String
+  -prenume : String
+  -calificare : String
+  +supravegheaza(m : Masina)
+}
+class InterventieMentenanta {
+  -data : String
+  -tip : String
+  -descriere : String
+  -cost : Real
+  +inregistreaza()
+}
+Fabrica "1" *-- "1..*" Sectie : contine
+Sectie "1" *-- "1..*" LinieProductie : contine
+LinieProductie "0..1" o-- "1..*" Masina : foloseste
+Masina "1..*" -- "1..*" Operator : supravegheat de
+Masina "1" -- "0..*" InterventieMentenanta : are
+@enduml
+
+@startuml secventa
+title Secvență - Mutare mașină pe altă linie
+skinparam dpi 150
+actor Manager
+participant "m : Masina" as m
+participant "l1 : LinieProductie" as l1
+participant "l2 : LinieProductie" as l2
+Manager -> m : 1: mutaPeLinie(l2)
+activate m
+m -> l1 : 1.1: eliminaMasina(m)
+activate l1
+l1 --> m
+deactivate l1
+m -> l2 : 1.2: adaugaMasina(m)
+activate l2
+l2 --> m
+deactivate l2
+m --> Manager
+deactivate m
+@enduml
+
+@startuml colaborare
+title Colaborare - Mutare mașină pe altă linie
+skinparam dpi 150
+left to right direction
+allowmixing
+hide empty members
+actor Manager
+object "<u>m : Masina</u>" as m
+object "<u>l1 : LinieProductie</u>" as l1
+object "<u>l2 : LinieProductie</u>" as l2
+Manager - m : 1: mutaPeLinie(l2) >
+m -- l1 : 1.1: eliminaMasina(m) >
+m -- l2 : 1.2: adaugaMasina(m) >
+@enduml
