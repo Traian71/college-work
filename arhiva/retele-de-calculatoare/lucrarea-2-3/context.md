@@ -51,5 +51,19 @@ General:
    Fa0/3 = .3, S2 on Fa0/4 = .4, mask 255.255.255.0. Switch → *CLI* tab (answer `no` to the setup dialog), paste the
    commands from exercise 3 in the PDF. From P1: `ping 192.168.10.2` (works) and `ping 192.168.10.3` (timeout).
 
-- **Status (2 Nov 2026):** calculations done, PDF draft built with placeholders; waiting for the 5 screenshots.
-  Not uploaded yet.
+## Automating Packet Tracer (set up 2 Nov 2026)
+
+Traian installed Cisco Packet Tracer 9.0.1 on the Mac. To avoid doing the steps above by hand, Claude Code got the
+open-source connector **cisco-pt-mcp** (github.com/muhammadbalawal/cisco-pt-mcp, MIT, PyPI 0.1.6, not by Cisco):
+- `brew install uv`, then registered in user scope with the Claude app's bundled CLI:
+  `claude mcp add cisco-pt-mcp --scope user -- /opt/homebrew/bin/uvx cisco-pt-mcp`.
+- PT extension file: `~/Downloads/cisco-pt-mcp/cisco-pt-mcp.pts` (SHA-256 `451e50df…31aa38df`). In PT:
+  *Extensions → Scripting → Configure PT Script Modules → Add*, restart PT, then *Extensions → Packet Tracer MCP*
+  opens the bridge window.
+- Tools (load only in a new chat): addDevice, addLink, configurePcIp, configureIosDevice, sendPdu, getPduResults,
+  getNetwork, etc. Pings are done as PT Simple PDUs; results show in the PDU list (bottom right of the PT window).
+- Screen Recording is allowed for Claude, so `screencapture` works for the screenshots (fallback if the connector
+  fails: osascript clicks, which would also need Accessibility).
+
+- **Status (2 Nov 2026):** calculations done, PDF draft built with placeholders; connector set up, waiting for
+  the PT extension to be added and a new chat to build the 5 networks. Not uploaded yet.
