@@ -67,20 +67,21 @@ parametri = [
     ('Weibull', 'α', 1.953e8, '0.000E+00'),
     ('Weibull', 'β', 2.974, '0.000'),
     ('normală', 'μ (ore)', 549.0, '0.0'),
-    ('normală', 'σ (ore)', 202.8, '0.0'),
+    ('normală', 'σ² (ore²)', 41143.13, '0.00'),
+    ('normală', 'σ (ore)', 205.08, '0.00'),
 ]
 for k, (lege, par, val, fmt) in enumerate(parametri):
     celula(ws, 13 + k, 3, lege)
     celula(ws, 13 + k, 4, par)
     celula(ws, 13 + k, 5, val, fmt)
 
-ws['C19'] = 'Weibull: F(t) = 1 − exp(−t^β / α)'
+ws['C20'] = 'Weibull: F(t) = 1 − exp(−t^β / α)'
 
-ws['C21'] = 'Concluzie:'
-ws['C21'].font = bold
-ws['C22'] = 'Legea exponențială este respinsă (se încadrează doar la riscul 0,995).'
-ws['C23'] = 'Legea normală este respinsă la riscul 0,01 și acceptată la celelalte.'
-ws['C24'] = 'Legea Weibull este acceptată pentru toate riscurile, deci se adoptă legea Weibull cu β ≈ 2,974 și α ≈ 1,953·10⁸.'
+ws['C22'] = 'Concluzie:'
+ws['C22'].font = bold
+ws['C23'] = 'Legea exponențială este respinsă (se încadrează doar la riscul 0,995).'
+ws['C24'] = 'Legea normală este respinsă la riscul 0,01 și acceptată la celelalte.'
+ws['C25'] = 'Legea Weibull este acceptată pentru toate riscurile, deci se adoptă legea Weibull cu β ≈ 2,974 și α ≈ 1,953·10⁸.'
 
 ws.column_dimensions['A'].width = 15
 ws.column_dimensions['B'].width = 3
