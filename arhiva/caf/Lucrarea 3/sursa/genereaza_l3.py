@@ -50,9 +50,9 @@ ws['A4'] = 'r ='
 ws['B4'] = 24
 ws['C4'] = 'defectări (încercare exhaustivă)'
 
-antet(ws, 6, 1, ['i', 'ti (ore)', 'ln ti', '^F(ti) = i/(n+1)', 'i/n', '(i−1)/n',
+antet(ws, 6, 1, ['i', 'ti (ore)', 'ln ti', '^F(ti) = i/(n+1)', 'i/n',
                  'F exp.', 'F Weibull', 'F normală', 'D exp.', 'D Weibull', 'D normală'])
-antet(ws, 6, 14, ['ln(1/(1−^F))', 'λ·t', 'ln ln(1/(1−^F))', 'β·ln t − ln α', 'Φ⁻¹(^F)', '(t−μ)/σ'])
+antet(ws, 6, 13, ['ln(1/(1−^F))', 'λ·t', 'ln ln(1/(1−^F))', 'β·ln t − ln α', 'Φ⁻¹(^F)', '(t−μ)/σ'])
 ws.row_dimensions[6].height = 30
 
 for k, ti in enumerate(t):
@@ -62,30 +62,29 @@ for k, ti in enumerate(t):
     celula(ws, f'C{r}', f'=LN(B{r})', '0.000')
     celula(ws, f'D{r}', f'=A{r}/($B$3+1)', '0.000')
     celula(ws, f'E{r}', f'=A{r}/$B$3', '0.000')
-    celula(ws, f'F{r}', f'=(A{r}-1)/$B$3', '0.000')
-    celula(ws, f'G{r}', f'=1-EXP(-$C$35*B{r})', '0.000')
-    celula(ws, f'H{r}', f'=1-EXP(-(B{r}^$C$36)/$C$37)', '0.000')
-    celula(ws, f'I{r}', f'=NORMDIST(B{r},$C$40,$C$41,TRUE)', '0.000')
-    celula(ws, f'J{r}', f'=MAX(E{r}-G{r},G{r}-F{r})', '0.000')
-    celula(ws, f'K{r}', f'=MAX(E{r}-H{r},H{r}-F{r})', '0.000')
-    celula(ws, f'L{r}', f'=MAX(E{r}-I{r},I{r}-F{r})', '0.000')
-    celula(ws, f'N{r}', f'=LN(1/(1-D{r}))', '0.000')
-    celula(ws, f'O{r}', f'=$C$35*B{r}', '0.000')
-    celula(ws, f'P{r}', f'=LN(LN(1/(1-D{r})))', '0.000')
-    celula(ws, f'Q{r}', f'=$C$36*C{r}-LN($C$37)', '0.000')
-    celula(ws, f'R{r}', f'=NORMSINV(D{r})', '0.000')
-    celula(ws, f'S{r}', f'=(B{r}-$C$40)/$C$41', '0.000')
+    celula(ws, f'F{r}', f'=1-EXP(-$C$35*B{r})', '0.000')
+    celula(ws, f'G{r}', f'=1-EXP(-(B{r}^$C$36)/$C$37)', '0.000')
+    celula(ws, f'H{r}', f'=NORMDIST(B{r},$C$40,$C$41,TRUE)', '0.000')
+    celula(ws, f'I{r}', f'=ABS(E{r}-F{r})', '0.000')
+    celula(ws, f'J{r}', f'=ABS(E{r}-G{r})', '0.000')
+    celula(ws, f'K{r}', f'=ABS(E{r}-H{r})', '0.000')
+    celula(ws, f'M{r}', f'=LN(1/(1-D{r}))', '0.000')
+    celula(ws, f'N{r}', f'=$C$35*B{r}', '0.000')
+    celula(ws, f'O{r}', f'=LN(LN(1/(1-D{r})))', '0.000')
+    celula(ws, f'P{r}', f'=$C$36*C{r}-LN($C$37)', '0.000')
+    celula(ws, f'Q{r}', f'=NORMSINV(D{r})', '0.000')
+    celula(ws, f'R{r}', f'=(B{r}-$C$40)/$C$41', '0.000')
 
-ws['I31'] = 'Dmax ='
-ws['I31'].font = bold
+ws['H31'] = 'Dmax ='
+ws['H31'].font = bold
+celula(ws, 'I31', '=MAX(I7:I30)', '0.0000')
 celula(ws, 'J31', '=MAX(J7:J30)', '0.0000')
 celula(ws, 'K31', '=MAX(K7:K30)', '0.0000')
-celula(ws, 'L31', '=MAX(L7:L30)', '0.0000')
-ws['I32'] = '√n·Dmax ='
-ws['I32'].font = bold
+ws['H32'] = '√n·Dmax ='
+ws['H32'].font = bold
+celula(ws, 'I32', '=SQRT($B$3)*I31', '0.0000')
 celula(ws, 'J32', '=SQRT($B$3)*J31', '0.0000')
 celula(ws, 'K32', '=SQRT($B$3)*K31', '0.0000')
-celula(ws, 'L32', '=SQRT($B$3)*L31', '0.0000')
 
 # II. parametrii
 ws['A34'] = 'II. Parametrii legilor (estimatori de maximă verosimilitate, ca în aplicație)'
@@ -123,22 +122,22 @@ for k, (p, x) in enumerate(RISCURI):
     celula(ws, f'A{r}', p)
     celula(ws, f'B{r}', x, '0.0000')
     celula(ws, f'C{r}', f'=B{r}/SQRT($B$3)', '0.0000')
-    celula(ws, f'D{r}', f'=IF($J$31<=$C{r},"acceptată","respinsă")')
-    celula(ws, f'E{r}', f'=IF($K$31<=$C{r},"acceptată","respinsă")')
-    celula(ws, f'F{r}', f'=IF($L$31<=$C{r},"acceptată","respinsă")')
+    celula(ws, f'D{r}', f'=IF($I$31<=$C{r},"acceptată","respinsă")')
+    celula(ws, f'E{r}', f'=IF($J$31<=$C{r},"acceptată","respinsă")')
+    celula(ws, f'F{r}', f'=IF($K$31<=$C{r},"acceptată","respinsă")')
     for col in 'DEF':
         ws[f'{col}{r}'].alignment = Alignment(horizontal='center')
 
 ws['A51'] = 'Concluzie:'
 ws['A51'].font = bold
-ws['A52'] = ('Legea exponențială este respinsă pentru toate riscurile, iar legile Weibull și normală sunt acceptate '
-             'pentru toate riscurile.')
+ws['A52'] = ('Legea exponențială este respinsă pentru riscurile 0,01; 0,2 și 0,5 (se încadrează doar la 0,995), iar '
+             'legile Weibull și normală sunt acceptate pentru toate riscurile.')
 ws['A53'] = ('Legea normală are ecartul maxim cel mai mic, iar la Weibull β ≈ 3 dă tot o formă apropiată de normală '
              '(rată de defectare crescătoare, defectări prin uzură).')
 ws['A54'] = 'Se adoptă legea normală cu μ = 549 ore și σ ≈ 198,6 ore (Weibull: β ≈ 2,97, η ≈ 613,7 ore).'
 
 for col, w in {'A': 13, 'B': 11, 'C': 11, 'D': 11, 'E': 11, 'F': 11, 'G': 10, 'H': 10, 'I': 10, 'J': 10,
-               'K': 10, 'L': 10, 'M': 3, 'N': 12, 'O': 10, 'P': 13, 'Q': 13, 'R': 10, 'S': 10}.items():
+               'K': 10, 'L': 3, 'M': 12, 'N': 10, 'O': 13, 'P': 13, 'Q': 10, 'R': 10}.items():
     ws.column_dimensions[col].width = w
 
 
@@ -179,9 +178,9 @@ def hartie(titlu, x_col, y_col, y_teor_col, x_titlu, y_titlu, ancora, xlim, ylim
     ws.add_chart(ch, ancora)
 
 
-hartie('Hârtie probabilistică exponențială', 2, 14, 15, 't (ore)', 'ln(1/(1−F))', 'U2', (0, 1100), (0, 3.5))
-hartie('Hârtie probabilistică Weibull', 3, 16, 17, 'ln t', 'ln ln(1/(1−F))', 'U18', (4.5, 7), (-5, 1.5))
-hartie('Hârtie probabilistică normală', 2, 18, 19, 't (ore)', 'Φ⁻¹(F)', 'U34', (0, 1100), (-3, 3))
+hartie('Hârtie probabilistică exponențială', 2, 13, 14, 't (ore)', 'ln(1/(1−F))', 'T2', (0, 1100), (0, 3.5))
+hartie('Hârtie probabilistică Weibull', 3, 15, 16, 'ln t', 'ln ln(1/(1−F))', 'T18', (4.5, 7), (-5, 1.5))
+hartie('Hârtie probabilistică normală', 2, 17, 18, 't (ore)', 'Φ⁻¹(F)', 'T34', (0, 1100), (-3, 3))
 
 ws.page_setup.orientation = 'landscape'
 ws.page_setup.fitToWidth = 1
