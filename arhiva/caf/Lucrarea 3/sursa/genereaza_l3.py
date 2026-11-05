@@ -49,7 +49,7 @@ ws['C3'] = 'I. Identificarea legii (test Kolmogorov-Smirnov)'
 ws['C3'].font = bold
 antet(ws, 4, 3, ['Risc', 'Lege exponențială', 'Lege Weibull', 'Lege normală'])
 rezultate = [
-    (0.01, 'respinsă', 'acceptată', 'acceptată'),
+    (0.01, 'respinsă', 'acceptată', 'respinsă'),
     (0.2, 'respinsă', 'acceptată', 'acceptată'),
     (0.5, 'respinsă', 'acceptată', 'acceptată'),
     (0.995, 'acceptată', 'acceptată', 'acceptată'),
@@ -67,7 +67,7 @@ parametri = [
     ('Weibull', 'α', 1.953e8, '0.000E+00'),
     ('Weibull', 'β', 2.974, '0.000'),
     ('normală', 'μ (ore)', 549.0, '0.0'),
-    ('normală', 'σ (ore)', 198.6, '0.0'),
+    ('normală', 'σ (ore)', 202.8, '0.0'),
 ]
 for k, (lege, par, val, fmt) in enumerate(parametri):
     celula(ws, 13 + k, 3, lege)
@@ -79,8 +79,8 @@ ws['C19'] = 'Weibull: F(t) = 1 − exp(−t^β / α)'
 ws['C21'] = 'Concluzie:'
 ws['C21'].font = bold
 ws['C22'] = 'Legea exponențială este respinsă (se încadrează doar la riscul 0,995).'
-ws['C23'] = 'Legile Weibull și normală sunt acceptate pentru toate riscurile.'
-ws['C24'] = 'Se adoptă legea normală cu μ = 549 ore și σ ≈ 198,6 ore.'
+ws['C23'] = 'Legea normală este respinsă la riscul 0,01 și acceptată la celelalte.'
+ws['C24'] = 'Legea Weibull este acceptată pentru toate riscurile, deci se adoptă legea Weibull cu β ≈ 2,974 și α ≈ 1,953·10⁸.'
 
 ws.column_dimensions['A'].width = 15
 ws.column_dimensions['B'].width = 3

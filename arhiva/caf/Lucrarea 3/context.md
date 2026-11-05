@@ -11,12 +11,14 @@
   not run. Its method was rebuilt instead: maximum-likelihood estimators (as its messages say) and the K-S test with
   the critical values from its `RISC.DTA` (Koziol-Byar table; for a complete sample the column is the Kolmogorov
   quantile x(p)). Accept if √n·Dmax ≤ x(p), with Dmax = max |i/n − F(ti)| (only at the failure points, like the app).
-- **Results:** λ = 0.001821 1/h; Weibull β = 2.974, α = 1.953e8 (η = 613.7 h); normal μ = 549 h, σ = 198.6 h (MLE,
-  divided by n). √n·Dmax: exp 1.591, Weibull 0.437, normal 0.423. Exponential rejected at 0.01 / 0.2 / 0.5, accepted at
-  0.995; Weibull and normal accepted at all; normal adopted (smallest gap).
+- **Results:** λ = 0.001821 1/h; Weibull β = 2.974, α = 1.953e8 (η = 613.7 h); normal μ = 549 h, σ = 202.8 h (divided
+  by n−1, like the app). √n·Dmax: exp 1.591, Weibull 0.437, normal 0.446. Exponential rejected at 0.01 / 0.2 / 0.5,
+  accepted at 0.995; normal rejected at 0.01, accepted at the rest; Weibull accepted at all, so Weibull is adopted.
 - **Checked against the app (5 Nov 2026):** I ran it; at 0.995 the exponential is accepted ("se încadrează fix la
   fix"). The first version used the two-sided supremum (1.795) and said "respinsă"; switched to |i/n − F(ti)|, which
-  only changes that cell. Weibull at 0.01 is still close (0.437 vs 0.441).
+  only changes that cell. Then the app said normal at 0.01 is rejected: it uses σ with n−1 (202.8), giving 0.446 >
+  0.441; with σ/n (198.6) it was 0.423 and accepted. Fixed σ, the table and the conclusion (Weibull adopted).
+  Weibull at 0.01 is still close (0.437 vs 0.441).
 - **Sources:** `sursa/genereaza_l3.py` builds the workbook. An earlier, bigger version (formulas, F of each law, K-S
   columns, probability-paper charts) is in git history; `sursa/grafice_excel.png` = its charts.
 - **Materials:** `materiale/` = copies of the files in `caf/Lucrarea 3/` (they were committed there earlier).
