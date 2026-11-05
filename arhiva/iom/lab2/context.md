@@ -14,3 +14,5 @@
   my voice.
 - **Done:** 24–25 Oct 2026.
 - **Materials missing:** the original .doc, the Audacity PDF, and the original m4a recording.
+- **5 Nov 2026:** I asked for explanations of `GUI_ex4.py`. A commented copy (Romanian comments) is in
+  `sursa/GUI_ex4_comentat.py`, just for studying. The deliverable stays without comments, as it was uploaded.
