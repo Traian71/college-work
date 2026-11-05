@@ -1,22 +1,18 @@
 # Genereaza "CAF L3 rezolvare.xlsx" (ruleaza din radacina repo-ului).
+# Valorile sunt cele din aplicatia de laborator (EMI.EXE): estimatori de max. verosimilitate, test Kolmogorov-Smirnov.
 import openpyxl
 from openpyxl.styles import Font, PatternFill, Border, Side, Alignment
-from openpyxl.chart import ScatterChart, Reference, Series
-from openpyxl.chart.shapes import GraphicalProperties
 
 IESIRE = 'caf/Lucrarea 3/CAF L3 rezolvare.xlsx'
 
 t = [115, 232, 328, 368, 393, 404, 421, 457, 483, 511, 527, 540, 560, 572, 598, 605, 619, 633, 660, 681,
      736, 791, 942, 1000]
-# beta Weibull: solutia ecuatiei de verosimilitate (Goal Seek pe celula C38 = 0)
-BETA = 2.97377358794178
-# cuantilele x(p) din tabelul aplicatiei (risc.dta, coloana pentru esantion complet)
-RISCURI = [(0.01, 0.4410), (0.2, 0.6448), (0.5, 0.8276), (0.995, 1.7308)]
 
 gri = PatternFill('solid', fgColor='D9D9D9')
 sub = Side(style='thin')
 chenar = Border(left=sub, right=sub, top=sub, bottom=sub)
 bold = Font(bold=True)
+centru = Alignment(horizontal='center', vertical='center', wrap_text=True)
 
 
 def antet(ws, rand, col, texte):
@@ -25,16 +21,15 @@ def antet(ws, rand, col, texte):
         c.font = bold
         c.fill = gri
         c.border = chenar
-        c.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+        c.alignment = centru
 
 
-def celula(ws, ref, val, fmt=None):
-    c = ws[ref]
-    c.value = val
+def celula(ws, rand, col, val, fmt=None):
+    c = ws.cell(rand, col, val)
     c.border = chenar
+    c.alignment = centru
     if fmt:
         c.number_format = fmt
-    return c
 
 
 wb = openpyxl.Workbook()
@@ -43,146 +38,54 @@ ws.title = 'Aplicatie'
 
 ws['A1'] = 'Lucrarea 3 – Calculul indicatorilor de fiabilitate prin metode parametrice'
 ws['A1'].font = Font(bold=True, size=12)
-ws['A3'] = 'n ='
-ws['B3'] = 24
-ws['C3'] = 'fotodiode'
-ws['A4'] = 'r ='
-ws['B4'] = 24
-ws['C4'] = 'defectări (încercare exhaustivă)'
 
-antet(ws, 6, 1, ['i', 'ti (ore)', 'ln ti', '^F(ti) = i/(n+1)', 'i/n',
-                 'F exp.', 'F Weibull', 'F normală', 'D exp.', 'D Weibull', 'D normală'])
-antet(ws, 6, 13, ['ln(1/(1−^F))', 'λ·t', 'ln ln(1/(1−^F))', 'β·ln t − ln α', 'Φ⁻¹(^F)', '(t−μ)/σ'])
-ws.row_dimensions[6].height = 30
-
+# datele
+antet(ws, 3, 1, ['Momentul (ore)'])
 for k, ti in enumerate(t):
-    r = 7 + k
-    celula(ws, f'A{r}', k + 1)
-    celula(ws, f'B{r}', ti)
-    celula(ws, f'C{r}', f'=LN(B{r})', '0.000')
-    celula(ws, f'D{r}', f'=A{r}/($B$3+1)', '0.000')
-    celula(ws, f'E{r}', f'=A{r}/$B$3', '0.000')
-    celula(ws, f'F{r}', f'=1-EXP(-$C$35*B{r})', '0.000')
-    celula(ws, f'G{r}', f'=1-EXP(-(B{r}^$C$36)/$C$37)', '0.000')
-    celula(ws, f'H{r}', f'=NORMDIST(B{r},$C$40,$C$41,TRUE)', '0.000')
-    celula(ws, f'I{r}', f'=ABS(E{r}-F{r})', '0.000')
-    celula(ws, f'J{r}', f'=ABS(E{r}-G{r})', '0.000')
-    celula(ws, f'K{r}', f'=ABS(E{r}-H{r})', '0.000')
-    celula(ws, f'M{r}', f'=LN(1/(1-D{r}))', '0.000')
-    celula(ws, f'N{r}', f'=$C$35*B{r}', '0.000')
-    celula(ws, f'O{r}', f'=LN(LN(1/(1-D{r})))', '0.000')
-    celula(ws, f'P{r}', f'=$C$36*C{r}-LN($C$37)', '0.000')
-    celula(ws, f'Q{r}', f'=NORMSINV(D{r})', '0.000')
-    celula(ws, f'R{r}', f'=(B{r}-$C$40)/$C$41', '0.000')
+    celula(ws, 4 + k, 1, ti)
 
-ws['H31'] = 'Dmax ='
-ws['H31'].font = bold
-celula(ws, 'I31', '=MAX(I7:I30)', '0.0000')
-celula(ws, 'J31', '=MAX(J7:J30)', '0.0000')
-celula(ws, 'K31', '=MAX(K7:K30)', '0.0000')
-ws['H32'] = '√n·Dmax ='
-ws['H32'].font = bold
-celula(ws, 'I32', '=SQRT($B$3)*I31', '0.0000')
-celula(ws, 'J32', '=SQRT($B$3)*J31', '0.0000')
-celula(ws, 'K32', '=SQRT($B$3)*K31', '0.0000')
+# I. tabelul
+ws['C3'] = 'I. Identificarea legii (test Kolmogorov-Smirnov)'
+ws['C3'].font = bold
+antet(ws, 4, 3, ['Risc', 'Lege exponențială', 'Lege Weibull', 'Lege normală'])
+rezultate = [
+    (0.01, 'respinsă', 'acceptată', 'acceptată'),
+    (0.2, 'respinsă', 'acceptată', 'acceptată'),
+    (0.5, 'respinsă', 'acceptată', 'acceptată'),
+    (0.995, 'acceptată', 'acceptată', 'acceptată'),
+]
+for k, rand in enumerate(rezultate):
+    for j, val in enumerate(rand):
+        celula(ws, 5 + k, 3 + j, val)
 
 # II. parametrii
-ws['A34'] = 'II. Parametrii legilor (estimatori de maximă verosimilitate, ca în aplicație)'
-ws['A34'].font = bold
-rows = [
-    (35, 'Exponențială', 'λ (1/h)', '=$B$3/SUM(B7:B30)', '0.000000', 'λ = r / Σti;  m = 1/λ'),
-    (36, 'Weibull', 'β', BETA, '0.0000', 'soluția ecuației de verosimilitate (C38 = 0, Goal Seek)'),
-    (37, 'Weibull', 'α', '=SUMPRODUCT(B7:B30^C36)/$B$3', '0.000E+00', 'α = Σti^β / r;  F(t) = 1 − exp(−t^β / α)'),
-    (38, 'Weibull', 'ec. verosimilitate', '=SUMPRODUCT(B7:B30^C36,C7:C30)/SUMPRODUCT(B7:B30^C36)-1/C36-AVERAGE(C7:C30)',
-     '0.0E+00', 'Σti^β·ln ti / Σti^β − 1/β − (1/r)·Σln ti = 0'),
-    (39, 'Weibull', 'η (ore)', '=C37^(1/C36)', '0.0', 'η = α^(1/β)'),
-    (40, 'Normală', 'μ (ore)', '=AVERAGE(B7:B30)', '0.0', 'media timpilor de defectare'),
-    (41, 'Normală', 'σ (ore)', '=SQRT(SUMPRODUCT((B7:B30-C40)^2)/$B$3)', '0.0', 'împărțit la n (max. verosimilitate)'),
+ws['C11'] = 'II. Parametrii legilor'
+ws['C11'].font = bold
+antet(ws, 12, 3, ['Lege', 'Parametru', 'Valoare'])
+parametri = [
+    ('exponențială', 'λ (1/h)', 0.001821, '0.000000'),
+    ('Weibull', 'α', 1.953e8, '0.000E+00'),
+    ('Weibull', 'β', 2.974, '0.000'),
+    ('normală', 'μ (ore)', 549.0, '0.0'),
+    ('normală', 'σ (ore)', 198.6, '0.0'),
 ]
-for r, lege, par, val, fmt, obs in rows:
-    celula(ws, f'A{r}', lege)
-    celula(ws, f'B{r}', par)
-    celula(ws, f'C{r}', val, fmt)
-    ws[f'D{r}'] = obs
-ws['A42'] = 'm exp. ='
-ws['B42'] = '=1/C35'
-ws['B42'].number_format = '0.0'
-ws['C42'] = 'm Weibull = η·Γ(1+1/β) ='
-ws['F42'] = '=C39*EXP(GAMMALN(1+1/C36))'
-ws['F42'].number_format = '0.0'
-ws['G42'] = 'ore'
+for k, (lege, par, val, fmt) in enumerate(parametri):
+    celula(ws, 13 + k, 3, lege)
+    celula(ws, 13 + k, 4, par)
+    celula(ws, 13 + k, 5, val, fmt)
 
-# I. testul K-S
-ws['A44'] = 'I. Testul Kolmogorov-Smirnov: ipoteza se acceptă dacă √n·Dmax ≤ x (e0 = x/√n)'
-ws['A44'].font = bold
-antet(ws, 45, 1, ['Risc', 'x (tabel aplicație)', 'e0 = x/√n', 'Lege exponențială', 'Lege Weibull', 'Lege normală'])
-ws.row_dimensions[45].height = 30
-for k, (p, x) in enumerate(RISCURI):
-    r = 46 + k
-    celula(ws, f'A{r}', p)
-    celula(ws, f'B{r}', x, '0.0000')
-    celula(ws, f'C{r}', f'=B{r}/SQRT($B$3)', '0.0000')
-    celula(ws, f'D{r}', f'=IF($I$31<=$C{r},"acceptată","respinsă")')
-    celula(ws, f'E{r}', f'=IF($J$31<=$C{r},"acceptată","respinsă")')
-    celula(ws, f'F{r}', f'=IF($K$31<=$C{r},"acceptată","respinsă")')
-    for col in 'DEF':
-        ws[f'{col}{r}'].alignment = Alignment(horizontal='center')
+ws['C19'] = 'Weibull: F(t) = 1 − exp(−t^β / α)'
 
-ws['A51'] = 'Concluzie:'
-ws['A51'].font = bold
-ws['A52'] = ('Legea exponențială este respinsă pentru riscurile 0,01; 0,2 și 0,5 (se încadrează doar la 0,995), iar '
-             'legile Weibull și normală sunt acceptate pentru toate riscurile.')
-ws['A53'] = ('Legea normală are ecartul maxim cel mai mic, iar la Weibull β ≈ 3 dă tot o formă apropiată de normală '
-             '(rată de defectare crescătoare, defectări prin uzură).')
-ws['A54'] = 'Se adoptă legea normală cu μ = 549 ore și σ ≈ 198,6 ore (Weibull: β ≈ 2,97, η ≈ 613,7 ore).'
+ws['C21'] = 'Concluzie:'
+ws['C21'].font = bold
+ws['C22'] = 'Legea exponențială este respinsă (se încadrează doar la riscul 0,995).'
+ws['C23'] = 'Legile Weibull și normală sunt acceptate pentru toate riscurile.'
+ws['C24'] = 'Se adoptă legea normală cu μ = 549 ore și σ ≈ 198,6 ore.'
 
-for col, w in {'A': 13, 'B': 11, 'C': 11, 'D': 11, 'E': 11, 'F': 11, 'G': 10, 'H': 10, 'I': 10, 'J': 10,
-               'K': 10, 'L': 3, 'M': 12, 'N': 10, 'O': 13, 'P': 13, 'Q': 10, 'R': 10}.items():
-    ws.column_dimensions[col].width = w
-
-
-def hartie(titlu, x_col, y_col, y_teor_col, x_titlu, y_titlu, ancora, xlim, ylim):
-    ch = ScatterChart()
-    ch.title = titlu
-    ch.scatterStyle = 'lineMarker'
-    ch.x_axis.scaling.min, ch.x_axis.scaling.max = xlim
-    ch.y_axis.scaling.min, ch.y_axis.scaling.max = ylim
-    ch.x_axis.crosses = 'min'
-    ch.y_axis.crosses = 'min'
-    ch.x_axis.number_format = '0.0' if xlim[1] < 100 else '0'
-    ch.y_axis.number_format = '0.0'
-    ch.x_axis.title = x_titlu
-    ch.y_axis.title = y_titlu
-    ch.legend.position = 'b'
-    ch.legend.overlay = False
-    ch.title.overlay = False
-    ch.x_axis.title.overlay = False
-    ch.y_axis.title.overlay = False
-    xs = Reference(ws, min_col=x_col, min_row=7, max_row=30)
-    puncte = Series(Reference(ws, min_col=y_col, min_row=7, max_row=30), xs, title='date experimentale')
-    puncte.marker.symbol = 'circle'
-    puncte.marker.size = 6
-    puncte.marker.graphicalProperties = GraphicalProperties(solidFill='1F4E79')
-    puncte.marker.graphicalProperties.line.solidFill = '1F4E79'
-    puncte.graphicalProperties.line.noFill = True
-    dreapta = Series(Reference(ws, min_col=y_teor_col, min_row=7, max_row=30), xs, title='dreapta legii')
-    dreapta.marker.symbol = 'none'
-    dreapta.graphicalProperties.line.solidFill = 'C00000'
-    dreapta.graphicalProperties.line.width = 19050
-    ch.series.append(puncte)
-    ch.series.append(dreapta)
-    ch.x_axis.delete = False
-    ch.y_axis.delete = False
-    ch.width = 15
-    ch.height = 7.5
-    ws.add_chart(ch, ancora)
-
-
-hartie('Hârtie probabilistică exponențială', 2, 13, 14, 't (ore)', 'ln(1/(1−F))', 'T2', (0, 1100), (0, 3.5))
-hartie('Hârtie probabilistică Weibull', 3, 15, 16, 'ln t', 'ln ln(1/(1−F))', 'T18', (4.5, 7), (-5, 1.5))
-hartie('Hârtie probabilistică normală', 2, 17, 18, 't (ore)', 'Φ⁻¹(F)', 'T34', (0, 1100), (-3, 3))
-
-ws.page_setup.orientation = 'landscape'
+ws.column_dimensions['A'].width = 15
+ws.column_dimensions['B'].width = 3
+for col in 'CDEF':
+    ws.column_dimensions[col].width = 18
 ws.page_setup.fitToWidth = 1
 ws.page_setup.fitToHeight = 0
 ws.sheet_properties.pageSetUpPr.fitToPage = True
@@ -211,8 +114,8 @@ qa = [
      'Testul verifică dacă legea presupusă (ipoteza H0) se potrivește cu datele experimentale; fără el, parametrii și '
      'extrapolările ar putea fi calculate pe o lege greșită. Testul Kolmogorov-Smirnov: se estimează funcția de '
      'repartiție din date, se calculează funcția de repartiție a legii presupuse cu parametrii estimați, se ia ecartul '
-     'maxim dintre ele (Dmax) și se compară cu valoarea critică e0, care depinde de numărul de defectări și de riscul '
-     'ales. Dacă Dmax ≤ e0 ipoteza se acceptă, altfel se respinge.'),
+     'maxim dintre ele și se compară cu valoarea critică, care depinde de numărul de defectări și de riscul ales. '
+     'Dacă ecartul nu depășește valoarea critică ipoteza se acceptă, altfel se respinge.'),
 ]
 r = 3
 for q, a in qa:
