@@ -60,6 +60,10 @@ push everything to `main`, not just the deliverable.
   uploaded where. Keep it student level: only what the task asks, with the methods and style from our labs, no
   functions or techniques we haven't been taught.
 - A weekly scheduled task (`moodle-weekly-check`, Mondays 08:30) runs `due` and sends a macOS notification.
+- Teams (teachers often post only in each team's General channel): Teams web is signed in inside the Claude app's
+  browser pane (teams.cloud.microsoft). `instrumente/teams_sweep.js` clicks through this year's teams and returns
+  the General posts (run it with javascript_tool, batches of 6). The `teams-weekly-sweep` task does this Mondays
+  08:45. Read-only: never post, and never read Teams' login tokens. If the page asks for sign-in, I sign in myself.
 - Token expired: sign me in via UPB Login in the browser pane, then fetch
   `admin/tool/mobile/launch.php?service=moodle_mobile_app&passport=x&urlscheme=moodlemobile&confirmed=1` from the
   signed-in page and decode the `moodlemobile://token=` link (base64, token after `:::`).
