@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<title>Pr2026 – File-Mitita_131451_P0_P1_P2</title>
+<style>
+  @page { size: A4; margin: 15mm 17mm; }
+  body { font-family: "Helvetica Neue", Arial, sans-serif; font-size: 10.3pt; line-height: 1.38; color: #111; }
+  h1 { font-size: 14pt; margin: 0 0 2px; }
+  .sub { color: #444; margin: 0 0 10px; }
+  h2 { font-size: 11.5pt; margin: 11px 0 4px; }
+  p { margin: 0 0 5px; }
+  ul { margin: 0 0 5px; padding-left: 18px; }
+  li { margin-bottom: 2px; }
+</style>
+</head>
+<body>
+<h1>Monitorizarea parametrilor de mediu în zone urbane</h1>
+<p class="sub">Proiect Procesoare de semnal 2026 · FILE-MITIȚĂ Traian, grupa 441A, ID 131451</p>
+
+<h2>P0. Definirea ideii (use-case)</h2>
+<p>Într-un oraș, calitatea aerului și condițiile de mediu diferă mult de la o zonă la alta (intersecții aglomerate,
+parcuri, zone de lângă școli). Ideea proiectului este o rețea de senzori amplasați în mai multe puncte ale orașului,
+care măsoară periodic temperatura, umiditatea, concentrația de gaze (CO, NO<sub>2</sub>) și particulele în suspensie
+(PM2.5, PM10). Semnalele de la senzori sunt prelucrate (eliminarea valorilor lipsă și a zgomotului, medii orare și
+zilnice, detectarea depășirii pragurilor) și rezultatele sunt afișate într-o aplicație web.</p>
+<p>Use-case: un locuitor deschide aplicația web și vede pentru fiecare zonă valorile actuale, graficul ultimelor zile
+și o alertă dacă un parametru depășește pragul admis; autoritățile locale pot folosi aceleași date pentru decizii
+(de exemplu restricții de trafic în zilele cu poluare mare).</p>
+
+<h2>P1. Identificarea resurselor necesare</h2>
+<ul>
+  <li><b>Informații:</b> pragurile pentru calitatea aerului din Legea 104/2011 (NO<sub>2</sub>: 200 µg/m³ medie orară;
+    PM10: 50 µg/m³ medie zilnică; CO: 10 mg/m³ media maximă pe 8 ore), foile de catalog ale senzorilor, metode de
+    filtrare a semnalelor (medie mobilă, filtru median).</li>
+  <li><b>Hardware:</b> laptop pentru prelucrare și serverul web; pentru un nod fizic opțional: placă ESP32 (Wi-Fi),
+    senzor BME280 (temperatură, umiditate, presiune), senzor de particule SDS011 (PM2.5/PM10), alimentare USB.</li>
+  <li><b>Software:</b> Python (numpy, pandas pentru prelucrare, matplotlib pentru verificare), Flask pentru serverul
+    web, bază de date SQLite, pagină web cu grafice (Chart.js), Git pentru versiunile codului.</li>
+  <li><b>Date:</b> setul public „Air Quality” de pe UCI Machine Learning Repository (senzori de gaze dintr-un oraș
+    italian, un an de măsurători orare: CO, NO<sub>2</sub>, NO<sub>x</sub>, benzen, temperatură, umiditate) sau
+    seturi similare de pe Kaggle.</li>
+</ul>
+
+<h2>P2. Stabilirea modelului de dezvoltare</h2>
+<p>Modelul ales: <b>date din seturi de date, folosite ca un simulator de senzori</b>. Un script Python citește setul
+„Air Quality” și trimite câte o măsurătoare la câteva secunde către server, ca și cum ar veni în timp real de la mai
+multe stații din oraș. Serverul prelucrează semnalele (valorile lipsă, marcate cu −200 în set, sunt eliminate;
+netezire cu medie mobilă; medii orare și zilnice; comparare cu pragurile) și le salvează în baza de date, iar
+aplicația web le afișează.</p>
+<p>Am ales acest model pentru că datele sunt reale și acoperă un an întreg, au zgomot și valori lipsă (deci este ce
+prelucra), iar proiectul nu depinde de cumpărarea senzorilor. Datele sunt trimise într-un format simplu (JSON:
+stație, timp, parametru, valoare), așa că un nod fizic ESP32 cu BME280 poate fi adăugat ulterior fără să se schimbe
+aplicația web.</p>
+</body>
+</html>
