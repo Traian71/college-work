@@ -1,0 +1,264 @@
+PROCESOARE DE SEMNAL
+           IV A
+        2026 - 2027
+Cuprins
+■ Curs 1 - Procesoare digitale de semnal si sisteme PDS.
+■ Curs 2 - Procesoare DSP. Încapsulări. Alternative.
+■ Curs 3 - Reprezentarea numerelor. Aritmetici.
+                                                                   Verificarea 1
+■ Curs 4 - Calea de date
+■ Curs 5 - Arhitectura memoriei
+■ Curs 6 – Adresarea datelor
+■ Curs 7 – Setul de instrucțiuni
+■ Curs 8 – Mecanisme de control al funcționării
+■ Curs 9 – Funcționarea pipeline                                   Verificarea 2
+■ Curs 10 – Dispozitivele IO și perifericele
+■ Curs 11 – Facilități pentru depanare și gestionarea consumului
+
+                                                                               2
+Curs 3 - Reprezentarea numerelor. Aritmetici.
+
+
+Cuprins
+■ 3.1 Virgula fixa si virgula mobila
+■ 3.2 Largimea nativa a cuvintelor pentru date
+■ 3.3 Precizia extinsa
+■ 3.4 Emularea virgulei mobile si a virgulei mobile pe bloc
+■ 3.5 Relatia intre marimea cuvintelor pentru date si a celor pentru instructiuni
+
+
+
+
+                                                                                    3
+3.1     Virgula fixa si virgula mobila
+
+■ Primele procesoare DSP au folosit aritmetica in virgula fixa; procesoarele DSP cu virgula
+  fixa inca sunt utilizate.
+■ In procesoarele cu virgula fixa, numerele sunt reprezentate fie ca intregi (aritmetica
+  intreaga), fie ca fractii cu valoarea intre –1,0 si +1,0 (aritmetica fractionara).
+■ Algoritmii si hardware-ul utilizate pentru a implementa aritmetica fractionara sunt
+  virtual identici cu aceia folositi pentru aritmetica cu intregi.
+■ Principala diferenta intre cele doua reprezentari este legata de modul in care sunt
+  manipulate rezultatele operatiilor de multiplicare.
+■ In practica, procesoarele DSP cu virgula fixa suporta atit aritmetica fractionara, cit si
+  cea cu intregi.
+
+
+
+
+                                                                                       5
+3.1    Virgula fixa si virgula mobila
+
+        Virgula fixa
+Aritmetica intreaga
+
+
+
+
+                                        6
+3.1    Virgula fixa si virgula mobila
+
+
+          Virgula fixa
+Aritmetica fractionara
+
+
+
+
+                                        7
+3.1      Virgula fixa si virgula mobila
+
+■ Alta clasa de procesoare DSP foloseste aritmetica cu virgula mobila, unde numerele sunt
+  reprezentate prin mantisa si exponent.
+■ Mantisa este de obicei valoarea fractionara a semnalului.
+■ Exponentul este un intreg care reprezinta numarul de ranguri binare cu care virgula mantisei
+  (similar cu virgula intr-un numar in baza 10) trebuie deplasata la stinga sau la dreapta pentru
+  a obtine valoarea numarului initial.
+■ Valoarea zecimala reprezentata este data de relatia:
+
+
+                  valoare = mantisa x 2exponent
+
+■ In general, procesoarele cu virgula mobila accepta si date cu virgula fixa (de obicei intregi).
+  Aceasta este necesara pentru a facilita operatiile cu date care sunt inerent intregi, cum ar fi
+  adrese ale memoriei.
+■ Aritmetica cu virgula mobila este un mecanism mai flexibil si mai general decit cea cu virgula
+  fixa. Cu virgula mobila, utilizatorii sistemului au acces la o gama dinamica mai larga si in multe
+  cazuri la o precizie mai buna.
+                                                                                              8
+3.1   Virgula fixa si virgula mobila
+
+■ Exemplu de conversie in virgula mobila a unui numar pozitiv cu Mantisa pe
+  10 biti si Exponent pozitiv pe 6 biti:
+
+
+
+
+                                                                      9
+3.1   Virgula fixa si virgula mobila
+
+■ Exemplu de conversie in virgula mobila a unui numar pozitiv cu Mantisa pe
+  10 biti si Exponent negativ pe 6 biti:
+
+
+
+
+                                                                      10
+3.1   Virgula fixa si virgula mobila
+■ Exemplu de conversie in virgula mobila a unui numar negativ cu Mantisa pe
+  10 biti si Exponent pozitiv pe 6 biti:
+
+
+
+
+                                                                     11
+3.1   Virgula fixa si virgula mobila
+
+■ Exemplu de conversie in virgula mobila a unui numar negativ cu Mantisa pe
+  10 biti si Exponent negativ pe 6 biti:
+
+
+
+
+                                                                     12
+3.1    Virgula fixa si virgula mobila
+
+Precizia (1/2)
+■ Definitia data preciziei este bazata pe ideea erorii de cuantizare.
+■ Eroarea de cuantizare este eroarea numerica introdusa atunci cand un
+  format de numar mai lung (cu mai multi biti) este convertit la unul mai
+  scurt. De exemplu, in cazul numerelor zecimale, cind rotunjim valoarea
+  1,325 la 1,33, introducem o eroare de cuantizare de 0,005.
+■ Cu cit eroarea de cuantizare posibila este mai mare fata de marimea valorii
+  reprezentate, cu atit precizia este mai mica.
+■ Pentru un format cu virgula fixa, definim precizia maxima posibila ca fiind
+  egala cu numarul de biti din format.
+Precizia maxima [in biti] = log2 (|valoarea maxima|/|eroarea maxima de
+cuantizare|)
+
+                                                                         13
+3.1    Virgula fixa si virgula mobila
+
+Precizia (2/2)
+■ Folosind aceeasi definitie pentru formatul cu virgula mobila, precizia
+  maxima posibila este numarul de biti din mantisa.
+■ Procesoarele cu virgula mobila mentin o precizie foarte buna fara efort
+  suplimentar din partea programatorului.
+■ Deci, in timp ce in teorie alegerea intre aritmetica in virgula fixa si in virgula
+  mobila poate fi independenta de alegerea preciziei, in practica procesorul
+  cu virgula mobila asigura o precizie mai inalta.
+
+
+
+
+                                                                              14
+3.1    Virgula fixa si virgula mobila
+
+Gama dinamica (1/2)
+■ Gama dinamica este definita ca raportul dintre cel mai mare si cel mai mic
+  numar reprezentabil intr-un anumit format de date.
+■ De exemplu, consideram reprezentarea fractionara in virgula fixa pe 32 de
+  biti. Valoarea minima care poate fi reprezentata de acest format este 2-31;
+  iar valoarea maxima este 1,0 – 2-31. Raportul dintre acestea, care este
+  gama dinamica a acestui format de data, este aproxmativ 2,15 x 109.
+■ Un format in virgula mobila tot cu 32 de biti (cu o mantisa de 24 de biti si
+  un exponent pe 8 biti) poate reprezenta numere de la aproximativ 5,88 x
+  10-39 la 3,40 x 1038, acoperind o gama dinamica de aproximativ 5,79 x
+  1076.
+
+
+                                                                          15
+3.1     Virgula fixa si virgula mobila
+
+Gama dinamica (2/2)
+■ In aplicatii, gama dinamica se traduce intr-un interval de amplitudini ale
+  semnalului care pot fi prelucrate, mentinind o fidelitate suficient de mare. Aplicatii
+  diferite au nevoie de game dinamice diferite.
+■ Procesoarele DSP cu virgula mobila sunt, in general, mai scumpe decit cele cu
+  virgula fixa, dar mai usor de programat.
+■ Avantajul folosirii mai simple a procesoarelor cu virgula mobila este datorat
+  faptului ca in multe cazuri programatorul este degrevat de sarcina controlului
+  gamei dinamice si preciziei. La un procesor cu vigula fixa, programatorul trebuie
+  sa fie atent adesea la scalarea datelor in diverse stadii ale programului pentru a
+  asigura o performanta numerica echivalenta cu gama dinamica si precizia limitata
+  a procesorului cu virgula fixa.
+■ Cea mai mare parte a aplicatiilor dedicate folosesc procesoare cu virgula fixa
+  pentru ca prioritatea o reprezinta costul scazut.
+■ Pentru aplicatii care sunt mai putin sensibile la cost, sau care au cerinte stricte
+  pentru gama dinamica si de precizie, sau unde programarea mai usoara este mai
+  importanta, sunt mai potrivite procesoarele cu virgula mobila.
+                                                                                 16
+3.2     Largimea nativa a cuvintelor pentru date
+
+■ Lungimea nativa a cuvintelor pentru reprezentarea datelor intr-un procesor DSP este
+  lungimea datelor pe care magistralele procesorului si calea datelor o pot manipula intr-un
+  singur ciclu instructiune.
+■ DSP-urile cu virgula mobila uzuale folosesc o lungime nativa de 32 sau 64 de biti.
+■ Marimea cuvintelor are un impact major asupra costului procesorului pentru ca
+  influenteaza marimea cipului si numarul de pini ai capsulei (package pins) precum si
+  marimea si numarul de dispozitive de memorie externa conectate la procesor.
+■ In ceea ce priveste alegerea intre procesoarele cu virgula fixa si cele cu virgula mobila,
+  exista adesea un compromis (trade-off) intre marimea cuvantului si cresterea
+  complexitatii.
+
+
+
+
+                                                                                       17
+   3.3       Precizia extinsa
+
+■ Precizia extinsa inseamna folosirea reprezentarilor pentru date care asigura o precizie mai mare
+  decat aceea oferita de formatul de date nativ procesorului.
+■ Precizia extinsa poate fi obtinuta in doua moduri.
+         ■   In primul rind, multe procesoare cu virgula fixa si cu virgula mobila asigura suport incorporat
+             pentru un format cu precizie extinsa pentru operatii care au loc exclusiv in interiorul caii de date
+             a procesorului.
+         ■   In al doilea rind, este posibil de a obtine o precizie aritmetica extinsa prin construirea unor
+             cuvinte mai mari din secvente de cuvinte de date native.
+■ Deoarece fiecare operatie aritmetica in precizie extinsa necesita o secventa de instructiuni in
+  precizie simpla, aritmetica cu precizie extinsa este mult mai lenta decat precizia simpla.
+■ Daca cea mai mare parte a unei aplicatii poate fi executata cu aritmetica in precizie simpla, dar
+  este necesara o precizie mai mare pentru o mica sectiune a codului, atunci folosirea selectiva a
+  aritmeticii de precizie extinsa are sens. Daca cea mai mare parte a aplicatiei necesita precizie
+  ridicata, atunci un procesor cu o lungime nativa mai mare a datelor ar fi o alegere mai buna,
+  daca este disponibil.
+
+                                                                                                      18
+3.4      Emularea virgulei mobile si a virgulei mobile pe bloc
+■ Cand folosim un procesor cu virgula fixa, este posibil sa obtinem precizia si gama dinamica
+  caracteristice aritmeticii de precizie extinsa prin folosirea unor rutine software care emuleaza
+  comportamentul unui procesor cu virgula mobila.
+■ Unii producatori de procesoare furnizeaza o biblioteca de rutine de emulare a virgulei mobile
+  pentru procesoarele lor cu virgula fixa. Daca o astfel de biblioteca nu este disponibila, rutinele de
+  emulare trebuie scrise de utilizator.
+■ O cale pentru a obtine o gama dinamica si o precizie crescute pentru anumite date in
+  implementarea cu procesor cu virgula fixa este o reprezentare cu virgula mobila pe bloc. Cu
+  acest tip de reprezentare, un grup de numere cu mantise diferite dar un singur exponent, este
+  tratat ca un bloc de date. In loc ca exponentul sa fie stocat ca o parte a fiecarui cuvant de date,
+  asa cum se face in cazul virgulei mobile de uz general, exponentul comun este inmagazinat intr-
+  un cuvant de data separat.
+■ Conversia intre formatul nativ in virgula fixa al procesorului si formatul in virgula mobila pe bloc
+  este executat de programator prin software.
+■ Unele procesoare au hardware specializat pentru conversia datelor in acest format. Cea mai
+  cunoscuta este instructiunea de “detectie a exponentului”. Aceasta instructiune calculeaza
+  deplasarea necesara pentru a converti un rezultat intermediar de precizie inalta (de exemplu, o
+  valoarea dintr-un acumulator) in format virgula mobila pe bloc.
+                                                                                              19
+3.5 Relatia intre marimea cuvintelor pentru date si a celor pentru
+instructiuni
+
+■ In timp ce majoritatea procesoarelor DSP folosesc cuvinte pentru instructiuni de lungime
+  egala cu cea a cuvintelor pentru date, exista si unele care nu fac acest lucru.
+■ Procesoarele cu marimi diferite ale cuvintelor iau in general masuri de prevedere pentru a
+  permite datelor sa fie stocate in memoria programului, de exemplu, folosirea a 16 biti
+  dintr-o locatie de memorie a programului de 24 biti.
+■ Daca acest aranjament functioneaza, in schimb e clar ca nu este cel mai eficient mod de
+  folosire a memoriei, deoarece o parte importanta din memoria pentru programe, folosita
+  pentru a stoca date, este irosit, si aceasta poate avea impact asupra costului total al
+  sistemului.
+
+
+
+
+                                                                                     21
+

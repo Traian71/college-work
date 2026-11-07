@@ -1,0 +1,377 @@
+PROCESOARE DE SEMNAL
+          IV A
+       2026 - 2027
+Cuprins
+■ Curs 1 - Procesoare digitale de semnal si sisteme PDS.
+■ Curs 2 - Procesoare DSP. Încapsulări. Alternative.
+■ Curs 3 - Reprezentarea numerelor. Aritmetici.
+                                                                   Verificarea 1
+■ Curs 4 - Calea de date
+■ Curs 5 - Arhitectura memoriei
+■ Curs 6 – Adresarea datelor
+■ Curs 7 – Setul de instrucțiuni
+■ Curs 8 – Mecanisme de control al funcționării
+■ Curs 9 – Funcționarea pipeline                                   Verificarea 2
+
+■ Curs 10 – Dispozitivele IO și perifericele
+■ Curs 11 – Facilități pentru depanare și gestionarea consumului
+
+                                                                               2
+Curs 4 - Calea de date
+
+
+Cuprins
+■ 4.1 Calea de date la procesoarele cu virgulă fixă
+■ 4.2 Calea de date la procesoarele cu virgulă mobilă
+
+
+
+
+                                                        3
+Curs 4 - Calea de date
+
+Calea de date (data path) a unui procesor DSP este locul din structură unde
+au loc operațiile de prelucrare a datelor.
+La procesoarele DSP, calea de date este foarte specializată pentru a atinge
+performanțe înalte la execuția operațiilor cerute de algoritmii DSP, cum ar fi
+operațiile de transfer de date, de multiplicare și acumulare, scalare, ș.a.
+Facilitățile căii de date, împreună cu arhitectura memoriei (analizată în
+capitolul 5), sunt caracteristicile care diferențiază cel mai clar procesoarele
+DSP de alte tipuri de procesoare.
+Calea de date la procesoarele DSP în virgulă mobilă este semnificativ diferită
+de cea de la procesoarele DSP în virgulă fixă datorită cerințelor diferite ale
+aritmeticilor folosite.
+
+                                                                          4
+4.1   Calea de date la procesoarele cu virgulă fixă
+
+
+
+
+                Fig. 4.1 Calea de date la procesorul cu virgulă fixă pe 24 de biți DSP 5600x (Motorola)   5
+4.1      Calea de date la procesoarele cu virgulă fixă
+
+■ Multiplicatorul
+
+
+Multiplicarea este o operație esențială în toate aplicațiile DSP. În multe situații, jumătate sau
+chiar mai multe operații executate de procesor implică multiplicarea. Din acest motiv
+aproape toate procesoarele DSP conțin un multiplicator hardware de tip paralel care poate
+înmulți doi operanzi de mărime nativă într-un singur ciclu instrucțiune.
+Cu toate că procesoarele DSP sunt echipate cu un multiplicator care produce un nou rezultat
+la fiecare ciclu instrucțiune, pipeline-ul intern al multiplicatorului poate duce la o întârziere
+mai mare de un ciclu de la aplicarea operanzilor la intrările multiplicatorului și până cand
+este disponibil rezultatul. Această întârziere este numită timp de latență.
+Operația de multiplicare efectuată de procesoarele DSP cu virgulă fixă produce un rezultat
+de două ori mai mare față de mărimea operanzilor de intrare.
+Programatorul selectează un subset din biții de la ieșirea multiplicatorului care sunt folosiți
+la următorul pas de calcul. Sau, dacă un șir de produse urmează să fie adunate, adunarea
+poate fi făcută păstrând toți biții produselor, și reducând în final lungimea datei rezultate,
+înainte de a trece la următoarea etapă de calcul.
+                                                                                          6
+ 4.1     Calea de date la procesoarele cu virgulă fixă
+
+■ Multiplicatorul
+
+
+Când două numere binare sunt înmulțite, poziția
+virgulei în rezultatul cu lungime completă depinde
+de poziția virgulei operanzilor.
+Dacă este folosită aritmetica întreagă, ieșirea
+nemodificată a multiplicatorului este de asemenea
+un întreg, și programatorul reține în general cei mai
+puțin semnificativi biți ai rezultatului.
+În acest caz, mărimea operanzilor trebuie
+constrânsă de operator astfel încât valoarea
+semnificativă a rezultatului multiplicării să ocupe
+jumătatea de ordin inferior a cuvântului care va fi
+selectat pentru următorul pas.
+
+
+                                                         7
+4.1      Calea de date la procesoarele cu virgulă fixă
+
+■ Multiplicatorul
+
+
+Dacă este folosită aritmetica fracționară,
+rezultatul cu precizie completă al multiplicării are
+de două ori mai multi biți la dreapta virgulei
+decât operanzii multiplicării, iar programatorul
+descarcă în general jumătatea cea mai puțin
+semnificativă a acestor biți, posibil prin rotunjire.
+Deosebirea dintre care parte a rezultatului
+multiplicării este selectată pentru a fi folosită în
+următorul pas al calculelor constituie diferența
+principală între aritmetica întreagă și cea
+fracționară la procesoarele DSP cu virgula fixă.
+
+
+
+                                                         8
+4.1     Calea de date la procesoarele cu virgulă fixă
+
+■ Regiștrii acumulator
+
+
+Regiștrii acumulator rețin rezultate parțiale și finale ale operației de multiplicare-acumulare
+și ale altor operații aritmetice. Majoritatea procesoarelor DSP posedă doi sau mai mulți
+acumulatori.
+În mod ideal, pentru a păstra precizia de reprezentare, mărimea regiștrilor acumulator
+trebuie să fie mai mare decât mărimea cuvântului de la ieșirea multiplicatorului cu câțiva
+biți. Biții suplimentari, numiți biți de gardă, permit programatorului să adune un număr de
+valori fără riscul apariției depășirii de scală în acumulator și fără să fie necesară scalarea
+rezultatelor intermediare pentru a evita depășirea scalei (overflow). Un acumulator cu n biți
+de gardă face posibilă adunarea a până la 2n valori fără să apară depășirea scalei.
+Într-un procesor fără biți de gardă, datele de intrare sau rezultatele intermediare trebuie
+adesea să fie scalate înainte să fie adunate în acumulator, dacă dorim să eliminăm
+posibilitatea apariției depășirii. În general, aceasta implică scalarea rezultatului înmulțirii
+prin deplasarea sa la dreapta cu câțiva biți.
+
+                                                                                           9
+4.1      Calea de date la procesoarele cu virgulă fixă
+
+■ UAL (ALU)
+
+
+Unitățile logice aritmetice ale procesoarelor DSP execută operațiile logice și aritmetice de bază
+într-un singur ciclu instrucțiune. Operațiile obișnuite includ adunarea, scăderea, incrementarea, și
+operațiile logice ȘI, SAU, NU.
+Unitățile UAL diferă între ele prin mărimea cuvintelor folosite pentru operații logice. Unele
+procesoare realizează operații logice asupra operanzilor care au lărgimea completă a
+acumulatorului, în timp ce altele pot face operații logice numai asupra cuvintelor de date de
+lărgime nativă.
+Dacă UAL nu poate executa operații logice simultan asupra datelor de lungimea acumulatorului,
+programatorii care au nevoie de această facilitate trebuie să execute operațiile logice în mai
+multe etape, ceea ce complică programarea și consumă suplimentar cicluri instrucțiune.
+În unele procesoare, UAL este folosită pentru a executa adunarea pentru operația de multiplicare-
+acumulare. În alte procesoare, este executată în acest scop o adunare separată.
+                                                                                          10
+4.1       Calea de date la procesoarele cu virgulă fixă
+
+■ Deplasatorul
+
+
+Multiplicarea și acumularea duc la creșterea numărului de biți al rezultatelor operațiilor aritmetice. În
+majoritatea cazurilor, programatorul va alege un set particular de biți ai rezultatului pe care să-l
+folosească la următoarea etapă de calcul. Un deplasator (shifter) pe calea de date ușurează această
+selecție scalând (multiplicând) ieșirea cu o dată care este putere a lui doi.
+Scalarea este o operație importantă în aplicații DSP implementate cu aritmetica cu virgulă fixă,
+deoarece multe operații produc expandarea sau contractarea gamei valorilor semnalelor pe care le
+procesează.
+Se observă că scalarea este complementară folosirii biților de gardă ai acumulatorului deoarece
+ambele tehnici sunt folosite pentru a elimina sau reduce posibilitatea de apariție a depășirii scalei. În
+timp ce scalarea reduce gama rezultatelor intermediare sau finale la domeniul valorilor
+reprezentabile, biții de gardă asigură o reprezentare intermediară care are o gamă dinamică mai
+largă.
+Adesea este prevăzut un registru de deplasare (shifter) imediat după multiplicator și UAL. Unele
+procesoare posedă un deplasator între multiplicator și UAL care permite scalarea produsului. Există
+procesoare DSP care posedă mai multe shiftere plasate în diferite locuri ale căii datelor.
+
+                                                                                                11
+4.1       Calea de date la procesoarele cu virgulă fixă
+■ Depășirea și saturația
+Multe aplicații DSP implică acumularea (adunarea unui șir de date). Aceasta se întâmplă, de exemplu,
+în algoritmii de filtrare, unde elementele unui șir de date sunt multiplicate cu coeficienți, iar produsele
+parțiale sunt adunate. Când un șir de numere este adunat, numărul de biți ai sumei poate crește. Ca
+urmare, suma poate depăși valoarea maximă care poate fi reprezentată în registrul acumulator. În
+această situație, numită depășire de scală (overflow), este înmagazinată o valoare incorectă. Când
+apare depășirea, data existentă în acumulator poate fi foarte îndepărtată de valoarea corectă.
+Chiar dacă registrul acumulator nu intră în depășire, efectul poate apărea când valorile acumulate
+sunt transferate memoriei, dacă acumulatorul are biți de gardă. Dacă sunt folosiți biți de gardă,
+acumulatorul poate reprezenta numere mai lungi decât poate stoca o locație de memorie.
+Există două modalități obișnuite de tratare a depășirii.
+■   Prima tehnică este aceea de a scala cu grijă toate rezultatele calculelor, eliminând astfel posibilitatea de
+    apariție a depășirii, indiferent de mărimea datelor de la intrare.
+■   O alternativă este folosirea aritmeticii cu saturare (saturation arithmetic). În această aritmetică, un circuit
+    special detectează apariția depășirii scalei și înlocuiește valoarea eronată de la ieșire cu cel mai mare număr
+    pozitiv care poate fi reprezentat (în cazul depășirii în direcție pozitivă) sau cu cel mai mic număr negativ care
+    poate fi reprezentat (în cazul depășirii în direcție negativă).
+                                                                                                         12
+4.1      Calea de date la procesoarele cu virgulă fixă
+
+■ Trunchierea si rotunjirea
+
+
+Trunchierea: descărcarea unui număr din cei mai puțin semnificativi biți ai reprezentării (de exemplu,
+pentru a trunchia o valoare pe 36 biți la 16 biți, cei mai puțin semnificativi 20 de biți sunt descărcați,
+păstrând numai cei mai semnificativi 16 biți).
+Când datele sunt semnale, trunchierea introduce un deplasament (bias sau offset) sau o componentă
+continuă.
+Tehnicile de rotunjire reduc eroarea aritmetică și bias-ul introdus de această reducere a preciziei.
+Cea mai simplă modalitate de rotunjire este cea așa-numită tehnică de rotunjire la valoarea cea mai
+apropiată: numerele sunt rotunjite la cea mai apropiată valoare reprezentabilă în formatul de ieșire (cu
+precizie redusă); numerele care se află exact la mijlocul distanței dintre două valori de ieșire
+consecutive sunt întotdeauna rotunjite la valoarea mai mare (pozitivă).
+O schemă îmbunătățită de rotunjire, care reduce bias-ul și care apare la tehnica de rotujire descrisă
+anterior, este “rotunjirea convergentă”: când un număr care urmează să fie rotunjit este situat exact la
+mijlocul dintre două valori de ieșire consecutive, poate fi rotunjit la o valoare mai mare sau mai mică.
+Direcția rotunjirii depinde de valoarea bitului aflat în poziția care va deveni cel mai puțin semnificativ
+bit (LSB) al cuvântului de la ieșire. Dacă acest bit este 0, atunci numărul este rotunjit în jos (în direcția
+negativă), dacă acest bit este 1, numărul este rotunjit în sus.
+                                                                                                  13
+4.1     Calea de date la procesoarele cu virgulă fixă
+
+
+■ Operanzii și regiștrii operand
+
+
+În majoritatea procesoarelor DSP cu virgulă fixă, operanzii de pe calea de date sunt obținuți de
+la un mic număr de regiștri operand sau de la acumulator.
+Înainte de a fi prelucrate datele trebuie să fie transferate din memorie în regiștrii operand
+folosind instrucțiuni “move”. Celelalte instrucțiuni nu pot adresa direct operanzi din memorie.
+Un procesor care prelucrează datele numai din regiștrii operand este considerat ca având o
+arhitectură “load-store” (încarcă-stochează). Regiștrii pentru operanzi sunt accesați folosind
+modul de adresare directă la registru (register-direct).
+
+
+
+
+                                                                                        14
+4.2 Calea de date la procesoarele cu virgulă mobilă
+
+
+■ Multiplicatorul
+■ UAL (ALU)
+■ Overflow, underflow și alte excepții
+■ Rotunjirea
+■ Regiștrii accumulator
+■ Deplasatorul
+■ Operanzii și regiștrii operand
+
+
+
+
+                                                      15
+4.2     Calea de date la procesoarele cu virgulă mobilă
+
+■ Multiplicatorul
+
+
+Multiplicatoarele DSP cu virgulă mobilă acceptă doi operanzi cu virgulă mobilă de mărime
+nativă (de obicei 32 biți).
+Spre deosebire de multiplicatoarele procesoarelor DSP cu virgulă fixă, multiplicatoarele
+pentru operații în virgulă mobilă nu produc la ieșire un cuvânt suficient de mare pentru a
+evita pierderea preciziei. De exemplu, când sunt înmulțite două date în virgulă mobilă cu
+precizie simplă, fiecare dată de intrare are lărgimea efectivă a mantisei de 24 biți. Pentru a
+menține întreaga precizie, data de ieșire ar necesita o mantisă de lărgime efectivă de 48
+biți.
+Majoritatea DSP-urilor cu virgulă mobilă nu admit cuvinte de această lungime. Totuși
+formatul datelor de ieșire la multiplicatoarele în virgulă mobilă este în general ceva mai lung
+decât formatul de la intrare, asigurând 8 sau 12 biți în plus pentru reprezentarea mantisei.
+
+
+                                                                                          16
+4.2     Calea de date la procesoarele cu virgulă mobilă
+
+■ UAL (ALU)
+
+
+UAL a procesorului DSP cu virgulă mobilă execută operații simple: adunări, scăderi, și alte
+operații aritmetice cum ar fi calculul valoarii absolute, negări, calculul valorii minime sau/și
+a valorii maxime.
+Procesoarele cu virgulă mobilă folosesc UAL pentru a executa adunarea în operațiile de
+multiplicare-acumulare. În plus față de operația de multiplicare-acumulare, unele
+procesoare execută o operație de multiplicare-adunare. Operația de multiplicare-adunare
+este diferită de cea de multiplicare-acumulare prin faptul că rezultatul este scris într-un
+acumulator diferit de cel care furnizează data care este adunată cu produsul.
+Operațiile logice pe bit cum ar fi operațiile logice ȘI, SAU, NEGARE nu sunt semnificative
+când sunt aplicate datelor cu virgulă mobilă și în general nu sunt executate de către UAL
+destinat numai operațiilor în virgulă mobilă (floating-point-only ALU).
+
+
+                                                                                           17
+4.2      Calea de date la procesoarele cu virgulă mobilă
+
+■ Overflow, underflow și alte excepții
+La aritmetica în virgulă mobilă, depășirea de scală (overflow) și alte situații asemănătoare sunt
+numite excepții. Excepțiile sunt situații neobișnuite care pot cauza rezultate aritmetice eronate.
+Procesorul semnalizează apariția unei excepții setând un bit într-un registru de stare sau generând
+o întrerupere (situație opțională la unele procesoare) care antrenează execuția unei rutine de
+prelucrare a excepției, furnizată de programator.
+Depășirea este o situație mai puțin gravă la procesoarele DSP cu virgulă mobilă decât pentru cele
+cu virgulă fixă datorită gamei dinamice mai mari asigurată de formatele cu virgule. Majoritatea
+procesoarelor DSP cu virgulă mobilă înregistrează apariția depășirii setând un bit de stare și
+limitând automat rezultatul operației care a cauzat depășirea (setându-l la cea mai pozitivă sau la
+cea mai negativă valoare reprezentabilă la ieșire).
+Altă situație excepțională întâlnită la proceosarele cu virgulă mobilă este cea de “underflow”: apare
+când rezultatul unei operații aritmetice este prea mic pentru a fi reprezentat. Aceasta se întâmplă,
+de exemplu, când înmulțim două numere subunitare mici. În acest caz, acțiunea obișnuită pentru
+mai multe procesoare este setarea rezultatului la zero, iar pentru a indica apariția underflow-lui
+este setat un bit într-un registru de stare.
+Și alte situații excepționale sunt de asemenea semnalate; de exemplu, împărțirea la zero cauzează
+o excepție pentru procesoarele care execută operația “reciprocal seed”.
+                                                                                             18
+4.2     Calea de date la procesoarele cu virgulă mobilă
+
+■ Rotunjirea
+Ca și la aritmetica cu virgulă fixă, multiplicarea, adunarea și alte operații aritmetice cu virgulă
+mobilă tind să crească numărul de biți al rezultatelor. Majoritatea procesoarelor DSP cu virgulă
+mobilă rezolvă problema creșterii preciziei rotunjind automat rezultatele aritmetice la un format
+intermediar de 40÷44 biți.
+Acest format intermediar este folosit pentru calcule care au loc în interiorul căii datelor. Când
+datele sunt transferate în memorie, ele pot fi scrise fie ca valori de precizie extinsă (ceea ce
+necesită mai multe locații de memorie și mai multe operații “move” de la registru la memorie),
+fie pot fi rotunjite la formatul nativ de precizie redusă, în general 32 de biți.
+Ca și procesoarele cu virgulă fixă, majoritatea procesoarelor cu virgulă mobilă asigură cel mai
+simplu mod de rotunjire, rotunjirea la nivelul cel mai apropiat. Unele procesoare oferă două sau
+mai multe opțiuni pentru rotunjirea datelor cu virgulă mobilă. Exista procesoare care asigură
+toate modurile de rotunjire specificate de standardul IEEE 754 pentru valorile de precizie
+simplă: rotunjirea convergentă, rotunjirea către plus infinit, rotunjirea către zero și rotunjirea
+către minus infinit.
+
+                                                                                         19
+4.2    Calea de date la procesoarele cu virgulă mobilă
+
+
+ ■ Regiștrii acumulator
+
+
+ În general, procesoarele cu virgulă mobilă au regiștri mai mulți și de capacitate mai mare
+ decât cele cu virgulă fixă.
+ În unele procesoare cu virgulă mobilă un mic număr de regiștri sunt special proiectați
+ pentru a fi folosiți ca acumulatori.
+ Alte procesoare oferă o serie de regiștri de uz general, un subset al celor ce pot primi
+ rezultatele operației de multiplicare-acumulare sau ale altor operații aritmetice.
+
+
+
+
+                                                                                    20
+4.2     Calea de date la procesoarele cu virgulă mobilă
+
+
+■ Deplasatorul
+
+
+Ca și în cazul aritmeticii cu virgulă fixă, o operație de multiplicare-acumulare cu virgulă
+mobilă poate să ducă la creșterea numărului de biți a rezultatului.
+La aritmetica cu virgulă mobilă hardware-ul scalează automat rezultatele pentru a conserva
+maximul de precizie posibil. Acesta este principalul avantaj al aritmeticii în virgulă mobilă.
+Calea de date încorporează un deplasator pentru a executa scalarea, dar deplasatorul fie nu
+este vizibil, fie nu este explicit controlabil de către programator la operațiile în virgulă mobilă.
+La procesoarele cu o singură cale a datelor care execută atât operațiile în virgulă mobilă cât
+și pe cele în virgulă fixă, deplasatorul poate fi explicit controlat de programator pentru
+deplasarea datelor reprezentate în virgulă fixă.
+
+
+                                                                                            21
+4.2     Calea de date la procesoarele cu virgulă mobilă
+
+
+■ Operanzii și regiștrii operand
+
+
+Majoritatea procesoarelor cu virgulă mobilă folosesc operanzi pentru căile de date provenind
+de la regiștri operand sau de la acumulatoare. Pentru aceste date este folosită adresarea
+directă la registru.
+Datele sunt încărcate din memorie în regiștrii operand cu instrucțiuni explicite “move”. (Unele
+procesoare pot executa aceste instrucțiuni “move” în paralel cu instrucțiuni aritmetice).
+Câteva procesoare transferă operanzi pe calea de date           direct din memorie folosind
+adresarea indirectă cu registru.
+
+
+
+
+                                                                                       22
+

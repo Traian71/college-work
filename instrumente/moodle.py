@@ -6,7 +6,7 @@ Tokenul nu sta in repo: e in Keychain (serviciul "moodle-upb-token"). Fara bibli
   python3 instrumente/moodle.py whoami
   python3 instrumente/moodle.py due [--days 21]            # teme de predat / intarziate
   python3 instrumente/moodle.py show <assignid>            # enunt, atasamente, ce fisiere accepta
-  python3 instrumente/moodle.py files <courseid> [--grep text]   # fisierele din curs (laboratoare etc.)
+  python3 instrumente/moodle.py files <courseid> [--grep text] [--save folder]   # fisierele din curs
   python3 instrumente/moodle.py download <assignid> <folder>     # atasamentele temei
   python3 instrumente/moodle.py get <fileurl> <fisier>           # un fisier din `files`
   python3 instrumente/moodle.py submit <assignid> <fisier>... [--yes]   # fara --yes doar arata ce ar face
@@ -162,7 +162,11 @@ def cmd_files(a):
                 line = f"{sec['name']} / {m['name']} / {f['filename']}"
                 if a.grep and a.grep.lower() not in line.lower():
                     continue
-                print(f"{line}\n   {when(f.get('timemodified'))}  {f['fileurl']}")
+                if a.save:
+                    download(f["fileurl"], Path(a.save) / sec["name"].replace("/", "-")
+                             / m["name"].replace("/", "-") / f["filename"])
+                else:
+                    print(f"{line}\n   {when(f.get('timemodified'))}  {f['fileurl']}")
 
 
 def cmd_download(a):
@@ -237,6 +241,7 @@ def main():
     p.set_defaults(f=cmd_due)
     p = sp.add_parser("show"); p.add_argument("assignid", type=int); p.set_defaults(f=cmd_show)
     p = sp.add_parser("files"); p.add_argument("courseid", type=int); p.add_argument("--grep")
+    p.add_argument("--save", metavar="FOLDER", help="descarca tot (sectiune/modul/fisier) in FOLDER")
     p.set_defaults(f=cmd_files)
     p = sp.add_parser("download"); p.add_argument("assignid", type=int); p.add_argument("folder")
     p.set_defaults(f=cmd_download)

@@ -1,0 +1,288 @@
+SISTEME ELECTRONICE
+   PROGRAMABILE
+          IV A
+       2026-2027
+Cuprins
+■ Curs 1 – Procesoare digitale de semnal și sisteme PDS.
+■ Curs 2 – Procesoare DSP. Încapsulări. Alternative.
+■ Curs 3 – Reprezentarea numerelor. Aritmetici.
+                                                                   Lucrare de verificare 1
+■ Curs 4 – Calea de date
+■ Curs 5 – Arhitectura memoriei
+■ Curs 6 – Adresarea datelor
+■ Curs 7 – Setul de instrucțiuni
+■ Curs 8 – Mecanisme de control a funcționării
+■ Curs 9 – Funcționarea pipeline                                    Lucrare de verificare 2
+■ Curs 10 – Dispozitivele IO și perifericele
+■ Curs 11 – Facilități pentru depanare și gestionarea consumului
+■ Curs 12 – Exemple de procesoare digitale de semnal
+
+              2026-2027                                                          2
+Curs 5 - Arhitectura memoriei
+
+
+Cuprins
+■ 5.1 Organizarea memoriei
+■ 5.2 Metode de reducere a numărului de accesări a memoriei
+■ 5.3 Stările de așteptare
+■ 5.4 Memoria ROM
+■ 5.5 Interfețele cu memoria externă
+
+
+
+
+             2026-2027                                        3
+Curs 5 - Arhitectura memoriei
+
+Căile de date ale DSP sunt optimizate pentru a oferi performanțe ridicate la implementarea
+algoritmilor de prelucrare a semnalelor.
+Pentru a menține fluxul de date și pentru a memora rezultatul operațiilor efectuate este
+necesar ca procesoarele de semnal să transfere cantități mari de date în și din memorie.
+În consecință, alți factori importanți în stabilirea performanțelor procesorului sunt
+organizarea memoriei și modul de interconectare a acesteia cu calea de procesare a datelor.
+Aceste caracteristici sunt reunite sub numele de arhitectura memoriei procesorului.
+
+
+
+
+              2026-2027                                                               4
+ Curs 5 - Arhitectura memoriei
+
+
+
+Datorită arhitecturii căii de date procesoarele
+de semnal execută operația complexă de
+multiplicare și adunare de regulă într-un singur
+ciclu de tact.
+Pentru fiecare instrucțiune de multiplicare-
+adunare procesorul trebuie să execute patru
+accesări ale memoriei într-un ciclu de tact.
+                                                   Filtru cu răspuns finit la impuls (FIR)
+
+
+
+
+                2026-2027                                                                    5
+5.1      Organizarea memoriei
+Arhitectura von Neumann
+Cea mai simplă structură de memorie este cea formată dintr-un singur bloc pe care
+procesorul îl accesează printr-un singur set de magistrale de adrese și date.
+Această memorie conține atât instrucțiunile programului cât și datele.
+
+
+
+
+      Structură simplă de memorie     --->
+
+      Aceasta este așa-numita arhitectură
+      Von Neumann, întâlnită la multe tipuri
+      de procesoare de uz general.
+
+
+
+
+               2026-2027                                                      6
+5.1     Organizarea memoriei
+Arhitectura Harvard
+Reprezintă o structură în care procesorul este conectat la două blocuri independente de
+memorie prin două magistrale separate: un bloc de memorie conține instrucțiunile
+programului, iar celălalt conține datele.
+În cazul DSP se folosește o variantă modificată a arhitecturii Harvard în sensul că un bloc
+de memorie conține instrucțiunile programului cât și date, iar celălalt conține numai date.
+
+
+
+
+              2026-2027                                                                7
+5.1      Organizarea memoriei
+Memoriile cu acces multiplu
+Alte soluții care permit mai multe accesări ale memoriei într-un ciclu-mașină:
+- folosirea de memorii rapide care permit mai multe accesări secvențiale pe ciclu-mașină,
+printr-un singur set de magistrale (bus);
+- utilizarea de memorii multiport care permit mai multe accesări concurente ale memoriei
+prin două sau mai multe seturi de magistrale (bus).
+
+
+
+O arhitectură Harvard cu o memorie de date cu două
+porturi (A) și o memorie de program cu un singur port
+(B). Nucleul procesorului poate efectua simultan două
+accesări la bancul de memorie A și o accesare la
+bancul de memorie B, utilizând trei seturi
+independente de magistrale.
+
+
+
+
+               2026-2027                                                           8
+5.1     Organizarea memoriei
+Operații specializate de scriere în memorie
+Unele procesoare de semnal oferă mecanisme specializate care permit ca scrierea în
+memoria de date să fie executată în paralel cu o citire din aceasta și cu o citire din memoria
+de program.
+Aceste procesoare au instrucțiuni speciale care permit executarea de scrieri în paralel cu
+operațiile de citire, dar cu anumite circumstanțe restrictive.
+Operațiile de scriere pot fi folosite pentru deplasarea datelor în lungul liniei de întârziere
+pentru implementarea filtrului RFI din exemplul anterior.
+
+
+
+
+              2026-2027                                                                 9
+5.2     Metode de reducere a numărului de accesări ale memoriei
+
+Memoria cache pentru program
+       Este o memorie de capacitate mică în interiorul procesorului, folosită pentru
+memorarea instrucțiunilor, eliminând astfel necesitatea accesării blocului de memorie de
+program de câte ori este executată o instrucțiune.
+        Prin eliminarea ciclilor de acces la memorie pentru citirea instrucțiunii se pot
+efectua accesări ale memoriei pentru citirea sau scrierea datelor și astfel se poate reduce
+timpul de execuție al instrucțiunii prin eliminarea întârzierilor asociate memoriei de
+program externe.
+          Memoria cache a procesoarelor digitale de semnal variază mult prin capacitate și
+mod de operare. Ea este în general mai mică și mai simplă decât memoria cache internă
+folosită de procesoarele de uz general.
+
+
+
+
+              2026-2027                                                                10
+5.2     Metode de reducere a numărului de accesări ale memoriei
+
+Adresarea modulo n
+Adresarea modulo n permite implementarea unei linii de întârziere, ca cea folosită de
+filtrele RFI, fără ca datele să fie mutate efectiv în memorie.
+Datele rămân scrise în aceeași locație de memorie atâta timp cât este nevoie de ele.
+Efectul deplasării datelor de-a lungul liniei de întârziere este simulat prin modificarea
+pointerilor de accesare a zonei de date folosind aritmetica modulo n.
+În cazul implementării filtrului RFI acestă tehnică reduce numărul de accesări a memoriei
+de la patru accesări pe un ciclu-mașină la doar trei.
+
+
+
+
+              2026-2027                                                                11
+5.3     Stările de așteptare
+
+Stările de așteptare (Wait States) sunt stări în care procesorul nu poate continua execuția
+programului deoarece așteaptă finalizarea unei activități începute.
+Stările de așteptare pot avea următoarele cauze: apariția unor conflicte la accesarea
+resurselor, folosirea unor memorii lente, împărțirea magistralei (bus-ului) cu alte dispozitive.
+Stările de așteptare datorate conflictelor sunt necesare când procesorul încearcă să
+realizeze mai multe accesări simultane ale unei memorii care nu suportă acces multiplu.
+Unele procesoare de semnal conțin unul sau mai multe blocuri mici de memorie RAM
+și/sau ROM care permit unul sau mai multe accesări pe ciclu-mașină. Uneori este necesar
+să se extindă aceste resurse, utilizând memorie externă, care însă este prea lentă pentru a
+se putea obține mai multe accesări într-un ciclu-mașină. În aceste cazuri, procesorul trebuie
+să introducă stări de așteptare programate în timpul accesului la memoria externă.
+
+
+
+
+              2026-2027                                                                    12
+5.4     Memoria ROM
+
+Procesoarele de semnal destinate pentru aplicații ieftine, ca electronica de uz general și
+echipamentele de telecomunicații, au o memorie ROM internă pentru programe și
+constante.
+Unii producători oferă versiuni diferite de procesoare: o versiune cu memorie RAM internă
+pentru prototipuri și producție de volum scăzut și o versiune cu memorie ROM
+programabilă la fabricarea circuitului, pentru producție de volum mare.
+Pentru aplicații care cer mai multă memorie ROM decât cea prevăzută pe chip, poate fi
+conectată o extensie de memorie ROM cu ajutorul interfeței cu memoria externă.
+În mod normal, sunt folosite mai multe chipuri de memorie ROM pentru a crea un bloc de
+memorie a cărui lățime corespunde cu cea a unei instrucțiuni a procesorului.
+În schimb unele procesoare pot să citească instrucțiunile doar pe octeți și refac apoi intern
+instrucțiunile prin concatenarea octeților citiți din memoria ROM.
+
+
+
+              2026-2027                                                                 13
+5.5      Interfețele cu memoria externă
+
+Interfețele cu memoria externă ale procesoarelor de semnal diferă prin trei caracteristici
+principale: numărul de porturi de memorie, flexibilitatea și complexitatea interfeței și
+constrângerile privitoare la timpii de acces.
+Cele mai multe procesoare de semnal oferă un singur port extern pentru memorie, care
+constă dintr-o magistrală de adrese, una de date si un set de semnale de control, chiar
+dacă majoritatea procesoarelor de semnal au mai multe blocuri de memorie independente
+pe chip. Există și procesoare care au mai multe porturi de memorie în afara chip-ului.
+Interfețele cu memoria în cazul procesoarelor de semnal diferă prin complexitate și prin
+flexibilitate. Unele sunt relativ simple și directe, cu numai câțiva pini de control. Altele sunt
+mult mai complexe, oferind posibilitatea de interconectare cu o diversitate mare de
+dispozitive și bus-uri de memorie fără hardware suplimentar.
+Aplicațiile cu performanțe ridicate folosesc de multe ori memorii externe SRAM rapide. În
+aceste situații este important pentru inginerul de sistem să consulte timpii de acces pentru
+porturile de memorie externă.
+
+               2026-2027                                                                    14
+5.5     Interfețele cu memoria externă
+
+Posibilitatea de a lucra cu memorie cache manual
+Chiar dacă procesorul nu conține o zonă de memorie cache specializată, este posibil
+pentru programatori să mărească performanța prin copierea unei secțiuni de cod din
+memorie, lentă sau mai folosită (în termeni de acces), într-o memorie mai rapidă sau mai
+puțin accesată.
+De exemplu, dacă o secțiune de cod foarte folosită este stocată într-o memorie externă
+ROM lentă, atunci se poate copia acea regiune în memoria RAM internă, fie la pornirea
+procesorului, fie la prima accesare a acelei zone de program.
+
+
+
+
+             2026-2027                                                              15
+5.5     Interfețele cu memoria externă
+
+Suportul pentru interfețele cu memoria externă
+Procesoarele de semnal proiectate pentru folosirea lor în sisteme multiprocesor oferă de
+obicei caracteristici speciale pentru interfețele lor cu memoria externă pentru a simplifica
+proiectarea și pentru a mări performanțele acestor sisteme.
+Prima și cea mai evidentă dintre aceste caracteristici constă în existența a două porturi
+pentru memoria externă. Unul dintre porturi poate fi conectat la o memorie locală, utilizată
+doar de acest procesor, în timp ce al doilea este conectat la o memorie partajată cu alte
+procesoare.
+Când un sistem multiprocesor conține două sau mai multe procesoare care folosesc în
+comun o singură magistrală externă pentru memorie, trebuie prevăzut un mecanism care
+să permită procesoarelor să negocieze controlul magistralei (mecanism de arbitrare a
+magistralei) și să împiedice procesoarele care nu dețin controlul magistralei să transfere
+date pe aceasta.
+
+
+              2026-2027                                                                 16
+5.5     Interfețele cu memoria externă
+
+Memoria dinamică
+Memoria statică (SRAM) este mai ușor de folosit și mai rapidă decât memoria dinamică
+(DRAM), dar necesită o suprafață mai mare pentru integrarea pe chip, și este mai scumpă
+decât alte tipuri de memorie, pentru aceeași capacitate de stocare.
+Deosebirea principală dintre cele două tipuri de memorie este accea că memoria statică
+reține datele atâta timp cât este alimentată (SRAM păstrează datele pentru o perioadă de
+timp nelimitată, până în momentul în care ea este rescrisă), în timp ce memoria dinamică
+trebuie să fie periodic reîmprospătată (DRAM necesită rescrierea periodică permanentă, la
+fiecare câteva fracțiuni de secundă, altfel informațiile sunt pierdute).
+În plus, interfețele cu memoria statică sunt mai simple decât cele cu memoria dinamică;
+folosirea memoriilor dinamice presupune de regulă folosirea unui controller de DRAM
+separat care generează semnalele de control.
+
+
+
+             2026-2027                                                               17
+5.5      Interfețele cu memoria externă
+
+Accesul direct la memorie (Direct Memory Access)
+Aceasta este o tehnică cu ajutorul căreia datele pot fi transferate în și din memoria internă a
+procesorului de semnal fără intervenția acestuia.
+Cererea de acces direct la memorie (DMA=Direct Memory Access) constituie un tip aparte de
+întrerupere, fiind o tehnică pur hardware care nu presupune nici un fel de pregătiri în programele
+microcalculatorului/procesorului DSP.
+DMA este folosit pentru a oferi performanțe mai bune pentru dispozitivele I/O.
+În loc să fie folosit procesorul pentru a citi datele de la un dispozitiv I/O și a le transfera în memoria
+internă sau invers este folosit un controler separat numit controler DMA și care poate face acest lucru
+mai eficient.
+Acest controler DMA poate fi un dispozitiv periferic pe același chip cu procesorul sau poate fi un
+dispozitiv extern acestuia.
+Unele procesoare de semnal mai sofisticate includ unul sau mai multe controlere DMA integrate care
+pot accesa atât memoria internă cât și pe cea externă. Aceste controlere diferă prin performanțe și
+flexibilitate.
+                2026-2027                                                                            18
+

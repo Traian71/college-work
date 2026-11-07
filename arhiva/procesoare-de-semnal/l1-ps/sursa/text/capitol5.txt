@@ -1,0 +1,389 @@
+       Curs 5
+
+
+                                       Arhitectura memoriei
+
+
+       Asa cum s-a aratat in capitolul precedent, caile de date ale PDS sunt optimizate pentru a oferi
+performante ridicate la implementarea algoritmilor de prelucrare a semnalelor. Pentru a mentine
+fluxul de date si pentru a memora rezultatul operatiilor efectuate este necesar ca procesoarele de
+semnal sa transfere cantitati mari de date in si din memorie. In consecinta, alti factori importanti in
+stabilirea performantelor procesorului sunt organizarea memoriei si modul de interconectare a
+acesteia cu calea de procesare a datelor. Aceste caracteristici sunt reunite sub numele de
+arhitectura memoriei procesorului. In cadrul acestui capitol vor fi analizate tipurile de arhitecturi
+folosite de procesoarele de semnal si particularitatile lor functionale, iar in capitolul urmator vor fi
+analizate modurile de adresare a memoriei.
+       Pentru a justifica necesitatea asigurarii unei latimi a benzii de transfer a datelor cu memoria
+cit mai mare in aplicatiile de prelucrare a semnalelor, sa consideram ca exemplu un filtru cu raspuns
+finit la impulsul unitate (RFI), implementat in structura transversal, ca in Fig. 5.1. Blocurile
+functionale notate cu D reprezinta operatori de intarziere cu un tact a esantioanelor semnalului de
+intrare; iesirile reprezinta o copie a esantionului de intrare, intarziat cu o perioada de esantionare.
+Acesti operatori sunt implementati cu elemente de stocare (de obicei locatii de memorie) care sunt
+folosite pentru a simula o linie de intirziere cu prize. Fiecare priza (tap) contine un multiplicator si
+un sumator, operatii care sunt executate prin software. La un moment oarecare de timp, (N-1) din
+esantioanele de intrare cele mai recente se gasesc in linia de intarziere, N fiind numarul de prize ale
+filtrului. Esantioanele de intrare sunt notate cu xk-esantionul curent, xk-1, xk-2, …, x1. Cand apare un
+esantion nou de intrare, cele precedente sunt deplasate cu o pozitie la dreapta de-a lungul liniei de
+intarziere; esantionul de iesire, yk, se calculeaza prin multiplicarea fiecarui esantion din linia de
+intirziere cu coeficientul corespunzator, iar produsele partiale sunt adunate la un acumulator.
+Procesoarele de semnal executa operatia complexa de multiplicare si adunare cu ajutorul unei
+instructiuni specializate. Datorita arhitecturii caii de date procesoarele de semnal executa aceasta
+operatie de regula intr-un singur ciclu de tact. Pentru a obtine aceasta performanta, procesorul
+trebuie sa fie capabil sa acceseze de mai multe ori memoria in timpul ciclului de tact:
+              sa citeasca codul instructiunii de multiplicare-adunare (fetch);
+              sa citeasca valoarea esantionului corespunzator din linia de intarziere;
+              sa citeasca valoarea corespunzatoare a coeficientului filtrului;
+              sa scrie valoarea esantionului in urmatoarea locatie a liniei de intarziere pentru a
+deplasa datele de-a lungul acesteia.
+                                                                                                      1
+       Prin urmare, pentru fiecare instructiune de multiplicare-adunare procesorul trebuie sa execute
+patru accesari ale memoriei intr-un ciclu de tact pentru a realiza un filtru RFI cu rata de o priza pe
+tact. Unele procesoare utilizeaza alte tehnici (ce vor fi discutate ulterior) pentru a reduce numarul
+necesar de accesari ale memoriei, la trei sau chiar doua. Totusi, procesoarele de semnal pot executa
+mai multe operatii de citire sau de scriere din/in memorie intr-un ciclu masina. Acest nivel de latime
+de banda a memoriei este necesar si pentru alti algoritmi PDS. Pentru o mai clara prezentare, in acest
+capitol vom ignora tehnicile de pipelining. Acestea vor fi explicate detaliat in Capitolul 9.
+
+
+       5.1     Organizarea memoriei
+              Arhitectura von Neumann
+       Cea mai simpla structura de memorie este cea formata dintr-un singur bloc pe care procesorul
+il acceseaza printr-un singur set de magistrale de adrese si date, ca in Fig. 5.2. Aceasta structura,
+folosita la primele generatii de microprocesoare, este numita arhitectura von Neumann. Aceasta
+memorie contine atat instructiunile programului cat si datele. In cazul cel mai simplu, procesorul
+poate realiza un singur acces la memorie (o citire sau o scriere) in fiecare cilcu-masina.
+
+
+
+
+                                                                                                    2
+       In cazul in care am programa o masina bazata pe arhitectura Von Neumann sa implementeze
+algoritmul de realizare a filtrului FIR, limitarile acestei arhitecturi devin evidente. Chiar daca
+procesorul ar fi capabil sa realizeze o operatie de multiplicare-adunare intr-un ciclu-masina, vor fi
+necesare patru cicluri cu memoria, pentru a realiza efectiv aceasta operatie, deoarece cele patru
+accesari ale memoriei sunt executate secvential, fiecare in cite un ciclu-masina. Acesta este unul
+dintre motivele pentru care procesoarele cu arhitectura von Neumann nu pot executa eficient
+aplicatiile care contin algoritmi de procesare de semnal. Ca urmare au fost propuse alternative ale
+arhitecturii von Neumann care permit efectuarea de catre processor a mai multor accesari ale
+memoriei intr-un ciclu masina.
+
+
+              Arhitectura Harvard
+       Arhitectura Harvard reprezinta o structura in care procesorul este conectat la doua
+blocuri independente de memorie prin doua magistrale separate. In arhitectura Harvard standard,
+un bloc de memorie contine instructiunile programului, iar celelalt contine datele. In cazul
+procesoarelor de semnal se foloseste o varianta modificata a arhitecturii Harvard in sensul ca un bloc
+de memorie contine instructiunile programului cat si date, iar celalalt contine numai date.
+Datele pot fi mutate intre cele doua blocuri, lucru care in cazul arhitecturii standard nu este posibil.
+Arhitectura Harvard „modificata” a memoriei este prezentata in figura 5-3. Avantajul principal al
+arhitecturii Harvard este acela ca pot fi efectuate doua operatii de acces la memorie in timpul unui
+ciclu-masina. Astfel, cele patru operatii cu memoria necesare pentru implementarea filtrului RFI pot
+fi executate in doua cicluri-masina.
+       Acest tip de arhitectura a memoriei este folosit de multe familii de procesoare de semnal
+(ADSP-21xx (Analog Devices), DSP16xx (AT&T), s.a.). Totusi la procesoarele DSP16xx o operatie
+de scriere in memorie dureaza doua cicluri-masina; prin urmare nu este folosit intregul potential al
+structurii cu doua blocuri.
+
+
+
+                                                                                                      3
+        Daca o structura cu doua blocuri de memorie este mai buna decit una cu un singur bloc, se
+poate presupune ca o structura cu trei blocuri va fi si mai performanta. Acesta idee a fost adoptata
+de mai multi producatori de procesoare de semnal. Arhitectura Harvard modificata a nucleelor
+PineDSPCore si OakDSPCore, folosite de DSP Group, contine trei blocuri de memorie, fiecare
+accesata cu setul ei de magistrale: un bloc de memorie de program, si doua blocuri de memorie pentru
+date, denumite X si Y. Aceste trei blocuri permit procesorului sa efectueze trei accesari independente
+ale memoriei intr-un ciclu masina: o citire a instructiunii si cite un acces la memoriile de date X si Y.
+Aceasta organizare a memoriei este intilnita la procesoarele Z839xx (Zilog), D950-CORE (SGS-
+Thomson) si DSP5600x, DSP563xx, DSP96002 (Motorola).
+        Reamintim ca in exemplul precedent cu filtrul RFI trebuiau executate patru accesari ale
+memoriei pentru a calcula o priza pe ciclu-masina. Unele procesoare care pot executa trei accesari ale
+memoriei pe ciclu-masina elimina nevoia celui de-al patrulea printr-o tehnica numita adresare modulo
+n, care va fi analizata in subcapitolul 5.2.
+        Deoarece extinderea magistralelor de accesare a memoriei in afara chip-ului este o solutie
+costisitoare datorita cresterii complexitatii capsulei, procesoarele de semnal poseda in general un
+sigur set de magistrale pentru extinderea memoriei in afara cipului (o magistrala de adrese si una de
+date). Procesoarele cu mai multe blocuri de memorie au o anumita capacitate de memorie interna
+pentru fiecare bloc. Desi in principiu aceste blocuri pot fi extinse si in afara chipului, operatiile de
+acces multiplu la memoria externa nu pot fi realizate in paralel (deoarece exista doar un singur set de
+magistrale externe). Prin urmare, daca o instructiune necesita acces multiplu la memoria externa
+executia va fi prelungita, pentru ca aceeste operatii de acces sunt executate secvential. Problemele
+legate de accesul la memoria externa vor fi discutate ulterior.
+
+                                                                                                       4
+              Memoriile cu acces multiplu
+       Asa cum s-a aratat, arhitectura Harvard realizeaza mai multe accesari ale memoriei pe ciclu-
+masina folosind mai multe blocuri independente de memorie conectate la nucleul procesorului prin
+bus-uri independente. Exista insa si alte solutii care permit mai multe accesari ale memoriei intr-
+un ciclu-masina. Aceste solutii sunt:
+       -        folosirea de memorii rapide care permit mai multe accesari secventiale pe ciclu-
+masina, printr-un singur set de bus-uri;
+       -       utilizarea de memorii multiport care permit mai multe accesari concurente ale
+memoriei prin doua sau mai multe seturi de bus-uri.
+            Unele procesoare de semnal folosesc memorii interne care executa un acces la
+memorie in jumatate de ciclu-masina. Aceasta insemana ca doua accesari independente ale unei
+memorii pot fi efectuate secvential. Memoriile rapide pot fi combinate intr-o arhitectura Harvard,
+rezultand performante mai bune decit atunci cind fiecare solutie ar fi utilizata separat. Sa consideram
+ca exemplu o arhitectura Harvard modificata care foloseste doua blocuri de memorie rapida. Cu
+fiecare bloc pot fi realizate doua accesari secventiale pe ciclu-masina, deci cu cele doua pot fi
+executate patru astfel de accesari, presupunand ca datele continute sunt ordonate astfel incat sa revina
+cate doua fiecarui bloc. Daca datele nu sunt ordonate (de exemplu, daca un bloc necesita trei accesari,
+iar cel de al doilea necesita un singur acces), procesorul prelungeste automat executia instructiunii,
+pentru a finaliza accesarea memoriei. O ordonare suboptima a accesului nu produce rezultate eronate,
+in schimb va produce doar o crestere a timpului de executie a programului.
+            Alta tehnica pentru a creste capacitatea de accesare a memoriei consta in folosirea
+memoriilor multi-port. Memoria multi-port are mai multe seturi de bus-uri de adrese si de date, fiind
+astfel posibila efectuarea mai multor accesari in paralel. Cele mai folosite memorii multiport sunt
+memoriile dual-port, care permit doua accesari simultane. Mai rar sunt folosite si memoriile cu trei
+sau chiar cu patru porturi. Folosirea acestor memorii elimina necesitatea ordonarii datelor in mai
+multe blocuri independente de memorie pentru cresterea performantei. Dezavanajul principal al
+memoriilor multi-port consta in folosirea unei arii mari de pe suprafata chip-ului pentru realizare.
+
+
+
+
+                                                                                                       5
+        Unele procesoare de semnal combina arihtectura Harvard modificata cu folosirea memoriilor
+multi-port. Arhitectura de memorie prezentata in Fig. 5.4 include o memorie de program uni-port si
+o memorie de date dual-port. Aceasta structura este capabila sa acceseze intr-un ciclu-masina
+memoria de program o data, iar memoria de date de doua ori; configuratia este folosita de
+procesoarele DSP561xx (Motorola).
+        De cele mai multe ori, folosirea memoriilor rapide cu acces secvential multiplu in timpul unui
+ciclu-masina si a memoriilor multi-port este limitata de capacitatea de integrare pe chip, langa nucleul
+procesorului, precum si de performantele sistemului I/O al cip-ului. In cazul memoriilor rapide,
+mutarea memoriei (sau a unei parti din ea) in afara chipului implica introducerea de intarzieri
+semnificative ale transferului intre nucleul procesorului si memorie. In cazul in care rata de executie
+a instructiunilor este mare, aceste intarzieri fac ca accesul multiplu secvential sa fie imposibil de
+obtinut. Pentru memoriile multi-port, mutarea acestora (sau a unor parti) in afara chip-ului presupune
+adaugarea de bus-uri de adrese si de date suplimentare in afara capsulei. Aceasta insamna ca chip-ul
+va avea mai multi pini de I/O, deci o dimensiune mai mare si probabil si o dimensiune mai mare a
+pastilei de siliciu pe care este realizat circuitul.
+
+
+               Operatii specializate de scriere in memorie
+        Unele procesoare de semnal ofera mecanisme specializate care permit ca scrierea in memoria
+de date sa fie executata in paralel cu o citire din aceasta si cu o citire din memoria de program. Aceste
+procesoare au instructiuni speciale care permit executarea de scrieri in paralel cu operatiile de citire,
+dar cu anumite circumstante restrictive. Operatiile de scriere pot fi folosite pentru deplasarea datelor
+in lungul liniei de intarziere pentru implementarea filtrului RFI din exemplul anterior.
+
+                                                                                                       6
+       5.2     Metode de reducere a numarului de accesari a memoriei
+       Unele procesoare de semnal au caracteristici speciale, proiectate pentru a reduce numarul de
+accesari necesare pentru executarea anumitor operatii. Aceste caracteristici permit unor astfel de
+procesoare sa atinga performante egale cu ale procesoarelor care au latime de banda alocata memoriei
+mai mare. Pentru ca procesoarele cu latime mare a benzii de transfer cu memoria sunt scumpe, aceste
+carcteristici au ca scop reducerea costului procesoarelor. In continuare vor fi prezentate citeva solutii
+folosite pentru reducerea numarului de accesari a memoriei pentru programe.
+
+
+              Cache-ul pentru program
+       Unele procesoare incorporeaza un cache pentru program, care este o memorie de capacitate
+mica in interiorul procesorului, folosita pentru memorarea instructiunilor, eliminind astfel necesitatea
+accesarii blocului de memorie de program de cite ori este executata o instructiune. Prin eliminarea
+ciclilor de acces la memorie pentru citirea instructiunii se pot efectua accesari ale memoriei pentru
+citirea sau scrierea datelor si astfel se poate reduce timpul de executie al instructiunii prin eliminarea
+intarzierilor asociate memoriei de program externe.
+       Cache-ul procesoarelor de semnal variaza mult prin capacitate si mod de operare. El este in
+general mai mic si mai simplu decit cache-ul intern folosit de procesoarele de uz general.
+       Chiar daca cache-ul procesoarelor de semnal incepe, in unele cazuri, sa se apropie de cache-
+ul sofisticat folosit de procesoarele de uz general de mare performanta, exista cateva diferente
+importante. In particular, cache-ul procesoarelor de semnal este folosit doar pentru instructiuni.
+Cache-ul pentru date trebuie sa fie prevazut cu un mecanism care sa actualizeze atat cache-ul cat si
+memoria externa atunci cand datele din el se modifica, asigurind astfel coerenta cache-ului. Acest
+fapt ar duce la cresterea complexitatii procesorului.
+
+
+              Adresarea modulo n
+       memoria cache reduce numarul de accesari a memoriei procesorului. Cache-ul realizeaza
+acest lucru functionand ca un bloc de memorie suplimentar, specializat. Exista insa si alte solutii
+pentru a reduce numarul de accesari ale memoriei (inclusiv folosirea cache-ului). Una dintre acestea
+este adresarea modulo n care va fi analizata in detaliu in Capitolul 6. Adresarea modulo n permite
+implementarea unei linii de intarziere, ca cea folosita de filtrele RFI, fara ca datele sa fie mutate
+efectiv in memorie. Datele ramin scrise in aceeasi locatie de memorie atita timp cit este nevoie de ele.
+Efectul deplasarii datelor de-a lungul liniei de intarziere este simulat prin modificarea pointerilor de
+accesare a zonei de date folosind aritmetica modulo n. In cazul implementarii filtrului RFI acesta
+tehnica reduce numarul de accesari a memoriei de la patru accesari pe un ciclu-masina la doar trei.
+
+
+                                                                                                        7
+              Abordari bazate pe algoritmi
+
+       Desi nu este o caracteristica a procesoarelor de semnal, alta tehnica pentru reducerea
+numarului de accesari ale memoriei consta in folosirea unor algoritmi care exploateaza modul de
+aranjare a datelor. Algoritmii care opereaza pe blocuri de date de intrare citesc de multe ori aceleasi
+date din memorie in mod repetat in timpul executiei programului. Un programator bun poate reutiliza
+date deja citite pentru a reduce numarul de accesari cerute de algoritm.
+
+
+       5.3      Starile de asteptare (wait states)
+       Starile de asteptare (Wait States) sunt stari in care procesorul nu poate continua executia
+programului deoarece asteapta finalizarea unei activitati incepute. Starile de asteptare pot avea
+urmatoarele cause: aparitia unor conflicte la accesarea resurselor, folosirea unor memorii lente,
+impartirea bus-ului cu alte dispozitive.
+       Starile de asteptare datorate conflictelor sunt necesare cand procesorul incearca sa realizeze
+mai multe accesari simultane ale unei memorii care nu suporta acces multiplu. De exemplu, atunci
+cand un bloc de memorie uni-port contine atat instructiuni cat si date. Deoarece majoritatea
+procesoarelor de semnal au o structura pipeline, executia unei singure instructiuni este de obicei
+intinsa de-a lungul mai multor cicluri-masina. De exemplu, starile de asteptare sunt necesare cand o
+anumita instructiune nu poate accesa un bloc de memorie, deoarece instructiuni alaturate (in pipeline)
+executa accesarea, iar accesul nu a fost inca finalizat.
+       Unele procesoare de semnal contin unul sau mai multe blocuri mici de memorie RAM si/sau
+ROM care permit unul sau mai multe accesari pe ciclu-masina. Uneori este necesar sa se extinda
+aceste resurse, utilizand memorie externa, care insa este prea lenta pentru a se putea obtine mai multe
+accesari intr-un ciclu-masina. In aceste cazuri, procesorul trebuie sa introduca stari de asteptare
+programate in timpul accesului la memoria externa. Aceste stari de asteptare sunt configurate de catre
+programator sa incetineasca in mod deliberat accesul la memorie, pentru a respecta timpii de acces la
+memoriile mai lente. Unele procesoare pot fi programate sa utilizeze un anumit numar de stari de
+asteptare la accesul diferitelor regiuni ale memoriei externe, astfel incat pot fi folsite combinatii de
+memorie rapida si lenta.
+       Durata unei stari de asteptare, relativ la durata unui ciclu-masina, variaza de la procesor la
+procesor. Starile de asteptare au durate cuprinse intre un sfert de ciclu-masina (la procesorul DSP32C
+- AT&T) si un ciclu-masina (pe majoritate procesoarelor). Starile de asteptare mai scurte permit o
+operare mai eficienta, deoarece intarzierea intre momentul cand memoria externa este libera si
+momentul cand se termina starea de asteptare va fi in principiu mai scurta.
+
+
+
+
+                                                                                                      8
+       5.4     Memoria ROM
+       Procesoarele de semnal destinate pentru aplicatii ieftine, ca electronica de uz general si
+echipamentele de telecomunicatii, poseda o memorie ROM interna pentru programe si constante.
+Unii producatori ofera versiuni diferite de procesoare: o versiune cu memorie RAM interna pentru
+prototipuri si productie de volum scazut si o versiune cu memorie ROM programabila la fabricarea
+circuitului, pentru productie de volum mare. Capacitatea ROM-ului de pe chip variaza intre 256 si 36
+Klocatii. De exemplu, firma TI, ofera mai multe versiuni ale procesoarelor sale (TMS320P17 si
+TMS320P25) cu un memorie ROM interna, programabila o singura data. Aceste dispozitive pot fi
+programate de fabricant, fie pentru prototipuri, fie pentru productia de masa.
+       Pentru aplicatii care cer mai mult ROM decat cel prevazut pe chip, poate fi conectata o
+extensie de memorie ROM cu ajutorul interfatei cu memoria externa. In mod normal, sun folosite mai
+multe chipuri de memorie ROM pentru a crea un bloc de memorie a carui latime corespunde cu cea
+a unei instructiuni a procesorului. In schimb unele procesoare pot sa citeasca instructiunile doar pe
+octeti si refac apoi intern instructiunile prin concatenarea octetilor cititi din ROM.
+
+
+       5.5     Interfetele cu memoria externa
+       Interfetele cu memoria externa ale procesoarelor de semnal difera prin trei caracteristici
+principale: numarul de porturi de memorie, flexibilitatea si complexitatea interfetei si constrangerile
+privitoare la timpii de acces.
+       Cele mai multe procesoare de semnal ofera un singur port extern pentru memorie, care consta
+dintr-un bus de adrese, unul de date si un set de semnale de control, chiar daca majoritatea
+procesoarelor de semnal au mai multe blocuri de memorie independente pe chip. Aceasta se datoreaza
+faptului ca bus-urile care se extind in afara chipului necesita un mare numar de pini, ceea ce duce la
+cresterea costului microprocesorului. Procesoarele care au blocuri de memorie interna multiple au
+posibilitatea de a folosi portul extern pentru extensia oricaruia din blocurile de memorie interna. Lipsa
+mai multor porturi externe face ca accesul multiplu sa nu poata fi realizat pentru memoria externa
+intr-un singur ciclu-masina, iar programele care vor incerca asta vor fi executate mai lent.
+       Exista si procesoare care poseda mai multe porturi de memorie in afara chip-ului. Astfel
+procesorul ADSP-21020 (Analog Devices) are un port pentru memoria de program (adrese pe 24 biti,
+date pe 48 biti) si un port pentru memoria de date (adrese pe 32 biti, date pe 32 biti). Procesorul
+TMS320C30 (TI) are tot doua porturi externe (unul cu adrese pe 24 biti si date pe 32 biti, si unul cu
+adrese pe 13 biti si date pe 32 biti) in timp ce TMS320C40 are doua porturi identice (adrese pe 31
+biti, date pe 32 biti). De asemenea, procesorul DSP96002 (Motorola) are doua porturi identice pentru
+memoriile de program si de date pe 32 biti. Aceste procesoare sunt insa mai scumpe decit procesoarele
+care au un singur port pentru memoria externa.
+
+
+                                                                                                       9
+       Interfetele cu memoria ale procesoarelor de semnal difera prin complexitate si prin
+flexibilitate. Unele sunt relativ simple si directe, cu numai cativa pini de control. Altele sunt mult mai
+complexe, oferind posibilitatea de interconectare cu o diversitate mare de dispozitive si bus-uri de
+memorie fara hardware suplimentar. Alte caracteristici specifice acestor interfete sunt: flexibilitatea
+si posibilitatea de configurare a starilor de asteptare, prezenta unui pin de „wait” pentru a semnala
+daca memoria externa este disponibila, prezenta unor pini pentru cerere si confirmare a accesului la
+bus (descrisi mai jos) si existenta suportului pentru functionarea memoriilor DRAM in modul pagina.
+       Aplicatiile cu performante ridicate folosesc de multe ori memorii externe SRAM rapide. In
+aceste situatii este important pentru inginerul de sistem sa consulte timpii de acces pentru porturile
+de memorie externa. Deoarece timpii de acces pot varia semnificativ, se poate intimpla ca doua
+procesoare cu aceeasi durata pentru ciclul-masina, sa ofere timpi de acces foarte diferiti pentru
+memoria externa. Aceste diferente pot avea un impact serios asupra costului circuitului, deoarece
+memoriile rapide sunt mai scumpe decit memoriile lente.
+              Posibilitatea de cache manual
+       Chiar daca procesorul nu contine o zona de memorie cache specializata, este posibil pentru
+programatori sa mareasca performanta prin copierea unei sectiuni de cod din memoria lenta sau mai
+folosita (in termeni de acces) intr-o memorie mai rapida sau mai putin accesata. De exemplu, daca o
+sectiune de cod foarte folosita este stocta intr-o memorie extrena ROM lenta, atunci se poate copia
+acea regiune in memoria RAM interna, fie la pornirea procesorului, fie la prima accesare a acelei
+zone de program.
+              Suportul pentru interfetele cu memoria externa
+       Procesoarele de semnal proiectate pentru folosirea lor in sisteme multiprocesor ofera de obicei
+caracteristici speciale pentru interfetele lor cu memoria externa pentru a simplifica proiectarea si
+pentru a mari performantele acestor sisteme. Prima si cea mai evidenta dintre aceste caracteristici
+consta in existenta a doua porturi pentru memoria externa. Unul dintre porturi poate fi conectat la o
+memorie locala, utilizata doar de acest procesor, in timp ce al doilea este conecatat la o memorie
+partajata cu alte procesoare. De exemplu, procesorul DSP96002 (Motorola) are doua porturi pentru
+memoria externa, special pentru realizarea unor configuratii multiprocesor.
+       Cand un sistem multiprocesor contine doua sau mai multe procesoare care folosesc in comun
+un singur bus extern pentru memorie, trebuie prevazut un mecanism care sa permita procesoarelor sa
+negocieze controlul bus-ului (mecanism de arbitrare a bus-ului) si sa impiedice procesoarele care nu
+detin controlul bus-ului sa transfere date pe acesta. Unele familii de procesoare de semnal ofera
+facilitati pentru un asemenea mecanism, desi exista diferente semnificative in nivelul de complexitate
+si flexibilitate a acestuia. In unele cazuri un bus partajat poate fi creat prin conectarea impreuna a
+pinilor corespunzatori, fara a fi nevoie de software sau hardware specializat care sa realizeze
+
+
+                                                                                                       10
+mecanismul de arbitrare. In alte cazuri poate fi necesar software sau hardware suplimentar pe unul
+sau mai multe dintre procesoare.
+       O alta caracteristica a procesorului care simplifica folosirea variabilelor partajate in memorii
+partajate consta in blocarea bus-ului, ceea ce permite unui procesor sa citeasca o variabila din
+memorie, sa o modifice si sa o scrie inapoi, asigurindu-se ca aceasta secventa de operatii nu este
+intrerupta de alt procesor care incearca sa acceseze aceeasi variabila. Aceasta este numita uneori si
+operatie elementara test-and-set.
+              Memoria dinamica
+       Memoria care poate fi scrisa folosita in sistemele bazate pe procesoare de semnal este
+memorie statica, SRAM (Static RAM). Memoria statica este mai usor de folosit si mai rapida decit
+memoria dinamica (DRAM), dar necesita o suprafata mai mare pentru integrarea pe chip, si este mai
+scumpa decit alte tipuri de memorie, pentru aceasi capacitate de stocare. Deosebirea principala dintre
+cele doua tipuri de memorie este accea ca memoria statica retine datele atat timp cat este alimentata,
+in timp ce memoria dinamica trebuie sa fie periodic reimprospatata. Pentru efectuarea operatiei de
+reimprospatare (refresh) memoriei i se aplica o secventa speciala de semnale pentru a conserva datele.
+In plus, interfetele cu memoria statica sunt mai simple decat cele cu memoria dinamica; folosirea
+memoriilor dinamice presupune de regula folosirea unui controler de DRAM separat care genereaza
+semnalele de control.
+       Unul dintre modurile de obtinere a performantelor comparabile cu memoriile statice din
+DRAM este folosirea memoriilor paginate sau cu coloane statice. Acestea sunt tipuri speciale de
+DRAM care permit un acces mult mai rapid decat cel uzual cand se face accesarea repetata a aceleiasi
+regiuni (pagina) de memorie.
+folosirea memoriei DRAM ca memorie externa pentru procesoarele de semnal insemna de obicei
+folosirea unui cip extern de controler DRAM. Acest cip suplimentar poate creste costul de producere
+al circuitului, ceea ce reduce din avantajele initiale ale folosirii memoriei DRAM. Pentru a elimina
+aceasta problema, unele procesoare de semnale integreaza asemenea controlere pe chip. De exemplu
+DSP56004 si DSP56007 (Motorola) ofera interfete cu memoria DRAM care include suport pentru
+modul de adresare in pagina.
+
+
+              Accesul direct la memorie (Direct Memory Access)
+       Aceasta este o tehnica cu ajutorul careia datele pot fi transferate in si din memoria interna a
+procesorului de semnal fara interventia acestuia. DMA este folosit pentru a oferi performante mai
+bune pentru dispozitivele I/O. In loc sa fie folosit procesorul pentru a citi datele de la un dispozitiv
+I/O si a le transfera in memoria interna sau invers este folosit un controler separat numit controler
+DMA si care poate face acest lucru mai eficient. Acest controler DMA poate fi un dispozitiv periferic
+pe acelasi chip cu procesorul sau poate fi un dispozitiv extern acestuia.
+                                                                                                     11
+       Orice procesor care are implementat mecanismul descris mai inainte, de cerere/acces la bus,
+poate fi folosit impreuna cu un controler DMA extern pentru accesul la memoria externa. In mod
+normal, procesorul transmite controlerului DMA informatii de control, care contin adresa de start a
+datelor in memorie, numarul de locatii care trebuie transferat, directia de transfer si dispozitivul sursa
+sau destinatie. Controlerul DMA foloseste pinul de cerere de bus pentru a avertiza procesorul ca este
+gata sa execute transferul spre sau de la memoria externa. Procesorul de semnal executa instuctiunea
+curenta, cedeaza controlul la memoria externa si semnaleaza controlerului DMA, prin pinul de acces
+la bus, ca transferul DMA poate incepe. Controlerul transfera apoi datele specificate si poate de
+asemenea semnala procesorului incheierea transferului printr-o interupere.
+       Unele procesoare de semnal mai sofisticate includ unul sau mai multe controlere DMA
+integrate care pot accesa atat memoria interna cat si pe cea externa. Aceste controlere difera prin
+performante si flexibilitate. In unele cazuri, latimea de banda disponibila a procesorului poate fi destul
+de mare pentru a permite ca transferul DMA sa decurga in paralel cu desfasurarea normala a
+programului, fara a afecta performantele acestuia.     Unele controlere DMA insa, pot realiza mai
+multe transferuri in paralel. Se spune despre un astfel de controler ca are mai multe canale, fiecare
+rezervat unui transfer si fiecare controlat de propriul set de registre. Controlerul DMA de pe
+TMS320C4x are sase astfel de canale, cel de pe ADSP-2106x are zece canale, iar cel de pe DSP96002
+are doua canale. Fiecare dintre aceste canale poate fi folosit pentru transferuri memorie-memorie sau
+memorie-dispozitiv periferic.
+
+
+
+
+                                                                                                       12
+

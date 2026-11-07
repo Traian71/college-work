@@ -1,0 +1,835 @@
+26.09.2025, 17:14                                                           PS Grile
+
+
+
+
+               PS Grile
+               miloiuc4@gmail.com Switch accounts
+                    Not shared
+
+
+
+
+               În cazul execuției instrucțiunilor în pipeline, hazardul poate fi eliminat prin:          0 points
+
+
+                    hazardul din pipeline nu poate fi eliminat
+
+                    reordonarea instrucțiunilor prin încărcarea lor într-un buffer de instrucțiuni şi
+                    execuția lor în mod dinamic
+
+                    eliminarea dependenței de date prin introducerea de NOP-uri între instrucțiunile care
+                    depind de aceleaşi date
+
+                    avansarea datelor (rezultatelor) între instrucțiuni și între etapele pipeline-ului
+
+
+
+
+               Din ce categorie de moduri de adresare face parte instructiunea                           0 points
+
+               “A6=A6+*R6”, care are
+               ca efect adunarea valorii stocate la locatia de memorie indicata de
+               continutul registrului
+               R6 la valoarea stocata in registrul acumulator A6:
+
+                    Adresare indirecta cu registru
+
+                    Adresare indirecta cu registru cu indexare
+
+                    Adresare indirecta cu registru cu pre sau post incrementare
+
+                    Adresare indirecta cu registru cu adresare modulo
+
+
+
+
+https://docs.google.com/forms/d/e/1FAIpQLSfxq3YECR5r6SNAay58y_AeYEBfmc4EfW9PuU1A5vbmVnVjxg/viewform                 1/17
+26.09.2025, 17:14                                                           PS Grile
+
+
+
+               Presupunand ca fiecare etapa din figura necesita pentru a fi executata                 0 points
+
+               aproximativ 10 ns,
+               in cat timp este executata I3:
+
+
+
+
+                    40 ns
+
+                    30 ns
+
+                    50 ns
+
+                    40 ms
+
+
+
+
+               Registrii ce se pot utiliza ca operanzi pentru majoritatea operatiilor                 0 points
+               aritmetica si de
+               multiplicare sunt:
+
+
+                    Registri acumulatori
+
+                    Registri pentru adresa
+
+                    Registrul de uz general
+
+                    Numaratorul de program
+
+
+
+
+https://docs.google.com/forms/d/e/1FAIpQLSfxq3YECR5r6SNAay58y_AeYEBfmc4EfW9PuU1A5vbmVnVjxg/viewform              2/17
+26.09.2025, 17:14                                                           PS Grile
+
+
+
+               Din ce categorie de moduri de adresare face parte instrucțiunea „A6                         0 points
+               A6+*R6", care are ca efect adunarea valorii stocate la locația
+               de memorie indicată de conținutul registrului R6 la valoarea stocată în
+               registrul acumulator A6:
+
+                    adresare indirectă cu registru cu adresare modulo
+
+                    adresare indirectă cu registru
+
+                    adresare indirectă cu registru cu pre sau post incrementare
+
+                    adresare indirectă cu registru cu indexare
+
+
+
+
+               In logica pozitiva la circuitele de interfata seriala:                                      0 points
+
+
+                    O tensiune negativa pe linia seriala de date reprezinta un “0” logic, iar o tensiune
+                    scazuta (aproape 0 V) reprezinta un “1” logic
+
+                    O tensiune pozitiva pe linia seriala de date reprezinta un “1” logic, iar o tensiune
+                    scazuta (aproape 0 V) reprezinta un “0” logic
+
+                    O tensiune pozitiva pe linia seriala de date reprezinta un “0” logic, iar o tensiune
+                    scazuta (aproape 0 V) reprezinta un “1” logic
+
+                    O tensiune negativa pe linia seriala de date reprezinta un “1” logic, iar o tensiune
+                    scazuta (aproape 0 V) reprezinta un “0” logic
+
+
+
+
+               Porturile gazdă întâlnite la procesoarele de semnal:                                        0 points
+
+
+
+                    sunt porturi seriale unidirecționale nespecializate
+
+                    sunt porturi seriale bidirectionale specializate de 8 biți sau de 16 biti
+
+                    nu poate fi folosit pentru a controla procesorul digital de semnal (nu poate să-l
+                    forţeze să execute intrucțiuni sau rutine de serviciu de întrerupere, să citească sau
+                    să scrie registre/memoria, etc)
+
+                    lucrează în regim DMA în mod uzual (data prezentă la port este scrisă automat în
+                    memoria procesorului de semnal fără a-l opri, cu sau fără întreruperi)
+
+
+
+
+https://docs.google.com/forms/d/e/1FAIpQLSfxq3YECR5r6SNAay58y_AeYEBfmc4EfW9PuU1A5vbmVnVjxg/viewform                   3/17
+26.09.2025, 17:14                                                           PS Grile
+
+
+
+               Portul dedicat pentru comunicarea cu un microprocesor de uz general este               0 points
+
+               denumit:
+
+                    Port I/O de bit
+
+                    Circuit timer
+
+                    Port gazda
+
+                    Port paralel
+
+
+
+
+               Familia de procesoare Texas Instruments similara facilitatilor                         0 points
+               microcontrelerelor este :
+
+                    TMS320C4000
+
+                    TMS320C5000
+
+                    TMS320C2000
+
+                    TMS320C6000
+
+
+
+
+               Modul de adresare care foloseste un buffer circular de tip FIFO este:                  0 points
+
+
+
+                    Adresare indirecta cu registru
+
+                    Adresare indirecta cu registru cu pre sau post incrementare
+
+                    Adresare indirecta cu registru cu indexare
+
+                    Adresare indirecta cu registru cu adresare modulo
+
+
+
+
+https://docs.google.com/forms/d/e/1FAIpQLSfxq3YECR5r6SNAay58y_AeYEBfmc4EfW9PuU1A5vbmVnVjxg/viewform              4/17
+26.09.2025, 17:14                                                           PS Grile
+
+
+
+               Un vector de intrerupere:                                                              0 points
+
+
+                    Stabileste legatura intre sursa intreruperii si subrutina de tratare asociata
+
+                    Are, de regula, o lungime de unul sau doua cuvinte si este localizat in zona inferioara
+                    de memorie
+
+                    Este asociat fiecarei surse de intrerupere
+
+                    Nu exista in cazul DSP-urilor
+
+
+
+
+               Tensiunea de alimentare nominală a unui procesor de semnal este descrisă               0 points
+               ca fiind Vcc=5V +/- 5%. Care din următoarele tensiuni se
+               încadrează în plaja dată:
+
+                    4,65V
+
+                    5,40V
+
+                    5,28V
+
+                    4,85V
+
+
+
+
+               Printre instructiunile cu functii speciale nu se numara si :                           0 points
+
+
+
+                    Instructiuni de manipulare a bitilor
+
+                    Instructiuni pentru virgula mobila pe bloc
+
+                    Instructiuni cu executie conditionata
+
+                    Instructiuni de impartire iterativa
+
+
+
+
+               Atat porturile gazda cat si porturile de comunicatie lureaza in regim DMA.             0 points
+
+
+
+                    Fals
+
+                    Adevarat
+
+
+
+
+https://docs.google.com/forms/d/e/1FAIpQLSfxq3YECR5r6SNAay58y_AeYEBfmc4EfW9PuU1A5vbmVnVjxg/viewform              5/17
+26.09.2025, 17:14                                                           PS Grile
+
+
+
+               Care este metoda de management a energiei in care ceasul este oprit la                 0 points
+               majoritatea
+               sectiunilor procesorului:
+
+                    Controlul frecventei ceasului
+
+                    Periferiele si controlul operatiilor I/O
+
+                    Modul adormit
+
+                    Dezactivarea pinilor de iesire de ceas nefolositi
+
+
+
+
+               O singura instructiune ar putea fi repetata prin folosirea ciclurilor hardware         0 points
+               multi-
+               instructiune.
+
+
+                    Fals
+
+                    Adevarat
+
+
+
+
+               Secventa de cod prezinta o bucla pentru :                                              0 points
+               RPT #16
+               MAC (R0)+, (R4)+, A
+
+
+                    FIR implementat in limbaj de asamblare cu cicluri asistate hardware
+
+                    FIR implementat in limbaj de asamblare cu cicluri asistate software
+
+                    IIR implementat in limbaj de asamblare cu cicluri asistate software
+
+                    IIR implementat in limbaj de asamblare cu cicluri asistate hardware
+
+
+
+
+https://docs.google.com/forms/d/e/1FAIpQLSfxq3YECR5r6SNAay58y_AeYEBfmc4EfW9PuU1A5vbmVnVjxg/viewform              6/17
+26.09.2025, 17:14                                                           PS Grile
+
+
+
+               La procesoarele care nu accepta operatia de inversare a bitilor                        0 points
+               implementata in unitatea
+               de generare a adreselor, pentru generarea adreselor cu bitii inversati este
+               utilizata:
+
+                    Deplasarea
+
+                    Comparatia
+
+                    Rotatia
+
+                    Instructiuni cu executie conditionata
+
+
+
+
+               In cazul procesoarelor de semnal, realizarea stivei poate fi efectuata prin            0 points
+
+               urmatoarele metode ???
+
+                    stiva implicita
+
+                    stiva software cu registru de memorare al varfului stivei
+
+                    stiva hardware cu memorie RAM
+
+                    nu exista stiva in cazul DSPurilor
+
+
+
+
+               Pentru programe ce pot fi rulate indiferent de adresa este folosit saltul:             0 points
+
+
+
+                    Intarziat cu anulare
+
+                    Relativ la PC
+
+                    Conditionat
+
+                    Neconditionat
+
+
+
+
+https://docs.google.com/forms/d/e/1FAIpQLSfxq3YECR5r6SNAay58y_AeYEBfmc4EfW9PuU1A5vbmVnVjxg/viewform              7/17
+26.09.2025, 17:14                                                           PS Grile
+
+
+
+               Din ce categorie de moduri de adresare face parte instrucțiunea „,MUL a",              0 points
+               care are ca rezultat AX=AL*a, unde AX și AL sunt registrele
+               procesorelui folosite implicit pentru operația de înmulțire și „a” este o
+               variabilă oarecare pe 8 biti:
+
+                    adresare imediată
+
+                    adresare directă la memorie
+
+                    adresare implicită
+
+                    adresare directă la registru
+
+
+
+
+               Intreruperile ca urmare a unei deplasari de scala sunt: ((((?))))                      0 points
+
+
+
+                    Intreruperi de la linii externe
+
+                    Intreruperi de la perifericele incorporate
+
+                    Intreruperi software
+
+                    Intreruperi pentru cod ilegal
+
+
+
+
+               La procesoarele ce pot realiza imbricarea directa, adancimea de                        0 points
+
+               intrepatrundere poate
+               avea:
+
+                    Doua nivele
+
+                    Opt nivele
+
+                    Patru nivele
+
+                    Un nivel
+
+
+
+
+https://docs.google.com/forms/d/e/1FAIpQLSfxq3YECR5r6SNAay58y_AeYEBfmc4EfW9PuU1A5vbmVnVjxg/viewform              8/17
+26.09.2025, 17:14                                                           PS Grile
+
+
+
+               In figura de mai jos este reprezentat un pipeline cu :                                 0 points
+
+
+
+
+                    1 etaj
+
+                    3 etaje
+
+                    4 etaje
+
+                    2 etaje
+
+
+
+
+               Aplicarea unui factor de prescalare cu valoarea de 4:                                  0 points
+
+
+
+                    Micsoreaza frecventa de 4 ori
+
+                    Mareste perioada de 2 ori
+
+                    Mareste frecventa de 4 ori
+
+                    Micsoreaza perioada de 2 ori
+
+
+
+
+               Consumul de energie in circuitele CMOS:                                                0 points
+
+
+
+                    Creste liniar cu tensiunea
+
+                    Creste liniar cu freventa de tact
+
+                    Este invers proportional cu patratul tensiunii
+
+                    Scade cu cresterea tensiunii
+
+
+
+
+https://docs.google.com/forms/d/e/1FAIpQLSfxq3YECR5r6SNAay58y_AeYEBfmc4EfW9PuU1A5vbmVnVjxg/viewform              9/17
+26.09.2025, 17:14                                                           PS Grile
+
+
+
+               Bitul ce indica daca rezultatul ultimei operatii aritmetice a fost nul se              0 points
+               numeste:
+
+
+                    Bit de zero
+
+                    Bit de deplasare
+
+                    Bit de minus
+
+                    Bit de transport
+
+
+
+
+               In cadrul DSP-urilor cu pipeline exista urmatoarele modele de programare               0 points
+               care folosesc
+               limbaj de asamblare:
+
+
+                    Doar modelul de programare cu timp stationar
+
+                    Doar modelul de programare cu date stationare
+
+                    Modelul de programare cu timp stationar si modelul de programare cu date
+                    stationare
+
+                    Nu exista astfel de modele de programare
+
+
+
+
+               Care din următoarele facilități sunt specifice procesoarelor de semnal                 0 points
+
+               pentru execuția buclelor?
+
+                    sunt identice cu cele de la procesoarele de uz general
+
+                    registre speciale pe post de contor de buclă
+
+                    buclare hardware pentru execuția buclelor fără cicluri maşină suplimentari
+
+                    instrucţiuni de salt (software)
+
+
+
+
+https://docs.google.com/forms/d/e/1FAIpQLSfxq3YECR5r6SNAay58y_AeYEBfmc4EfW9PuU1A5vbmVnVjxg/viewform              10/17
+26.09.2025, 17:14                                                           PS Grile
+
+
+
+               In care etapa se incarca instructiunea MOVE #$1234, R0: ?                              0 points
+
+
+
+                    Execute (Executia)
+
+                    Instruction Fetch (Aducerea codului instructiunii din memoria de program)
+
+                    Decode (Decodarea instructiunii)
+
+                    Data Read/Write (Citirea operandului / operanzilor din memoria de date)
+
+
+
+
+               Secventa de program afiseaza un model de programare:                                   0 points
+               A0=A0+P
+               P=X*Y
+               Y=*R0++
+               P=*Pt++
+
+                    Cu date stationare
+
+                    Cu timp stationar
+
+                    Cu date stationare si cu timp stationar
+
+                    Nicio varianta
+
+
+
+
+               La aparitia unei intreruperi, aproape toate procesoarele permit terminarea             0 points
+               executiei
+               instructiunilor aflate in stadiul de incarcare:
+
+                    Fals
+
+                    Adevarat
+
+
+
+
+https://docs.google.com/forms/d/e/1FAIpQLSfxq3YECR5r6SNAay58y_AeYEBfmc4EfW9PuU1A5vbmVnVjxg/viewform              11/17
+26.09.2025, 17:14                                                           PS Grile
+
+
+
+               Care din afirmatiile referitoare la setul de instructiuni de rotatie ale               0 points
+               procesoarelor de
+               semnal sunt adevarate:
+
+                    Operatiile de rotatie stanga/dreapta se executa cu un singur bit
+
+                    Operatiile de rotatie stanga/dreapta se executa cu minim 2 sau 4 biti
+
+                    Pot fi considerate operatii de deplasare circulara
+
+                    Nu exista astfel de operatii la procesoarele de semnal
+
+
+
+
+               Un echipament ce poate opera la minim 3V, are o tensiune nominala de:                  0 points
+
+
+
+                    3.6 V
+
+                    2.7 V
+
+                    3.3 V
+
+                    3V
+
+
+
+
+               Care din afirmaţiile referitoare la setul de instrucțiuni de rotaţie ale               0 points
+               procesoarelor de semnal sunt adevărate:
+
+                    operațiile de rotație stânga/dreapta se execută cu un singur bit
+
+                    operațiile de rotație stânga/dreapta se execută cu minim 2 sau 4 biți
+
+                    pot fi considerate operații de deplasare circulară
+
+                    nu există astfel de operaţii la procesoarele de semnal
+
+
+
+
+https://docs.google.com/forms/d/e/1FAIpQLSfxq3YECR5r6SNAay58y_AeYEBfmc4EfW9PuU1A5vbmVnVjxg/viewform              12/17
+26.09.2025, 17:14                                                           PS Grile
+
+
+
+               Procesoarele in virgula fixa au :                                                      0 points
+
+
+
+                    Cost mai ridicat
+
+                    Gama dinamica ridicata
+
+                    Arhitectura de sistem mai putin complexa fata de procesoarele cu virgula mobila
+
+                    Programarea mai facila fata de procesoarele cu virgula mobila
+
+
+
+
+               Pentru controlul ceasului pot fi folosite si sursele de ceas de viteza mica.           0 points
+
+
+
+                    Fals
+
+                    Adevarat
+
+
+
+
+               Stiva ce contine starea registrilor selectati in timpul apelurilor subrutinelor        0 points
+               este:
+
+
+                    Stiva Hardware
+
+                    Shadow registers
+
+                    Nici una
+
+                    Stiva Software
+
+
+
+
+               Pipeline-ul mareste de obicei timpul de raspuns al procesorului la                     0 points
+               intreruperi:
+
+                    Cand executia saltului nu exista
+
+                    Cu cat executia saltului este mai intarziata
+
+                    Cu cat executia saltului este mai rapida
+
+                    Toate variantele sunt ccorecte
+
+
+
+
+https://docs.google.com/forms/d/e/1FAIpQLSfxq3YECR5r6SNAay58y_AeYEBfmc4EfW9PuU1A5vbmVnVjxg/viewform              13/17
+26.09.2025, 17:14                                                           PS Grile
+
+
+
+               Procesorul TMS320C64x este un DSP cu aritmetica in virgula fixa.                         0 points
+
+
+
+                    Fals
+
+                    Adevarat
+
+
+
+
+               In cazul interfetelor seriale asincrone datele sunt insotite de un semnal de             0 points
+               ceas
+               suplimentar.
+
+
+                    Adevarat
+
+                    Fals
+
+
+
+
+               La deplasarea aritmetica la dreapta, numarul 010010 devine:                              0 points
+
+
+
+                    100101
+
+                    100100
+
+                    101001
+
+                    001001
+
+
+
+
+               Instrucţiunile de salt pot avea următoarele forme suportate de diverse                   0 points
+               procesoare de semnal:
+
+                    întârziat (permite procesorului să execute câteva instrucţiuni aflate după
+                    instrucțiunea de salt, înainte ca saltul să fie executat efectiv)
+
+                    conditionat (să execute saltul doar dacă este îndeplinită una sau mai multe condiții)
+                    și necondiționat (saltul se execută mereu)
+
+                    multicidu (saltul se execută după o întârziere de câteva cicluri)
+
+                    saltul întârziat cu anulare (instrucțiunile aflate după instrucțiunea de salt pot anula
+                    saltul, dacă anumite condiții nu sunt îndeplinite)
+
+
+
+
+https://docs.google.com/forms/d/e/1FAIpQLSfxq3YECR5r6SNAay58y_AeYEBfmc4EfW9PuU1A5vbmVnVjxg/viewform                14/17
+26.09.2025, 17:14                                                           PS Grile
+
+
+
+               Modul de adresare care folosește un buffer circular de tip FIFO este:                  0 points
+
+
+
+                    adresare indirectă cu registru cu indexare
+
+                    adresare indirectă cu registru cu adresare modulo
+
+                    adresare indirectă cu registru cu pre sau post incrementare
+
+                    adresare indirectă cu registru
+
+
+
+
+               Ortogonalitatea setului de instructiuni:                                               0 points
+
+
+                    nu exista in cazul DSP-urilor
+
+                    este influentata doar de gradul in care modurile de addresare sunt disponibile in mod
+                    uniform pentru diverse operatii efectuate de procesor
+
+                    nu poate fi masurata
+
+                    este influentata de consistenta si gradul in care modurile de adresare sunt
+                    disponibile in mod uniform pentru diverse operatii efectuate de procesor
+
+
+
+
+               In cazul procesoarelor de semnal, realizarea stivei poate fi efectuata prin            0 points
+
+               urmatoarele
+               metode:
+
+                    Stiva cu set specializat de registre
+
+                    Stiva software cu registru de memorare al varfului stivei
+
+                    Stiva hardware cu memorie RAM
+
+                    Niciunul din raspunnsurile date
+
+
+
+
+https://docs.google.com/forms/d/e/1FAIpQLSfxq3YECR5r6SNAay58y_AeYEBfmc4EfW9PuU1A5vbmVnVjxg/viewform              15/17
+26.09.2025, 17:14                                                             PS Grile
+
+
+
+               In figura este reprezentat un semnal de sincronizare de cadre de tip:                                  0 points
+
+
+
+
+                     “bit length” si cuvinte multiple de date per cadru
+
+                     “word length” si un singur cuvant de date per cadru
+
+                     “word length” si cuvinte multiple de date per cadru
+
+                     “bit length” si un singur cuvant de date per cadru
+
+
+
+
+               Porturile gazda intalnite la procesoarele de semnal:                                                   0 points
+
+
+                     Sunt porturi seria sau le bidirectionale specializate de 8 biti sau de 16 biti (sunt
+                     paralele si directionale de 8 sau 16 biti )
+
+                     Sunt porturi seriale unidirectionale nespecializate
+
+                     Lucreaza in regim DMA in mod uzual (data prezenta la port este scrisa automat in
+                     memoria procesorului de semnal fara a-l opri, cu sau fara intreruperi)
+
+                     Nu poate fi folosit pentru a controla procesorul digital de semnal (nu poate sa l
+                     forteze sa execute instructiuni sau rutine de serviciu de intrerupere, sa citeasca sau
+                     sa scrie registre/memoria etc)
+
+
+
+               Submit                                                                                               Clear form
+
+
+               This content is neither created nor endorsed by Google. - Contact form owner - Terms of Service - Privacy Policy
+
+                                                   Does this form look suspicious? Report
+
+
+                                                                        Forms
+
+
+
+
+https://docs.google.com/forms/d/e/1FAIpQLSfxq3YECR5r6SNAay58y_AeYEBfmc4EfW9PuU1A5vbmVnVjxg/viewform                               16/17
+26.09.2025, 17:14                                                           PS Grile
+
+
+
+
+https://docs.google.com/forms/d/e/1FAIpQLSfxq3YECR5r6SNAay58y_AeYEBfmc4EfW9PuU1A5vbmVnVjxg/viewform   17/17
+

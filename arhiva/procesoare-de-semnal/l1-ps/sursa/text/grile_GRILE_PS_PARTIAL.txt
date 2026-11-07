@@ -1,0 +1,241 @@
+GRILE PS PARTIAL
+
+1. Care sunt cerințele funcționale generale ale procesoarelor de semnal?
+
+a. executarea unui volum mare de operații aritmetice și logice simple și repetitive.
+
+b. suport pentru CAD rapide, deoarece majoritatea semnalelor de intrare sunt analogice;
+
+c. viteza mare de procesare, pentru a asigura execuția în timp real;
+
+d. asigurarea unei precizii mari de prelucrare;
+
+
+
+2. Emularea funcționării în virgulă mobilă are rolul de a obține următoarele avantaje:
+
+a. creșterea preciziei și a gamei dinamice;
+
+b. reducerea preciziei și creșterea gamei dinamice. c. creșterea preciziei și reducerea gamei dinamice;
+
+d. reducerea preciziei și a gamei dinamice;
+
+
+
+3. Care din afirmațiile următoare sunt adevărate:
+
+a. deoarece multiplicarea este operația principală în PDS, procesoarele digitale de semnal realizează
+multiplicarea într-un singur ciclu mașină;
+
+b. există procesoare cu două căi de date: una în virgulă fixă și una în virgulă mobilă;
+
+c. calea de date la procesoarele în virgulă fixă este identică cu cea a procesoarelor în virgulă mobilă.
+
+d. procesoarele digitale de semnal nu permit operații de multiplicare-acumulare în același ciclu
+mașină;
+
+
+
+4. Arhitectura memoriei la procesoarele de semnal este:
+
+a. o singură arie de memorie și pentru date și pentru instrucțiuni;
+
+b. de tip Von Neumann.
+
+c. împărțită în blocuri de memorie separate pentru date și pentru instrucțiuni;
+
+d. de tip Harvard;
+
+
+
+5. În cazul procesoarelor în virgulă fixă, datele pot fi reprezentate:
+
+a. doar valori binare în intervalul [-2, 2];
+
+b. doar numere binare pe 16 biți.
+
+c. sub formă de numere fracționare în intervalul [-1, 1];
+
+d. sub formă de numere întregi (cu sau fără semn);
+6. Stările de așteptare pot avea următoarele cauze:
+
+a. folosirea unor memorii lente;
+
+b. împărțirea magistralei cu alte dispozitive.
+
+c. memorie cache pentru secvențe de instrucțiuni;
+
+d. apariția unor conflicte la accesarea resurselor;
+
+
+
+7. Caracteristicile memoriilor cu acces multiplu sunt:
+
+a. sunt mai eficiente decât folosirea mai multor blocuri de memorii separate.
+
+b. cu instrucțiuni speciale, se pot executa în paralel operații de scriere și operații de citire;
+
+c. se pot realiza, în cazul unui singur ciclu instrucțiune, două cicluri de acces la memorie;
+
+d. au cel puțin două porturi de acces la memorie;
+
+
+
+8. În cazul procesoarelor în virgulă fixă, dacă există necesitatea ca anumite operații să fie executate în
+virgulă mobilă, se apelează la următoarea soluție:
+
+a. emularea software a operațiilor în virgulă mobilă, cu ajutorul bibliotecilor software.
+
+b. folosirea unui grup de numere cu aceleași mantise, dar cu exponenți diferiți;
+
+c. micșorarea gamei dinamice și a preciziei;
+
+d. folosirea unui grup de numere cu aceiași exponenți, dar cu mantise diferite;
+
+
+
+9. Caracteristicile procesoarelor de semnal sunt:
+
+a. arhitectura multiacces a memoriei care presupune multiple accesări la memorie într-un singur ciclu
+instrucțiune.
+
+b. operație rapidă de multiplicare și acumulare (MAC) într-un singur ciclu instrucțiune;
+
+c. moduri de adresare specializate;
+
+d. arhitectura multiacces a memoriei care presupune o singură accesare la memorie în mai multe
+cicluri instrucțiune;
+
+10. În cazul procesoarelor în virgulă fixă, principala diferență între aritmeticile pentru numere întregi
+și cele pentru numere fracționare este:
+
+a. numărul de pini ai capsulei procesorului;
+
+b. dimensiunea memoriei externe;
+
+c. complexitatea circuitelor hardware.
+
+d. modul de manipulare a rezultatului multiplicărilor;
+SUBIECT POZA
+
+1. . Care sunt cerințele funcționale generale ale procesoarelor de semnal?
+
+a. executarea unui volum mare de operații aritmetice și logice simple și repetitive.
+
+b. suport pentru CAD rapide, deoarece majoritatea semnalelor de intrare sunt analogice;
+
+c. viteza mare de procesare, pentru a asigura execuția în timp real;
+
+d. asigurarea unei precizii mari de prelucrare;
+
+
+
+2. Caracteristicile procesoarelor de semnal sunt:
+
+a. includerea in circuit a unor module care faciliteaza cresterea productivitatii (de exemplu,
+multiplicator hardware parallel, circuite pentru deplasari binare, memorii interne, stiva interna)
+
+b. implementarea software a stivei pentru a permite salvarea/restaurarea rapida a contextului
+procesorului la intreruperi sau la accesarea unor subroutine.
+
+c. au arhitecturi cu grad mare de paralelism in prelucrare, multe instructiuni fiind executate intr-un
+singur tact
+
+d. setul de instructiuni este adaptat operatiilor cerute de algoritmii DSP
+
+
+
+3. Masurile folosite pentru reducerea timpului de access la memorie sunt:
+
+a) folosirea unui singur bloc de memorie pentru date si instructiuni, cu acces multiplu prin porturi
+separate
+
+b) prevazute memorii cache rapide, situate intre memoria principala, de mare capacitate, si procesor
+
+c) introducerea unor arii de memorie in structura interna a procesorului, pentru stocarea
+programelor si a instructiunilor, evitand astfel folosirea memoriei externe
+
+d) folosirea arhitecturii Harvard (blocuri separate de memorie cu magistrale separate de acces)
+
+
+
+4. Bitii de garda:
+
+a) sunt biti suplimentari, integrati in registrele acumulator
+
+b) sunt folositi pentru a semnaliza erorile de accesare la memorie;
+
+c) nu permit acumularea numerelor fara a avea depasiri si fara a fi nevoie de scalar;
+
+d) ofera o flexibilitate mai mare decat scalarea produsului
+
+
+
+5. Spre deosebire de SRAM, memoriile DRAM au urmatoarele caracteristici:
+
+a) sunt mai potrivite pentru aplicatii cu volum mare de date;
+b) au viteza de lucru mai mare
+
+c) mentin informatiile stocate cat timp sunt alimentate
+
+d) au un mecanism intern sau extern de reimprospatare a memoriei
+
+
+
+6. In cazul procesoarelor in virgula mobila, tratarea depasirilor se face prin:
+
+a) scalarea corespunzatoare a tuturor valorilor;
+
+b) cresterea gamei dinamice
+
+c) saturarea aritmetica
+
+d) cresterea preciziei
+
+
+
+7. In cazul procesoarelor in virgula mobile, rotunjirea se refera la:
+
+a) egalarea valorilor foarte mici cu 0
+
+b) reducerea lungimii cuvintelor prin eliminarea unui numar de biti
+
+c) reducerea spatiului de memorie ocupat prin suprapunerea bitilor
+
+d) trunchierea rezultatelor prin ignorarea bitilor cei mai nesemnificativi
+
+
+
+8. In ce domenii se folosesc procesoarele de semnal:
+
+a) in domeniul IT: routere
+
+b) in telecom: modemuri,echipamente radio. Telefonie, sisteme pt transmisiuni de date;
+
+c) in industria automobilelor, la computerele de bord
+
+d) in niciunul din domeniile de mai sus
+
+
+
+9. Caracteristicile memoriilor cu acces multiplu sunt:
+
+a) nu se pot realiza, in cadrul unui singur ciclu instructiune, cu doua cicluri de acces la memorie
+
+b) cu instructiuni speciale, se pot executa in paralel operatii de scriere si operatii de citire
+
+c) au cel putin patru porturi de access la memorie
+
+d) sunt mai eficiente decat folosirea mai multor blocuri de memorii separate
+
+
+
+10. Unitatea de control a procesoarelor de semnal prezinta facilitati pentru:
+
+a) manipularea buclelor
+
+b) realizarea stivei
+c) manipularea intreruperilor
+
+d) realizarea arhitecturii procesoarelor de semnal
+

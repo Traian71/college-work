@@ -1,0 +1,341 @@
+PROCESOARE DE SEMNAL
+          IV A
+       2026 - 2027
+Cuprins
+■ Curs 1 - Procesoare digitale de semnal si sisteme PDS.
+■ Curs 2 - Procesoare DSP. Încapsulări. Alternative.
+■ Curs 3 - Reprezentarea numerelor. Aritmetici.
+                                                                   Verificarea 1
+■ Curs 4 - Calea de date
+■ Curs 5 - Arhitectura memoriei
+■ Curs 6 – Adresarea datelor
+■ Curs 7 – Setul de instrucțiuni
+■ Curs 8 – Mecanisme de control al funcționării
+■ Curs 9 – Funcționarea pipeline                                   Verificarea 2
+
+■ Curs 10 – Dispozitivele IO și perifericele
+■ Curs 11 – Facilități pentru depanare și gestionarea consumului
+
+                                                                               2
+Curs 2 - Procesoare DSP. Încapsulări. Alternative.
+
+
+Cuprins
+
+
+■ 2.1 Procesoare PDS
+■ 2.2 Variante constructive de procesoare PDS
+■ 2.3 Alternative pentru procesoarele PDS
+
+
+
+
+                                                     3
+2.1      Procesoare PDS (2/7)
+■ Multe procesoare PDS au unele caracteristici comune pentru a putea executa activități
+  repetitive si cu un volum mare de calcule.
+■ Cele mai importante dintre aceste caracteristici sunt prezentate în tabelul de mai jos.
+
+
+  • Operatia rapida de multiplicare si
+    acumulare
+  • Arhitectura multiacces a memoriei
+  • Moduri de adresare specializate
+  • Controlul specializat al functionarii
+  • Periferice si interfete I/O
+
+
+
+
+                                                                                        5
+2.1     Procesoare PDS (3/7)
+
+■ Operatia rapida de multiplicare si acumulare
+Una dintre caracteristicile cele mai reprezentative ale procesoarelor PDS este posibilitatea de
+a executa operatia de multiplicare-acumulare (cunoscuta sub abrevierea MAC) intr-un singur
+ciclu instructiune.
+Operatia de multiplicare-acumulare este utila in algoritmii care necesita calculul produsului a
+doi vectori (de exemplu, filtrarea digitala, corelatia, calculul transformatei Fourier).
+Pentru a realiza acest lucru procesoarele PDS includ un multiplicator si un acumulator
+integrat in unitatea aritmetica de prelucrare (denumita calea de date).
+In plus aceasta permite efectuarea operatiilor de multiplicare si acumulare fara a produce
+depasire de scala aritmetica (overflow).
+Procesoarele PDS permit stocarea unui numar de biti suplimentari in registrii de acumulare
+pentru a le adapta la dimensiunea rezultatului.
+
+
+
+                                                                                          6
+2.1     Procesoare PDS (4/7)
+
+■ Arhitectura multiacces a memoriei
+O alta caracteristica comuna multor procesoare PDS este posibilitatea de a executa citeva cicluri
+de acces la memorie intr-un singur ciclu instructiune.
+Acesta permite procesorului sa extraga simultan o instructiune si operanzii pentru instructiune
+sau sa stocheze rezultatul instructiunii anterioare in memorie.
+Pentru aceasta este necesara o largime de banda mare intre memorie si procesor pentru o
+performanta buna, de exemplu atunci cind intr-un algoritm sunt executate intensiv operatii
+repetitive cu date, cum este cazul multor aplicatii PDS.
+La multe procesoare PDS, accesarea multipla a memoriei intr-un singur ciclu este restrictionata.
+In mod curent toate locatiile de memorie accesate sunt localizate in cip si operatiile de accesare
+multipla a memoriei pot fi executate doar cu anumite instructiuni.
+Pentru a putea executa accesarea simultana a mai multor locatii de memorie, procesoarele PDS
+poseda magistrale interne multiple, memorii interne multicip si, in unele situatii, mai multe
+bancuri de memorie independente.
+
+                                                                                         7
+2.1     Procesoare PDS (5/7)
+■ Moduri de adresare specializate
+Pentru ca procesorul sa execute operatiile cu viteza maxima si pentru a permite specificarea
+operanzilor multipli cu ajutorul unor cuvinte instructiune scurte, procesoarele PDS contin
+unitati dedicate pentru adresare.
+Odata ce registrii pentru adresare au fost configurati, unitatea de generare a adresei lucreaza
+in background, calculand adresele necesare pentru accesarea operanzilor in paralel cu
+executarea operatiilor aritmetice.
+Unitatile pentru generarea adreselor accepta si moduri de adresare adaptate aplicatiilor PDS.
+Cel mai comun dintre acestea este adresarea indirecta cu post-incrementare, care este folosit
+atunci cind sunt executate operatii repetitive pe siruri de date stocate la adrese succesive in
+memorie.
+In plus sunt prevazute si moduri de adresare speciale (cum este adresarea circulara sau
+modulo) care simplifica accesarea bufferelor de date. Unele procesoare permit modul de
+adresare cu inversarea bitilor, utilizata in calculul Transformatei Fourier Rapida - TFR.
+                                                                                        8
+2.1     Procesoare PDS (6/7)
+
+■ Controlul specializat al functionarii
+
+
+Pentru ca multi algoritmi PDS implica executarea unor calcule repetitive, unele procesoare
+PDS ofera un suport eficient pentru executarea buclelor.
+Deseori este prevazuta o instructiune de buclare sau o instructiune “repeat” pentru a asigura
+programatorului posibilitatea implementarii ciclurilor for-next fara marirea ciclului instructiune
+prin actualizarea si testarea contorului de bucla sau pentru executarea saltului inapoi la
+inceputul buclei.
+Unele procesoare PDS poseda si alte facilitati de comanda pentru imbunatatirea
+performantelor cum ar fi: comutarea rapida a contextului si latenta redusa, executarea
+intreruperilor cu incarcare minima si executarea rapida a operatiilor de intrare-iesire.
+
+
+
+                                                                                           9
+2.1     Procesoare PDS (7/7)
+
+■ Periferice si interfete I/O
+
+
+Pentru a obtine un cost redus si performante I/O inalte multe procesoare PDS incorporeaza
+una sau mai multe interfete I/O seriale sau/si paralele precum si mecanisme speciale pentru
+operatiile I/O cum ar fi accesul direct la memorie (DMA).
+Interfetele procesorului PDS cu perifericele sunt proiectate deseori pentru o interfatare directa
+cu perifericele I/O comune cum ar fi convertoarele A/D si D/A.
+Odata cu imbunatatirea tehnologiilor de fabricatie a circuitelor integrate prin cresterea
+densitatii de integrare si a flexibilitatii, comerciantii de procesoare PDS au inceput sa includa
+in procesor nu numai interfete noi, ci si dispozitive periferice complete (de exemplu, circuitele
+pentru telefoanele celulare au convertoare A/D si D/A in cip).
+
+
+
+                                                                                         10
+2.2. Variante constructive de procesoare PDS (1/7)
+
+Varianta cea mai comuna de microprocesor PDS este procesorul single-cip.
+Odata cu proliferarea aplicatiilor PDS, cresterea nivelului de integrare pentru toate produsele
+electronice si dezvoltarea unor noi tehnici de incapsulare au facut ca in prezent procesoarele
+PDS sa fie disponibile in multe variante constructive:
+■ Module multichip
+■ Cipuri multiprocesor
+■ Seturi de circuite
+■ Nuclee PDS
+■ Procesoare PDS personalizate
+■ Multiprocesoarele
+
+
+
+                                                                                       11
+2.2. Variante constructive de procesoare PDS (2/7)
+
+■ Module multichip
+
+
+Modulele multicip (MCM) sunt un fel de “supercipuri”; in loc de a incapsula un singur circuit
+integrat intr-o capsula din plastic sau din ceramica, cum este cazul procesoarelor
+conventionale, un MCM contine mai multe cipuri incapsulate impreuna.
+Un prim avantaj este obtinerea unei densitati mari de incapulare (mai multe circuite pe
+unitatea de suprafata a plachetei de circuit imprimat).
+Aceasta conduce la cresterea vitezei de operare si la scaderea consumului.
+Odata cu dezvoltatea tehnologiilor de incapsulare in ultimii ani producatorii au inceput sa
+ofere si module multicip continand procesoare PDS.
+
+
+
+
+                                                                                     12
+2.2. Variante constructive de procesoare PDS (3/7)
+
+■ Cipuri multiprocesor
+
+
+Pe masura ce tehnologia de fabricatie a circuitelor a avansat, proiectantii de procesoare PDS
+doresc sa creeze mai multe facilitati si performante intr-un procesor single-cip si de aceea
+cauta sa incorporeze mai multe procesoare intr-un singur circuit integrat.
+De exemplu, Motorola si Zilog ofera dispozitive care combina intr-un singur cip un
+microprocesor si un microcontroler, o combinatie foarte intalnita in multe aplicatii.
+Firma Siemens a produs circuitul Tricore care contine un procesor de uz general, un procesor
+PDS si un microcontroler.
+Ca in cazul modulelor multichip, cipurile multiprocesor asigura cresterea performantelor si
+reduc consumul fata de sistemele realizate cu componente separate.
+
+
+
+                                                                                     13
+2.2. Variante constructive de procesoare PDS (4/7)
+
+■ Seturi de circuite
+
+
+O alta varianta de impachetare a procesoarelor PDS este de a “împărți” un procesor PDS in
+doua sau mai multe capsule separate.
+Aceasta abordare a fost utilizata de compania Butterfly PDS pentru a realiza setul de circuite
+PDS care contine un generator de adrese si un procesor.
+Aceasta divizare functionala este justificata atunci când procesorul este foarte complex si
+daca numarul de pini de intrare/iesire este foarte mare si nu poate fi asigurat de o singura
+capsula.
+Prin aceasta divizare functionala in mai multe cipuri se pot folosi capsule mai ieftine si deci
+se reduce pretul de cost. Se sporeste de asemenea flexibilitatea, permitind proiectantului de
+sistem sa combine circuitele individuale in configuratia adaptata cel mai bine aplicatiei.
+
+
+                                                                                       14
+2.2. Variante constructive de procesoare PDS (5/7)
+
+■ Nuclee PDS (1/2)
+
+
+O abordare interesanta pentru productia de masa este imperecherea intr-un sigur chip a unui
+procesor PDS programabil cu un circuit definit de utilizator.
+Aceasta abordare combina beneficiile procesoarelor PDS (programabilitatea, existenta unor
+instrumente pentru dezvoltare si a bibliotecilor de software) cu avantajele unor circuite
+realizate la cerere (costurile reduse de productie, gabaritul redus, puterea consumata
+redusa).
+Doua variante pentru o astfel de abordare sunt:
+         ■   un ASIC (application-specific integrated circuit ) avind la baza un nucleu PDS
+         ■   un procesor PDS realizat la cerere.
+
+
+
+                                                                                              15
+2.2. Variante constructive de procesoare PDS (5/7)
+
+■ Nuclee PDS (2/2)
+Un nucleu PDS este un procesor PDS destinat folosirii ca un bloc de constructie la realizarea
+unui circuit mai complex, in loc de a fi incapsulat de sine statator intr-un cip. Un ASIC bazat
+pe un nucleu PDS permite proiectantului de sistem sa integreze un PDS programabil, logica
+de interfata, perifericele, memoria precum si alte componente cerute de client intr-un singur
+circuit integrat.
+
+
+
+
+                                                                                       16
+2.2. Variante constructive de procesoare PDS (6/7)
+
+■ Procesoare PDS personalizate
+In unele situatii este nevoie ca insusi nucleul PDS sa fie modificat sau extins (o alternativa la
+adaugarea in jurul nucleului de circuite externe).
+Diferiti furnizori folosesc termenul de nucleu in mod diferit, de la posibilitatea de a adauga
+periferice si memorie pana la posibilitatea de a modifica chiar unitatea de executie a
+procesorului.
+Desi nucleele PDS au un mare potential de folosire ele au si citeva limitari:
+         ■   In primul rind, in cazul nucleelor la care productia este asigurata chiar de furnizor,
+             cumparatorul nu are acces la proiectul intern al circuitului. Ca rezultat, toate modificarile
+             trebuie facute de catre furnizor, solutie deseori costisitoare.
+         ■   In cazul nucleelor cu licenta, proiectul intern al circuitului este disponibil la client care
+             poate face modificari dupa necesitati. Este nevoie insa de experienta pentru a executa
+             aceste modificari.
+         ■   In plus modificarea arhitecturii nucleului impune si modificarea instrumentelor pentru
+             dezvoltarea software-ului (asamblor, linker, simulator, etc.).
+
+                                                                                                 17
+2.2. Variante constructive de procesoare PDS (7/7)
+
+■ Multiprocesoarele
+
+
+Indiferent cit de performante devin procesoarele PDS, nevoile pentru o larga clasa de aplicatii
+nu pot fi satisfacute de un singur procesor.
+Unele aplicatii pot fi realizate cel mai bine cu procesoare dedicate.
+Daca programabilitatea este importanta o solutie buna o pot reprezenta sistemele
+multiprocesor cu procesoare comerciale (aproape orice procesor comercial poate fi utilizat in
+configuratii multiprocessor)
+Unele firme au creat insa procesoare speciale pentru sisteme multiprocesor.. Texas
+Instruments, Motorola, Analog Devices. Aceste procesoare au facilitati suplimentare (cum
+sunt magistrale externe multiple, logica de arbitraj a magistralei, porturi multiple dedicate
+pentru comunicatii interprocesor) care simplifica proiectarea hardware si imbunatatesc
+performantele.
+
+                                                                                       18
+2.3. Alternative pentru procesoarele PDS (1/3)
+
+■   Microprocesoarele de uz general
+
+
+Pe masura ce microprocesoarele de uz general au devenit mai rapide ele sunt capabile sa realizeze si
+functiuni de prelucrare a semnalelor.
+Cu toate ca procesoarele de uz general sunt mai lente si mai putin eficiente decât procesoarele PDS
+pentru aplicatii PDS exista inca motive puternice pentru folosirea lor in aplicatii.
+In primul rind, pentru ca multe produse electronice sunt proiectate in prezent folosind microprocesoare
+pentru control, interfata cu utilizatorul si comunicare. Daca o aplicatie PDS trebuie adaugata la un
+produs existent care contine un microprocesor de uz general, atunci aceasta abordare este avantajoasa
+din punctul de vedere al costului.
+In al doilea rand, pentru ca instrumentele software pentru dezvoltare, deja existente pentru
+microprocesoarele de uz general, sunt in general mai sofisticate si mai puternice decit cele pentru
+procesoarele PDS. Pentru aplicatii la care performantele nu sunt foarte stricte aceasta abordare este
+importanta.
+
+
+
+                                                                                               19
+2.3. Alternative pentru procesoarele PDS (2/3)
+
+■ Calculatoare personale si statii de lucru
+
+
+Aplicatiile PDS pot beneficia de avantajele platformelor realizate cu procesoare de uz general.
+Calculatoarele personale si statiile de lucru care folosesc cel mai mult aceste platforme ofera
+posibilitati deosebite pentru aplicatiile care incorporeaza prelucrari de semnale.
+Unele aplicatii PDS pot fi implementate direct pe calculatoare sau statii de lucru care nu sunt
+prevazute cu procesoare PDS. Ele au multe din calitatile si limitarile mentionate deja. Dar in
+unele situatii, platforma cu procesorul ei de uz general este adecvata ea insasi pentru a
+implementa o aplicatie completa.
+Produsele unde prelucrarile PDS sunt executate numai soft sunt viabile acolo unde cerintele
+pentru prelucrari nu sunt stricte si unde este deja disponibila o statie de lucru sau un
+calculator personal pentru acest scop. Multe aplicatii stiintifice sau ingineresti care implica
+operatii de analiza sau sinteza fara restrictii de timp real pot fi executate in acest mod.
+
+
+                                                                                       20
+    2.3. Alternative pentru procesoarele PDS (3/3)
+
+■    Hardware personalizat
+
+
+Exista doua ratiuni importante pentru care hardware-ul dezvoltat la cererea clientului este uneori o alegere mai
+buna decit o implementare având la baza un procesor PDS: performantele si pretul de productie.
+Pentru produse de masa hardware-ul realizat la cerere este mai putin costisitor decât un procesor PDS. Aceasta
+pentru ca o implementare la cererea clientului plaseaza in hardware numai acele functiuni care sunt necesare
+aplicatiei, in timp ce pentru un procesor PDS se plateste de fiecare data pentru toate functiunile, chiar daca unele
+sunt foarte putin folosite. Desigur insa ca proiectarea hardware-ului la cerere ridica anumite probleme si dificultati.
+Componentele hardware la cerere pot avea diferite forme. Acesta poate fi o mica placa de circuit imprimat cu
+citeva componente sau un sistem complex care incorporeaza circuite integrate realizate la cerere.
+Una dintre abordarile comune pentru hardware-ul la cerere in aplicatiile PDS este de a proiecta placi de circuite
+imprimat care incorporeaza diverse componente.
+Multe circuite integrate oferite de producatori pentru aplicatii PDS sunt procesoare PDS standard care contin
+programe realizate la cerere, stocate in memoria ROM. Unele din aceste circuite au la baza procesoare PDS
+comerciale.
+Cu cât instrumentele pentru proiectarea circuitelor devin mai performante si inginerii sunt mai familiarizati cu
+tehnicile de proiectare, tot mai multe firme isi dezvolta circuitele necesare pentru aplicatii. Proiectarea circuitului
+propriu asigura maximum de flexibilitate deoarece acestea sunt adaptate nevoilor aplicatiei pina la nivelul fiecarei
+porti logice.
+
+                                                                                                            21
+

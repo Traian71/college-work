@@ -1,0 +1,518 @@
+Curs 1
+
+
+                      Procesoare digitale de semnal si sisteme PDS
+
+
+       Introducere
+       Impulsul initial pentru folosirea tehnicilor numerice in domeniul prelucrarii semnalelor l-au
+dat calculatoarele numerice de uz general. Implementarea algoritmilor de prelucrare numerica pe
+aceste sisteme prezinta anumite inconveniente: flexibilitate redusa, gabaritul mare, pret de cost
+mare, s.a., ceea ce limiteaza domeniile de aplicabilitate. Ulterior, elemente ale tehnicii de calcul
+numerice au fost utilizate pentru realizarea echipamentelor specializate in prelucrarea semnalelor.
+Dezvoltarea intensa a circuitelor cu grad mare de integrare (VLSI, GLSI, avind peste 106
+tranzistoare/cip) a deschis o noua etapa in domeniul prelucrarii digitale a semnalelor (PDS), etapa a
+care a debutat in anul 1979 cu lansarea familiei de procesoare Intel 2920. Acest microprocesor
+specializat, avind incorporate convertoare A/D si D/A a permis implementarea filtrelor numerice de
+ordin mic, operind in banda audio (la frecvente de citiva zeci de kHz), folosind doar un numar
+restrins de componente aditionale. Aproape simultan, firma Texas Instruments a inceput producerea
+procesorului TMS 320, cu o productivitate deosebita in executarea algoritmilor PDS, gratie unui
+nou tip de arhitectura interna. In acelasi timp firma AMD a lansat procesorul de tip bit-slice AMD
+29500, care impreuna cu microprocesoarele AMD 2900 sunt destinate unor aplicatii care implica
+prelucrarea numerica a semnalelor.
+       In prezent aproape toate firmele care activeaza in domeniul microelectronicii produc si
+circuite VLSI pentru prelucrarea numerica a semnalelor. Cei mai importanti producatori1) de
+circuite PDS sunt:
+
+
+               -Texas Instruments                    57%
+               -AT&T                                 13%
+               -Motorola                             13%
+               -NEC                                  8%
+               -Analog Devices                       6%
+               -Alti producatori                     3%
+
+
+       Productia include circuite PDS de uz general cit si circuite destinate unor aplicatii specifice.
+Pentru usurarea implementarii aplicatiilor, firmele producatoare de circuite PDS ofera si o gama
+intrega de compomente hardware (sisteme de dezvoltare, module de evaluare, interfete specifice) si
+software (compilatoare pentru limbaje de nivel inalt, asambloare, editoare, programe de depanare,
+
+                                                                                                     1
+biblioteci de programe aplicative, cod pentru diversi algoritmi, etc). Datorita performantelor
+deosebite, procesoarele PDS reprezinta la ora actuala un concurent redutabil pentru
+microprocesoarele de uz general sau pentru microcontrolere in multe aplicatii. Procesoarele digitale
+de semnal actuale sunt optimizate in raport cu urmatorii parametri: viteza de prelucrare, consumul
+de energie si pretul de cost. Circuitele PDS sunt folosite in prezent in: telecomunicatii (modemuri,
+echipamente radio, sistemele de televiziune, sistemele pentru transmisiuni de date, telefonie
+celulara), medicina, industria automobilelor, instrumentatie, echipamentele periferice (drievere de
+disc flexibil si optic, imprimente, sisteme de achizitie), robotica, electronica de consum, s.a.
+
+
+
+
+1.1    Caracteristici ale procesoarelor PDS
+
+
+       Procesoarele PDS sunt circuite integrate specializate pentru implementarea algoritmilor de
+prelucrare numerica a semnalelor. Caracteristicile structurale si functionale ale acestor
+microprocesoare sunt adaptate particularitatilor impuse de algoritmii de prelucrare:
+
+
+                                                           N 1
+         Convolutie                           y ( n )  k  0 h ( k ) x ( n  k )
+                                                            N 1                     M 1
+         filtrare recursiva                   y (n)   k  0 ak x (n  k )  i 1 bi y (n  i )
+
+         TFD                                                 N 1          nk
+                                              X (k )   n  0 x (n)W
+                                                            K
+         prelucrare neliniara                 y (n)   k 1 ak x k (n)
+
+         prelucrare logica                    y (n)  [ x(n), x(n  1), x (n  2), x (n  N  1)]
+
+
+
+
+                   viteza mare de prelucrare pentru asigurarea posibilitatii de lucru in timp real;
+                   executarea unui volum mare de operatii aritmetice si logice simple;
+                   asigurarea unei precizii mari de prelucrare;
+                   semnalele de intrare sunt in multe cazuri semnale analogice
+
+
+       Aceste cerinte sunt satisfacute pe urmatoarele cai:
+        adoptarea unor arhitecturi cu grad mare de paralelism in prelucrare combinata cu executia
+pipeline a instructiunilor pentru cresterea vitezei de executie, multe instructiuni fiind executate intr-
+un singur tact;
+
+
+
+                                                                                                       2
+         includerea in circuit a unor module care faciliteaza cresterea productivitatii: multiplicator
+hardware de tip paralel, circuite pentru deplasari binare, memorii interne pentru date si programe,
+stiva interna;
+        existenta unor facilitati hardware pentru executia eficienta a buclelor de inctructiuni;
+         implementarea in logica cablata a unitatii de comanda;
+         includerea circuitelor pentru conversia A/D si D/A precum si a unor intefete rapide pentru
+transferul datelor cu exteriorul (porturi seriale si paralele, controlere DMA);
+         prevederea unor interfete specifice (timmere, circuite PLL, controlere pentru intreruperi);
+         precizia de prelucrare este 16 sau 32 de biti, cu date reprezentate in virgula fixa sau in
+virgula mobila;
+         setul de instructiuni este adaptat operatiilor cerute de algoritmii PDS (instructiuni pentru
+inmultire si acumulare a rezultatului, instructiuni pentru manipularea blocurilor de date, un set mai
+bogat de instructiuni pentru lucrul cu dispozitivele periferice, s.a.);
+             folosirea   unor    moduri      de    adresare     specifice   (adresare    cu   pre/post
+incrementare/decrementare, adresare cu inversarea bitilor, adresare modulo, s,a.);
+
+
+        a)-      Prelucrarea in timp real necesita in multe situatii executarea rapida a unui volum
+mare de calcule intr-o perioada de esantionare, la o viteza mare de intrare a datelor. In plus
+algoritmii de prelucrare se caracterizeaza printr-un mare grad de regularitate. De aceea, multe
+procesoare PDS folosesc o arhitectura de tip paralel care combina avantajele prelucrarii pipeline cu
+cele ale structurii Harvard. Organizarea pipeline a operatiilor consta in fragmentarea activitatilor si
+executarea acestora pe unitati functionale distincte. Arhitectura Harvard se caracterizeaza prin
+faptul ca sunt folosite memorii separate pentru coduri si pentru date, precum si cai separate pentru
+transferul acestor informatii. In acest mod este posibil transferul operanzilor simultan cu extragerea
+codurilor.
+        b)-      Partea operationala a procesoarelor PDS consta de regula dintr-o unitate aritmetica si
+logica (UAL) rapida cu acumulator, multiplicator paralel si circuite pentru deplasare binara cu unul
+sau mai multe ranguri intr-un singur tact (barell shifter). Unele circuite PDS executa operatia de
+inmultire prin metoda adunarilor si a deplasarilor succesive (de exemplu, I-2920). Operatiile de
+scadere se executa prin adunarea operanzilor reprezentati in cod complement fata de doi.
+Procesoarele digitale de semnal functioneaza fie in virgula fixa (pe 16 biti) fie in virgula mobila (pe
+32 de biti). O alternativa la virgula mobila este aritmetica in virgula mobila pe bloc.
+        c)-      Pentru accelerarea transferului de date cu memoria si pentru reducerea numarului
+operatiilor de transfer cu exteriorul multe procesoare PDS sunt prevazute cu arii de memorie RAM
+sau/si ROM/EPROM/flash pentru stocarea interna a datelor sau/si a codurilor. Pentru a elimina
+
+                                                                                                        3
+necesitatea prevederii unei memorii ROM suplimentare pentru pastrarea coeficientilor algoritmilor
+de prelucrare sau a constantelor sistemului procesoarele de semnal prevad posibilitatea pastrarii
+acestor date in memoria pentru programe (care este memorie fixa). La pornirea sistemului aceste
+constante sunt transferate in memoria de date de unde vor fi preluate de unitatile de prelucrare. In
+scest scop arhitectura Harvard traditionala (in care cele doua tipuri de memorii erau complet
+separate) a fost modificata prevazindu-se posibilitatea unor transferuri de date intre cele doua tipuri
+de memorii cu instructiuni speciale. Exista si posibilitatea de extindere a capacitatii de memorie in
+exterior, cu care procesoarele pot opera la viteza maxima. Procesoarele PDS sunt prevazute si cu
+registre interne de uz general care sunt de tip RAM, cu capacitatea de pina la 128 cuvinte sau chiar
+mai mult.
+       De mentionat ca exista totusi unele diferente intre arhitectura Harvard a memoriei folosita
+de procesoarele de uz general (PUG) moderne (Pentium, Power PC) si procesoarele PDS. Ca si in
+cazul procesoarelor PDS, PUG necesita executia mai multor cicluri de acces la memorie intr-un
+ciclu instructiune datorita functionarii superscalare. In cazul PUG, la o frecventa a tactului de peste
+200-300 MHz este dificil de realizat memorii care sa raspunda la viteza procesorului. In consecinta
+PUG nu pot accesa memoria externa la viteza completa. Solutia acestei probleme consta in folosirea
+memoriilor cache interne. PUG moderne folosesc memorii cache interne, atit pentru coduri cit si
+pentru date, cuplate direct la nucleul procesorului. Daca informatiile accesate se afla in memoria
+cache transferul acestora catre nucleul procesorului se executa cu viteza completa, fara a accesa
+memoria externa mai lenta. Memoriile cache interne se comporta ca o memorie duala, aproape
+identic cu arhitectura Harvard. Exista totusi si diferente intre cele doua arhitecturi:
+       - La procesoareele PDS programatorul controleaza explicit datele si instructiunile stocate in
+memoriile interne. In schimb la PUG, transferul cu memoriile cache este executat automat de logica
+de comanda, in mod transparent pentru programator.
+       - Chiar daca majoritatea procesoarelor de semnal nu poseda memorii cache interne, la unele
+este folosita o arie de memorie cache pentru instructiuni, inclusa in nucleul procesorului, separata
+de bancurile de memorie ale arhitecturii Harvard, folosita pentru executia buclelor de instructiuni.
+In general procesoarele de semnal nu folosesc memorii cache pentru date.
+       d)-     Existenta unor unitati hardware specializate (multiplicator intern de tip paralel,
+circuite pentru deplasarea datelor binare, unitati aritmetice separate pentru calculul adreselor, s.a.
+sunt facilitati specifice procesoarelor de semnal.
+       e)-     O alta particularitate a procesoarelor PDS o reprezinta existenta unor interfete
+specializate pentru prelucrarea si achizitia semnalelor. In structura lor exista circuite pentru
+conversia A/D si D/A sau interfete pentru conectarea acestor circuite. Alte procesoare, ca de
+exemplu cele din familia TMS 320 (TI) contin, in locul convertoarelor A/D si D/A, controlere
+
+
+                                                                                                     4
+pentru intreruperi, care ofera o legatura activa cu dispozitivele exterioare (timmere, interfete
+programabile, etc.).
+        f)-      Implementarea hardware a stivei permite salvarea/restaurarea rapida a contextului
+procesorului la intreruperi sau la accesarea unor subrutine. Intrucit dimensiunea stivei hardware
+interna este limitata exista posibilitatea de extensie a stivei in memoria RAM pentru date.
+        g)-      O caracteristica a procesoarelor PDS o reprezinta realizarea unitatii de comanda a
+procesorului in logica cablata, in timp ce procesoarele de uz general au unitatea de comanda
+realizata prin microprogramare. Aceasta metoda de realizare este mai putin flexibila dar permite in
+schimb obtinerea unei viteze mai mari de lucru.
+        h)-      Setul de instructiuni a procesoarelor de semnal cuprinde atit instructiuni generale cit
+si instructiuni strict specializate: instructinui de tip MAC pentru realizarea operatiei de multiplicare
+si acumulare, instructiuni pentru executarea unor operatii strict specializate, instructiuni pentru
+reperare, s.a.
+        i)-      Lungimea cuvintelor pentru efectuarea calculelor este de 8, 16, 25 si chiar de 40 de
+biti. Pentru marirea gamei dinamice, anumite operatii interne se executa in precizie dubla. Precizia
+de calcul este impusa de obtinerea unor performante dorite a operatiilor de prelucrare, ca de
+exemplu, un raport semnal /zgomot convenabil.
+
+
+        Daca la circuitele PDS din prima generatie, din dorinta de a obtine o productivitate ridicata
+precum si o economie de spatiu pe pastila de material semiconductor, s-a renuntat la unele functiuni
+importante, precum realizarea ciclurilor programabile, un sistem dezvoltat de intreruperi, metode de
+transfer eficiente, la circuitele din generatia a doua sunt realizate din acest punct de vedere
+performantele celor mai bune microprocesoare single-cip de uz general.
+        Una din caile de realizare a circuitelor PDS a fost inzestrarea microprocesoarelor de uz
+general cu facilitati pentru prelucrarea semnalelor. Exemplul cel mai cunoscut este includerea
+instructiunilor specializate pentru prelucarea imaginilor la nivel de pixel in setul de instructiuni al
+procesoarelor de uz general (instructiunile MMX si SSE la procesoarele Pentium-Intel). De aceea
+procesoarele PDS actuale au facilitatile microprocesoarelor de uz general performante. De exemplu,
+facilitati specifice procesoarelor de uz general (posibilitatile pentru comanda memoriei virtuale,
+pentru lucrul in regim de multiprogramare, folosirea memoriilor cache, s.a.) au inceput sa fie
+folosite si de catre procesoarele de semnal. Astfel ca in prezent diferentele dintre diferitele variante
+de microprocesoare nu mai sunt la fel de nete.
+        Un exemplu de dezvoltare a unui procesor PDS plecind de la un microcontroler il reprezinta
+circuitul 68HC16 (Motorola). Un alt exemplu il reprezinta procesorul Z89C00 (Zilog), creeat
+plecind de la microcontrolerul Z8. La fel a procedat si firma National Semiconductors. Aproape
+
+
+                                                                                                      5
+toate procesoarele produse de aceasta au facilitati PDS. Fiecare versiune este dedicata unui anumit
+segment de piata (unei anumite aplicatii), cum sunt masinile pentru sinteza automata a vocii,
+modemuri, faxuri, printere, echipamente de birou, s.a. Fiecare circuit are anumite facilitati PDS, in
+functie de cerintele algoritmului aplicatiei concrete.
+
+
+       Cresterea constanta a cerintei de procesoare PDS impulsioneaza evolutia lor si cresterea
+continua a performantelor. Dintre tendintele care se manifesta in acest domeniu pot fi mentionate:
+               - Marirea vitezei de operare prin adoptarea unor noi tehnologii. Au fost realizate deja
+structuri logice pe baza de Ga-As cu timpi de propagare de 33 psec. Firma Bell-Labs a creeat
+multiplicatoare de 8x12 biti cu 548 jonctiuni Josefson cu intirzieri de 2 nsec;
+               - Cresterea randamentului circuitelor PDS universale se obtine si prin interconectarea
+lor cu coprocesoare, orientate pe executarea unor calcule matematice complexe;
+               - Pentru realizarea unor sisteme performante este necesar sa se puna in concordanta,
+cu acuratete, algoritmii PDS cu arhitectura sistemelor de prelucrare;
+               - Folosirea in locul arhitecturilor traditionale, care presupune existenta unei unitati
+centrale si a unei memorii, a arhitecturilor bazate pe flux de date (data flow), pentru prelucrarea
+paralela, sau a retelelor dedicate;
+               -    Sporirea eficientei sistemelor PDS se poate obtine si prin perfectionarea
+circuitelor, cresterea gradului lor de universalitate, introducerea sistemului de intreruperi, a modului
+de functionare in virgula mobila, imbunatatirea parametrilor electrici, scaderea pretului de cost, etc.
+               - O tendinta care usureaza realizarea functiunilor PDS o reprezinta existenta
+circuitelor PDS la cerere. Acestea pot fi realizate plecind de la un nucleu PDS la care pot fi atasate
+dupa necesitati memorie si componente periferice. Toti fabricantii de procesoare PDS procedeaza in
+acest mod. Firma TI, de exemplu, vinde intre 10÷20% din productia sa sub forma de circuite la
+cerere, realizate plecind de la un nucleu de procesor in virgula fixa .
+       Se presupune ca circuitele PDS single-cip vor avea o arie de utilizare comparabila cu cea a
+procesoarelor conventionale.
+
+
+       Trebuie insa mentionate si unele inconveniente ale procesoarelor PDS, din punct de vedere a
+posibilitatilor de implementare a aplicatiilor:
+
+
+        Datorita particularitatilor structurale, functionale si de programare, folosirea procesoarelor
+PDS este ceva mai dificila decit a altor tipuri de microprocesoare. Pentru a usura folosirea acestor
+circuite au fost create “seturi PDS” ( un astfel de “set” cuprinde circuitul sau placheta cu acesta si
+software-ul pentru programare), care acopera diverse segmente de aplicatii. De exemplu, firma
+
+
+                                                                                                      6
+AT&T a creeat un set PDS pentru implementarea modemurilor cu viteza mai mare de 9600 bps.
+Firma Motrola colaboreaza cu utilizatori de circuite PDS care pot furniza direct cod pentru diverse
+aplicatii. Exista si firme specializate in elaborarea de algoritmi pentru deverse aplicatii. Firma IAV
+(Independent Algorithm Vendors) creeaza cod pentru diverse circuite PDS.
+
+
+        Pentru dezvoltarea software-ului chiar de catre utilizatorul sistemelor PDS sunt disponibile
+2 tipuri de metode de programare:
+               - Programarea la nivel de blocuri (Block-Level Programing). Intii se realizeaza
+sistemul care implementeaza algoritmul de prelucrare, sub forma unui graf, folosind blocuri
+functionale standard, cu ajutorul unor programe pentru grafica (de exemplu, ORCAD, PROTEL,
+etc.). Dupa definitivarea sistemului se poate executa simularea functionarii pentru a-l adapta la
+aplicatia concreta. Programul poate genera apoi codul pentru un procesor specificat, pentru un
+circuit FPGA sau pentru un ASIC. Astfel de sisteme de programare utilizeaza firmele Comdisco,
+Mentor, Star Semiconductor.
+               - Programarea bazata pe meniuri.             Firma Array Microsistems abordeaza
+proiectarea cu circuite PDS intr-o maniera similara. Pachetul de programe “Array so FFT”, de
+exemplu, permire selectia unui set de circuite dintr-un menu. Acest set este mai limitat decit gama
+circuitelor PDS de uz general, insa programul poate implementa un program pentru calculul TFR in
+1024 de puncte in maximum 132 microsecunde.
+
+
+       Exista totusi situatii cind utilizatorul trebuie sa-si creeze codul pentru un algoritm propriu.
+Sau alte situatii in care utilizatorul trebuie sa scrie o anumita cantitate de cod pentru a adapta
+algoritmul preluat dintr-o biblioteca la particularitatile sistemului (controlul indicatorilor de
+comunicatie, interfata cu operatorul, controlul anumitor linii, etc.) Din acest motiv se folosesc
+compilatoare pentru limbaje de nivel inalt si sisteme de operare specifice circuitelor PDS. Cele mai
+folosite sunt compilatoarele pentru limbajul C. Unele compilatoare sunt prevazute si cu programe
+de optimizare a codului generat. De exemplu, Procesoarele evoluate ale firmei TI (TMS 320C3x,
+TMS 320C4x ) au si compilatoare pentru limbajul ADA.
+
+
+       Un ajutor important pentru folosirea circuitelor PDS il ofera sistemele de operare. Cel mai
+popular sistem de operare este Spox, al firmei Spectron Microsystems Inc. El contine un nucleu de
+multiprocesare de timp real, module pentru gestionarea memoriei, biblioteca de functii matematice
+specifice algoritmilor PDS, o biblioteca C, plus facilitati pentru depanarea programelor. Sistemul
+Spox este instalat pe platforme cu procesoarele 21000 (Analog Devices), 96002 (Motorola),
+TMS320C3x si TMS 320C4x (Texas Instr.). O versiune noua, MicroSpox, in virgula fixa, ruleaza
+
+
+                                                                                                    7
+pe platforme cu procesoarele 56000 (Motorola), APDS 2100 (AD), TMS 320C2x si TMS 320C5x
+(TI). Familia 56000 ruleaza si sub sistemul VRTX al firmei Ready Systems, un sistem de operare
+care poate fi utilizat de majoritatea familiilor de microprocesoare.
+
+
+        Pentru evaluarea calitatilor diveselor familii de procesoare PDS se folosesc informatii ca:
+        - timpul de realizare a operatiei de inmultire si adunare (pentru majoritatea procesoarelor
+PDS acesta este de ordinul a 200 nsec.);
+        - multe dispozitive precizeaza timpul in care este realizata o sarcina precisa, de exemplu un
+algoritm de filtrare numerica sau de calcul a TFR intr-un numar specificat de puncte (de regula
+1024 puncte).
+
+
+        Procesoarele de semnal actuale permit realizarea unor sisteme de prelucrare flexibile,
+suficient de rapide si la un pret de cost competitiv. Caracterizind comparativ sistemele
+multiprocesor, procesoarele matriciale, microcalculatoarele si sisteme avind la baza procesorul
+TMS 320, pentru realizarea unei sarcini tipice, cum ar fi calculul TFR in 1024 de puncte, in virgula
+fixa, a rezultat un cost pe operatie foarte mic in cazul sistemelor cu procesoare PDS, in raport cu
+celelalte tehnici de calcul (de exemplu, in cazul folosirii calculatorului CRAY1 costul este de
+1$/operatie, iar pentru un sistem cu procesorul TMS 320 este de numai 0,00066$/operatie)
+        Sintetizind, avantajele folosirii procesoarelor de semnal in realizarea sistemelor PDS sunt
+urmatoarele:
+         Posibilitatea de realizare a unor sisteme PDS in timp real, universale si flexibile, cu
+posibilitati de programare rapida, pentru a obtine o functie predeterminata;
+         Precizie mare de lucru, care depinde de precizia de reprezentare interna a datelor;
+         Stabilitate mare la variatii de temperatura, a tensiunii de alimentare sau a parametrilor
+componentelor;
+         Lipsa problemelor legate de zgomotul introdus de sursele de alimentare;
+         existenta unor modele matematice pentru proiectarea si analiza sistemelor;
+         Costul redus al componentelor si folosirea procedeelor standard de fabricatie a acestora.
+
+
+
+
+1.2     Caracteristici ale sistemelor PDS
+
+
+        Sistemele PDS au citeva caracteristici comune care se refera la algoritmi, rata de
+esantionare, frecventa de tact si tipul aritmeticii
+
+
+
+                                                                                                      8
+              Algoritmii
+       Sistemele PDS sunt deseori caracterizate de algoritmii implementati. Algoritmul specifica
+operatiile aritmetice care trebuie efectuate dar nu arata si cum sunt implementate aceste operatii. Un
+anumit algoritm poate fi implementat pe un sistem cu microprocesor de uz general, cu un procesor
+de semnal sau cu un circuit integrat dedicat. Selectia tehnologiei de implementare este determinata
+si de alti factori cum ar fi viteza de lucru si precizia. In tabelul 1.1 sunt enumerati algoritmi comuni
+PDS si unele aplicatii tipice ale acestora.
+
+
+              Rata de esantionare
+       O caracteristica de baza a sistemelor PDS este rata de esantianare. Aceasta este viteza cu
+care esantioanele sunt achizitionate, prelucrate si generate. Impreuna cu complexitatea algoritmilor,
+rata de esantionare determina cerintele de viteza ale tehnologiei de implementare. Un exemplu
+familiar este unitatea pentru disc compact audio digital (CD) care genereaza esantioane cu o rata de
+44,1 kHz pe doua canale.
+
+
+
+
+                                                                                                      9
+       Sistemele PDS pot utiliza una sau mai multe rate de esantionare; acestea sunt denumite
+sisteme PDS multirata. Un exemplu este un sistem pentru conversia de la rata de esantionare de
+44,1 kHz a CD la rata de esantionare a unitatii de banda audio digitala (DAT) de 48 kHz. Deoarece
+raportul dintre cele doua rate nu este un numar intreg in mod uzuat conversia se executa in etape,
+utilizindu-se in acest scop cel putin doua rate intermediare. Alt exemplu de algoritm multirata este
+bancul de filtre folosit de exemplu pentru codarea vorbirii, audio si video sau pentru unii algoritmi
+de analiza a semnalelor. Bancurile de filtre constau din etaje care separa din semnal partile de joasa
+si de inalta frecventa. Aceste noi semnale sunt apoi subesantionate (rata de esantionare este redusa
+prin eliminarea periodica a unor esantioane) si apoi din nou separate. In aplicatiile de tip multirata
+raportul dintre cea mai mica rata folosita si rata cea mai mare variaza in limite largi, depasind
+uneori cinci ordine de marime.
+       La sistemele PDS uzuale rata de esantionare variaza in limite largi. In Fig. 1.1 este
+prezentata pozitia citorva clase de aplicatii PDS in raport cu rata de esantionare si cu complexitatea
+algoritmilor. Ratele de esantionare folosite acopera 12 ordine de marime!. Totusi aplicatiile care cer
+rate inalte sunt rare. Aceasta deoarece pretul de cost si dificultatile de implementare a unui algoritm
+dat cresc atunci cind rata de esantionare creste.      De aceea algoritmii PDS folositi la rate de
+esantionare ridicate tind sa fie mai simpli decit cei care folosesc rate de esantionare mai reduse.
+
+
+
+
+       Multe sisteme PDS trebuie sa satisfaca cerinte de viteza foarte stricte pentru ca ele opereaza
+cu semnale din lumea reala. Aceste sisteme de timp real trebuie sa satisfaca cerintele de viteza in
+
+
+                                                                                                      10
+orice conditii. Alte tipuri de sisteme (cum ar fi bazele de date) trebie sa satisfaca cerintele de viteza
+pe ansamblu. De exemplu, sa presupunem ca un sistem PDS care trebuie sa efectueze conversia de
+rata de esantionare de la rata CD la rata DAT este implementat ca un sistem de timp real care
+primeste de la CD esantioane cu rata de 44,1 kHz si produce semnale digitale pentru DAT cu rata
+de 48 kHz. Convertorul trebuie sa fie pregatit sa primeasca un nou esantion de la CD la fiecare 22,6
+s, si sa produca un nou esantion de iesire pentru DAT la fiecare 20,8 s. Daca sistemul se
+defecteaza sunt piedute date iar semnalul rezultat la iesire este distorsionat. Pentru a satisface astfel
+de constringeri severe de timp real trebuie efectuata o proiectare atenta a sistemului.
+
+
+               Tactul
+       Sistemele digitale folosesc o anumita frecventa de tact. Frecventa de tact corespunde uzual
+cu frecventa cu care sistemul executa operatiile elementare. Pentru produsele comerciale, de masa,
+sunt comune frecvente de tact de pina la 100 MHz, cu unele exceptii in cazul produselor
+performante. Pentru sistemele PDS raportul dintre rata de esantionare si cea a tactului este una
+dintre caracteristicile folosite pentru a stabili modul de implementare. Acest raport determina
+cantitatea de hardware necesara pentru a implementa un anumit algoritm, cu o complexitate data, in
+timp real. Pe masura ce raportul creste si cantitatea si complexitatea structurii hardware creste de
+asemenea.
+
+
+               Reprezentarea numerelor
+       Operatiile aritmetice elementare de adunare si de inmultire sunt comune majoritatii
+algoritmilor PDS. In consecinta, reprezentarea numerelor si tipul aritmeticii folosit au o influenta
+puternica asupra comportarii si performantelor sistemului PDS. Cea mai importanta decizie pe care
+trebuie sa o ia proiectantul sistemului este optiunea pentru o aritmetica in virgula fixa sau una in
+virgula mobila.
+       Aritmetica in virgula fixa asigura reprezentarea numerelor intr-o gama fixa (de exemplu,
+intre –1.0 si +1.0), prin cuvinte cu un numar finit de biti (denumit lungimea cuvintului). De
+exemplu, un numar reprezentat cu opt biti in virgula fixa asigura o rezolutie de 1/256 din valoarea
+maxima pe care o poate avea numarul. Numerele din afara domeniului specificat nu pot fi
+reprezentate. Daca operatiile aritmetice produc un numar mai mare de biti, se excuta fie saturarea
+(marimile sunt limitate la cea mai mica sau cea mai mare valoare reprezentabila), fie elminarea
+bitilor excedentari (operatie denumita wrap around).
+       Reprezentarea in firgula mobila (floating point) extinde mult domeniul de lucru. In cazul
+virgulei mobile fiecare numar este reprezentat prin doua cantitati: mantisa (M) si exponentul (E). In
+fapt mantisa acopera domeniul intre –1.0 si +1.0, iar exponentul indica valoarea cu care trebuie
+
+
+                                                                                                      11
+inmultita mantisa (sub forma unei puteri a lui doi) pentru a obtine marimea reprezentata. Valoarea
+reprezentata este:
+
+
+       N = Mx 2E
+
+
+       Reprezentarea in virgula fixa asigura o gama dinamica mult mai mare decit reprezentarea in
+virgula fixa (gama dinamica este raportul dintre valoarea cea mai mare si cea mai mica care poate fi
+reprezentata). Intrucit aceasta reprezentare reduce probabilitatea de aparitie a depasirilor de scala
+precum si executia operatiilor de normare, ea simplifica considerabil proiectarea algoritmului si a
+software-ului. In schimb aritmetica in virgula mobila este mai lenta si mai scumpa decit cea in
+virgula fixa, iar structura hardware a sistemului este mai complicata.
+
+
+1.3    Folosirea procesoarelor PDS
+
+
+       Prelucrarea digitala in general, si procesoarele PDS in particular, sunt folosite intr-o gama
+larga de aplicatii, de la sistemele radar la echipamentele electronice de larg consum. Evident ca nici
+un procesor PDS nu poate satisface cerintele tuturor aplicatiilor. In consecinta, sarcina initiala a
+proiectantului este de a selecta un procesor PDS care satisface din punct de vedere a performantelor,
+costului, posibilitatilor de integrare, consumului si a altor factori, pentru aplicatia avuta in vedere.
+In continuare sunt enumerate citeva categorii de aplicatii PDS (Tabelul 1.2):
+
+
+
+
+       Sistemele dedicate ieftine
+       Cele mai multe aplicatii pentru procesoarele PDS sunt reprezentate de sisteme ieftine,
+reproduse intr-un numar mare, precum telefoanele celulare, driever-ele de disc si modemurile. In
+aceste aplicatii costul si considerentele legate de simplitatea integrarii sunt factori predominanti.
+Pentru produsele portabile, alimentate de la baterie, puterea consumata este de asemenea un
+parametru critic.
+
+
+
+                                                                                                     12
+       Aplicatii de inalta performanta
+       O alta clasa de aplicatii implica prelucrarea unui volum mare de date cu algoritmi
+complecsi, pentru cerinte speciale. Aici sunt incluse aplicatiile din domeniul sonar si al explorarilor
+seismice, unde numarul de produse este mic, algoritmii folositi sunt mai sofisticati, iar proiectarea
+produsului este mai complexa si mai dificila. Proiectantul exploateaza la maximum performantele
+procesorului, si asigura suport pentru configuratii multiprocesor. In unele situatii, in loc de a
+dezvolta propriul sistem proiectantul poate alege un sistem standard de dezvoltare si foloseste
+bibliotecile existente pentru elaborarea programelor.
+
+
+       Aplicatii multimedia pe calculatoare PC
+       O clasa larga de aplicatii PDS o reprezinta calculatoarele PC cu facilitati multimedia. In
+calculatoarele Pc au fost incorporate procesoare PDS care asigura o varietate de facilitati cum ar fi:
+mesageria vocala, modemuri de date si faximil, sinteza de muzica si de voce, compresie de imagini.
+Ca in cazul aplicatiilor dedicate, de volum mare, calculatoarele PC multimedia impun un cost redus
+si un grad mare de integrare. De asemenea, ca si in cazul altor aplicatii dedicate, calculatoarele PC
+multimedia cer performante inalte deoarece procesorul PDS trebuie sa asigure functii multiple
+simultan. In plus, datorita caracterului de multiprocesare al acestor aplicatii, alaturi de realizarea
+eficienta a fiecarei functiuni, procesorul PDS trebuie sa execute eficient comutarea intre aceste
+functiuni. Capacitatea de memorie este de asemenea importanta in aceste aplicatii care manipuleaza
+un volum mare de date.
+       O tendinta de actualitate este incororarea in procesoarele de uz general a unor functiuni
+specifce PDS pentru a executa mai eficient operatii de prelucrare a semnalelor. In anumite cazuri,
+astfel de procesoare imbunatatite pot executa anumite operatii fara a mai folosi un procesor PDS
+separat.
+
+
+1.4     Problematica proiectarii sistemelor PDS
+
+
+       Proiectarea sistemelor de prelucrare digitala a semnalelor in timp real implica studierea
+principiilor si a metodelor de constructie a algoritmilor, programelor si a mijloacelor hardware de
+realizare a acestora si cuprinde urmatoarele etape:
+
+
+       I. Studierea si elaborarea metodelor de sinteza a operatorilor de prelucrare fizic realizabili,
+pentru diverse probleme aplicative (de exemplu, construirea functiilor de transfer (sinteza) a
+filtrelor numerice, a operatorilor pentru conversii spectrale, s.a.);
+
+
+
+
+                                                                                                    13
+        II. Elaborarea si optimizarea a algoritmilor efectivi de calcul a operatorilor stabiliti in etapa
+anterioara, proces prin care este determinata eficienta necesara a procesorului, prin volumul de
+calcule care sunt cerute de realizarea operatorului. Optimizarea algoritmului de calcul poate avea ca
+efect reducerea volumului de calcul si in consecinta simplificarea sau reducerea necesarului de
+elemente hardware;
+        III. Analiza calitatii algoritmilor prin estimarea preciziei de executie, a influentei lungimii
+cuvintelor, analiza stabilitatii, a diverselor efecte neliniare;
+        IV. Stabilirea principiilor de realizare hardware si software a algoritmilor PDS. Se fixeaza
+cu acest prilej arhitectura structurii, a blocurilor functionale, mijloacele software necesare;
+        V.    Elaborarea mijloacelor de proiectare automata a sistemelor PDS in timp real. De
+mentionat aici ca un rol deosebit il are modelul functional al procesorului specializat, a carui nivel
+de detaliere a structurii si a algoritmilor poate fi diferit. Cele mai bune rezultate se obtin prin
+folosirea in etapa de proiectare a modulelor de simulare speciale (emulatoare de procesoare
+specializate) care modeleaza particularitatile de functionare a blocurilor operationale ale
+procesorului specializat.
+
+
+
+
+                                                                                                      14
+

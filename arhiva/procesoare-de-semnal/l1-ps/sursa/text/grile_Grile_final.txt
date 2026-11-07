@@ -1,0 +1,498 @@
+SUBIECTE POZA .PNG
+1. La procesoarele care nu accepta operatia de inversare a bitilor implementata in unitatea
+    de generare a adreselor, pentru generarea adreselor cu bitii inversati este utilizata:
+   - Deplasarea
+   - Comparatia
+   - Rotatia
+   - Instructiuni cu executie conditionata
+
+2. In figura de mai jos este reprezentat un pipeline cu :
+
+
+
+
+  -      1 etaj
+  -      3 etaje
+  -      4 etaje
+  -      2 etaje
+
+3. Bitul ce indica daca rezultatul ultimei operatii aritmetice a fost nul se numeste:
+   - Bit de zero
+   - Bit de deplasare
+   - Bit de minus
+   - Bit de transport
+
+      ◼ De exemplu, biții de stare includ un bit de zero (setat dacă rezultatul ultimei operații
+        aritmetice a fost zero), un bit de minus (setat dacă rezultatul ultimei operații aritmetice a
+        fost negativ), un bit de depășire, etc
+
+4. Aplicarea unui factor de prescalare cu valoarea de 4:
+   - Micsoreaza frecventa de 4 ori
+   - Mareste perioada de 2 ori
+   - Mareste frecventa de 4 ori
+   - Micsoreaza perioada de 2 ori
+
+      ◼ Scopul circuitului de prescalare este de a reduce frecvența sursei de ceas astfel încât
+        numărătorul să poată număra perioade mai lungi de timp. El face acest lucru divizând
+        frecvența sursei de ceas cu una din mai multe valori selectabile
+
+5. Atat porturile gazda cat si porturile de comunicatie lureaza in regim DMA.
+   - Fals
+   - Adevarat
+
+      ◼ Porturile de comunicație au instrucțiuni dedicate care ușurează folosirea lor. Uzual ele
+        lucrează în regim DMA;
+      ◼ Porturile de comunicație au instrucțiuni dedicate care ușurează folosirea lor. Uzual ele
+        lucrează în regim DMA
+6. In cazul interfetelor seriale asincrone datele sunt insotite de un semnal de ceas
+    suplimentar.
+   - Adevarat
+   - Fals
+
+   ◼ În cazul interfețelor seriale asincrone datele nu sunt însoțite de un semnal de ceas
+     suplimentar.
+
+7. Secventa de program afiseaza un model de programare:
+    A0=A0+P
+    P=X*Y
+    Y=*R0++
+    P=*Pt++
+   - Cu date stationare
+   - Cu timp stationar
+   - Cu date stationare si cu timp stationar
+   - Nicio varianta
+
+   ◼ In modelul de programare cu timp stationar, instructiunile procesorului specifica actiunile
+     care sa fie facute de unitatile de executie (multiplicator, acumulator s.a.m.d.) in timpul
+     unui singur ciclu instructiune. Familia DSP16xx (AT&T) este un bun exemplu unde
+     instructiunea multiplicaacumuleaza arata in felul urmator:
+           A0=A0+P P=X*Y Y=*R0++ P=*Pt++
+   ◼ Programarea cu date stationare specifica operatiile care vor fi facute, dar nu si timpii
+     exacti la care operatiile vor fi executate. Ca exemplu sa consideram urmatoarele
+     instructiuni de ale DSP32xx (AT&T):
+          A1=A1+(*R5+ + = = * R4 + +) * *R3 + +
+
+8. In care etapa se incarca instructiunea MOVE #$1234, R0: ?
+   - Execute (Executia)
+   - Instruction Fetch (Aducerea codului instructiunii din memoria de program)
+   - Decode (Decodarea instructiunii)
+   - Data Read/Write (Citirea operandului / operanzilor din memoria de date)
+
+   ◼ Prima instructiune incarca adresa hexazecimala 1234 in registrul de adrese R0
+
+9. Procesoarele in virgula fixa au :
+   - Cost mai ridicat (Cu virgula mobila sunt in general mai scumpe)
+   - Gama dinamica ridicata (Gama dinamica la mobila > Gama dinamica la fixa)
+   - Arhitectura de sistem mai putin complexa fata de procesoarele cu virgula mobila
+   - Programarea mai facila fata de procesoarele cu virgula mobila (Cu virgula mobila sunt
+     mai usor de programat)
+
+10. Familia de procesoare Texas Instruments similara facilitatilor microcontrelerelor este :
+   - TMS320C4000
+   - TMS320C5000
+   - TMS320C2000
+   - TMS320C6000
+11. Secventa de cod prezinta o bucla pentru :
+    RPT #16
+    MAC (R0)+, (R4)+, A
+   - FIR implementat in limbaj de asamblare cu cicluri asistate hardware
+   - FIR implementat in limbaj de asamblare cu cicluri asistate software
+   - IIR implementat in limbaj de asamblare cu cicluri asistate software
+   - IIR implementat in limbaj de asamblare cu cicluri asistate hardware
+
+
+
+
+12. Stiva ce contine starea registrilor selectati in timpul apelurilor subrutinelor este:
+   - Stiva Hardware
+   - Shadow registers
+   - Nici una
+   - Stiva Software
+
+       ◼ O stivă hardware este un bloc special situat pe chip-ul de memorie, de obicei având o
+         lungime de câteva cuvinte. Această stivă conține starea registrelor selectate în timpul
+         procesării întreruperilor sau a apelurilor subrutinelor
+       ◼ O stivă software este o stivă convențională care folosește memoria procesorului pentru a
+         stoca date în timpul execuției întreruperilor sau la apelurile de subrutine.
+       ◼ Shadow registers sunt registre dedicate de backup care rețin conținutul registrelor cheie
+         ale procesorului în timpul procesării întreruperii.
+
+13. La aparitia unei intreruperi, aproape toate procesoarele permit terminarea executiei
+    instructiunilor aflate in stadiul de incarcare:
+   - Fals
+   - Adevarat
+
+14. In figura este reprezentat un semnal de sincronizare de cadre de tip:
+
+
+
+
+   -      “bit length” si cuvinte multiple de date per cadru
+   -      “word length” si un singur cuvant de date per cadru
+   -      “word length” si cuvinte multiple de date per cadru
+   -      “bit length” si un singur cuvant de date per cadru
+15. La deplasarea aritmetica la dreapta, numarul 010010 devine:
+   - 100101
+   - 100100
+   - 101001
+   - 001001
+
+      ◼ Chiar dacă se utilizează termenul „deplasare aritmetică spre stânga”, deplasările la stânga
+        aritmetice și logice sunt identice: ambele deplasează cuvântul la stânga și inserează un
+        zero în poziția celui mai puțin semnificativ bit.
+
+      ◼ O deplasare aritmetică la dreapta copiază bitul de semn (un 1 (unu) sau un 0 (zero), în
+        funcție de semnul numărului) în cel mai semnificativ bit.
+        0               1         0 0       1    0
+        Bit de semn MSB                         LSB
+        0               0         1    0 0       1
+
+16. La procesoarele ce pot realiza imbricarea directa, adancimea de intrepatrundere poate
+    avea:
+   - Doua nivele
+   - Opt nivele
+   - Patru nivele
+   - Un nivel
+
+      ◼ Imbricare directă - Adâncimea de întrepătrundere variază de la trei până la șapte nivele.
+
+17. Presupunand ca fiecare etapa din figura necesita pentru a fi executata aproximativ 10 ns,
+    in cat timp este executata I3:
+
+
+
+
+  -      40 ns
+  -      30 ns
+  -      50 ns
+  -      40 ms
+18. Procesorul TMS320C64x este un DSP cu aritmetica in virgula fixa.
+   - Fals
+   - Adevarat
+
+    ◼ Familia de procesoare în virgulă fixă oferită de firma Texas Instruments cuprinde trei
+      generații: TMS320C2000 (C24x și C28x), TMS320C5000 (C54x și C55x) și
+      TMS320C6000 (C62x și C64x).
+
+19. Care este metoda de management a energiei in care ceasul este oprit la majoritatea
+    sectiunilor procesorului:
+   - Controlul frecventei ceasului
+   - Periferiele si controlul operatiilor I/O
+   - Modul adormit
+   - Dezactivarea pinilor de iesire de ceas nefolositi
+
+    ◼ Modurile SLEEP (adormit) și WAIT (așteptare) Aceste moduri, în general, opresc ceasul
+      procesorului la toate secțiunile procesorului (cu câteva excepții)
+
+20. Un echipament ce poate opera la minim 3V, are o tensiune nominala de:
+   - 3.6 V
+   - 2.7 V
+   - 3.3 V
+   - 3V
+
+21. Registrii ce se pot utiliza ca operanzi pentru majoritatea operatiilor aritmetica si de
+    multiplicare sunt:
+   - Registri acumulatori
+   - Registri pentru adresa
+   - Registrul de uz general
+   - Numaratorul de program
+
+22. Pentru controlul ceasului pot fi folosite si sursele de ceas de viteza mica.
+   - Fals
+   - Adevarat
+
+    ◼ Cele două mecanisme pentru controlul ceasului sunt: divizoarele de ceas și sursele de ceas
+      de viteză mică.
+
+23. Portul dedicat pentru comunicarea cu un microprocesor de uz general este denumit:
+   - Port I/O de bit
+   - Circuit timer
+   - Port gazda
+   - Port paralel
+
+24. Consumul de energie in circuitele CMOS:
+   - Creste liniar cu tensiunea
+   - Creste liniar cu freventa de tact
+   - Este invers proportional cu patratul tensiunii
+   - Scade cu cresterea tensiunii
+    ◼ Consumul de energie în circuite CMOS este proporțional cu pătratul tensiunii
+    ◼ Circuitele CMOS consumă energie proporțională liniar cu frecvența de tact
+
+
+
+25. In logica pozitiva la circuitele de interfata seriala:
+   - O tensiune negativa pe linia seriala de date reprezinta un “0” logic, iar o tensiune scazuta
+       (aproape 0 V) reprezinta un “1” logic
+   - O tensiune pozitiva pe linia seriala de date reprezinta un “1” logic, iar o tensiune scazuta
+       (aproape 0 V) reprezinta un “0” logic
+   - O tensiune pozitiva pe linia seriala de date reprezinta un “0” logic, iar o tensiune scazuta
+       (aproape 0 V) reprezinta un “1” logic
+   - O tensiune negativa pe linia seriala de date reprezinta un “1” logic, iar o tensiune scazuta
+       (aproape 0 V) reprezinta un “0” logic
+
+26. Intreruperile ca urmare a unei deplasari de scala sunt: ((((?))))
+   - Intreruperi de la linii externe
+   - Intreruperi de la perifericele incorporate
+   - Intreruperi software
+   - Intreruperi pentru cod ilegal
+
+27. O singura instructiune ar putea fi repetata prin folosirea ciclurilor hardware multi-
+    instructiune.
+   - Fals
+   - Adevarat
+
+28. Pentru programe ce pot fi rulate indiferent de adresa este folosit saltul:
+   - Intarziat cu anulare
+   - Relativ la PC
+   - Conditionat
+   - Neconditionat
+
+29. Printre instructiunile cu functii speciale nu se numara si :
+   - Instructiuni de manipulare a bitilor     (speciala)
+   - Instructiuni pentru virgula mobila pe bloc (speciala)
+   - Instructiuni cu executie conditionata
+   - Instructiuni de impartire iterativa (speciala)
+SUBIECTE POZA B
+
+30. Un vector de intrerupere:
+   - Stabileste legatura intre sursa intreruperii si subrutina de tratare asociata
+   - Are, de regula, o lungime de unul sau doua cuvinte si este localizat in zona inferioara de
+      memorie
+   - Este asociat fiecarei surse de intrerupere
+   - Nu exista in cazul DSP-urilor
+
+31. Din ce categorie de moduri de adresare face parte instructiunea “A6=A6+*R6”, care are
+    ca efect adunarea valorii stocate la locatia de memorie indicata de continutul registrului
+    R6 la valoarea stocata in registrul acumulator A6:
+   - Adresare indirecta cu registru
+   - Adresare indirecta cu registru cu indexare
+   - Adresare indirecta cu registru cu pre sau post incrementare
+   - Adresare indirecta cu registru cu adresare modulo
+
+32. In cadrul DSP-urilor cu pipeline exista urmatoarele modele de programare care folosesc
+    limbaj de asamblare:
+   - Doar modelul de programare cu timp stationar
+   - Doar modelul de programare cu date stationare
+   - Modelul de programare cu timp stationar si modelul de programare cu date stationare
+   - Nu exista astfel de modele de programare
+
+33. Modul de adresare care foloseste un buffer circular de tip FIFO este:
+   - Adresare indirecta cu registru
+   - Adresare indirecta cu registru cu pre sau post incrementare
+   - Adresare indirecta cu registru cu indexare
+   - Adresare indirecta cu registru cu adresare modulo
+
+34. Care din afirmatiile referitoare la setul de instructiuni de rotatie ale procesoarelor de
+    semnal sunt adevarate:
+   - Operatiile de rotatie stanga/dreapta se executa cu un singur bit
+   - Operatiile de rotatie stanga/dreapta se executa cu minim 2 sau 4 biti
+   - Pot fi considerate operatii de deplasare circulara
+   - Nu exista astfel de operatii la procesoarele de semnal
+
+35. Ortogonalitatea setului de instructiuni:
+   - nu exista in cazul DSP-urilor
+   - este influentata doar de gradul in care modurile de addresare sunt disponibile in mod
+      uniform pentru diverse operatii efectuate de procesor
+   - nu poate fi masurata
+   - este influentata de consistenta si gradul in care modurile de adresare sunt disponibile in
+      mod uniform pentru diverse operatii efectuate de procesor
+36. In cazul procesoarelor de semnal, realizarea stivei poate fi efectuata prin urmatoarele
+    metode:
+   - Stiva cu set specializat de registre
+   - Stiva software cu registru de memorare al varfului stivei
+   - Stiva hardware cu memorie RAM
+   - Niciunul din raspunnsurile date
+
+37. Care dintre urmatoarele facilitati sunt specifice procesoarelor de semnal pentru executia
+    buclelor? ((((?))))
+   - Buclare hardware pentru executia buclelor fara cicluri masina suplimentari
+   - Registre speciale pe post de contor de bucla
+   - Instructiuni de salt (software)
+   - Sunt identice cu cele de la procesoarele de uz general
+
+38. Porturile gazda intalnite la procesoarele de semnal:
+   - Sunt porturi seria sau le bidirectionale specializate de 8 biti sau de 16 biti (sunt paralele si
+      directionale de 8 sau 16 biti )
+   - Sunt porturi seriale unidirectionale nespecializate
+   - Lucreaza in regim DMA in mod uzual (data prezenta la port este scrisa automat in memoria
+      procesorului de semnal fara a-l opri, cu sau fara intreruperi)
+   - Nu poate fi folosit pentru a controla procesorul digital de semnal (nu poate sa l forteze sa
+      execute instructiuni sau rutine de serviciu de intrerupere, sa citeasca sau sa scrie
+      registre/memoria etc)
+
+39. Pipeline-ul mareste de obicei timpul de raspuns al procesorului la intreruperi:
+   - Cand executia saltului nu exista
+   - Cu cat executia saltului este mai intarziata
+   - Cu cat executia saltului este mai rapida
+   - Toate variantele sunt ccorecte
+GRILE LINK-URI
+
+1. În cazul execuţiei instrucţiunilor în pipeline, hazardul poate fi eliminat prin:
+
+
+
+
+2. Care din următoarele facilităţi sunt specifice procesoarelor de semnal pentru execuţia
+   buclelor?
+
+
+
+
+3. Care din afirmaţiile referitoare la setul de instrucţiuni de rotaţie ale procesoarelor de
+   semnal sunt adevărate:
+4. Instructiunile de salt pot avea următoarele forme suportate de diverse procesoare de
+   semnal:
+
+
+
+
+5. În In cazul procesoarelor de semnal, realizarea stivei poate fi efectuată prin următoarele
+   metode:
+
+
+
+
+6. Din ce categorie de moduri de adresare face parte instrucţiunea „MUL a", care are ca
+   rezultat AX=AL*a, unde AX şi AL sunt registrele procesorelui folosite implicit pentru
+   operaţia de înmulţire şi „a" este o variabilă oarecare pe 8 biţi :
+    7. Modul de adresare care foloseşte un buffer circular de tip FIFO este:
+
+
+
+
+    8. Atat porturile gazda cat si porturile de comunicatie lucreaza in regim DMA
+
+
+
+
+    GRILE.RTF - nu am cerintele
+Instructiunea MOVE X: +(RO),A este de tip:
+    •   Adresare indirecta cu regstriu cu pre-incrementare
+Instructiunea AX1=DM(1000) este de tip:
+    •   Adresare directa la memorie
+Adresare indirecta cu registru cu indexare poate avea forma:
+    •   MOVE Y1,X: (R5+N6)
+A = A + R2*++
+    •   R2 = 0x0000 + 1 = 0x0001
+A = A + *R6++R4 A = 5
+    •   A=8
+AX0 = DM(0X0002)
+    •   AX0 = 001 = 1
+Virgula fixa aritmetica intreaga
+    •   10100100 = 4+32-128 = -92
+Virgula fixa aritmetica fractionara
+    •   10110000 = -1+1/4+1/8 = - 0.625
+Care dintre urmatoarele variante e cea mai completa:
+    •   Majoritatea procesoarelor DSP cu virgula fixa suporta atat aritmetica fractionara cat si cea cu
+        intregi(d)
+    •   In general , precosoarele cu virgula mobile accepta si date cu virgula fixa(a)
+    •   a si d adevarate
+Pentru numarul in virgula mobila 1110111001 cu mantisa pe 5 biti si exponentul pe 5 biti valoarea
+exponentului este:
+    •   Exponent = 1 + 8 – 16 = -7
+Nr. In virgula mobila 10010001 cu mantisa pe 5 biti si exponent pe 3 biti este:
+    •   10010001 = (-1 + 1/8)* 2^1 = -0.875*2 = -1.75
+Nr. In virgula mobila 1100000000111110 cu mantisa pe 10 biti si exponent pe 6 biti este:
+    •   1100000000111110 = (-1+1/2)* 2^-2 = -0.5*1/4 = -0.125
+Standardul IEEE 754 specifica unul din formatele de baza pentru reprezentarea in virgula mobila: (pag
+10 – curs 3)
+    •   Precizia simpla pe 32 de biti cu 24 de biti mantisa si 8 biti exponentul
+Daca multiplicatorul opereaza cu 2 numere pe n biti , registrul de la iesirea acestuia ar trebui sa aiba:
+(pag 3 – curs 4)
+    •   2n biti
+La DSP-ul DSP16xx(AT&T) multiplicatorul lucreaza pe 32 biti si acumulatoarele au capacitatea de 36
+biti. Cu cati biti de garda este prevazut acest model de DSP?(pag 6 – ultimul rand – curs 4)
+    •   4
+Ce valoare are nr 0010101 in urma operatiei de trunchiere cu 4 biti:
+    •   001 = 1
+Aplicand operatia de rotunjire convergenta pastrand 6 biti , valoarea 1010011000 devine:
+    •   101001 + 1 = 101010
+Unitatea ALU a procesorului DSP cu virgula mobile nu poate executa operatiile: (pag 14 – curs 4)
+    •   Inmultire(c)
+
+
+In general intr-un DSP succesiunea proceselor este:
+    •   Multiplicare,Acumulare, Deplasare ,Rotunjire
+In Fig.2,memoriile reprezentate sunt de tip:
+    •   Memoria A dublu-port (c)
+    •   Memorie B uni-port (b)
+    •   (b) si (c)
+Memoria de capacitate mica din interiorul procesorului, folosita pentru memorarea instructiunilor
+poarta numele de: (pag 7 – curs 5)
+    •   Cache-ul pentru program
+Fata de memoria dinamica, memoria statica: (pag 11- curs 5)
+    •   Mai usor de folosit
+    •   Este mai rapida
+    •   Este mai scumpa
+    •   Necesita o suprafata mai mare pentru integrarea pe chip
+    •   Interfetele acestea sunt mai simple
+Interfetele cu memoria externa ale procesoarelor de semnal difera prin:
+    •   Numarul de porturi de memorie(a)
+    •   Flexibilitatea si complexitatea interfetei(b)
+    •   Constrangerile privitoare la timpii de acces(c)
+    •   a , b si c
+Liderul de piata in producerea de DSP-uri este: (pag 1 – curs 1)
+    •   Texas Instruments
+Clasa de aplicatii ce necesita rate mici de esantionare si algoritmi complecsi este: (pag 10 – curs 1)
+    •   Modelare a vremii
+Printre avantajele folosirii procesoarelor de semnal in realizarea sistemelor PDS nu se regaseste si:
+(pag 8 – curs 1)
+    •   Lipsa unor modele matematice pentru proiectarea si analiza sistemelor
+Varianta constructive care combina intr-un singur cip elemente de procesare diferite (de ex. un
+microprocessor si un microcontroler) se numeste:(pag5-curs2)
+    •   Cipuri multiprocessor
+Operatia de multiplicare-acumulare este utila in algoritmi precum: (pag1-curs2)
+    •   Algoritmii care necesita calculul produsului a doi vectori(d)
+Scalarea(multiplicarea) iesirii cu o data putere a lui doi este realizata de:
+    •   Deplasator
+Cand sunt inmultite doua date in virgula mobile cu precizia simpla IEEE-754, fiecare data de intrare
+are largimea efectiva a mantisei de 24 biti, pentru a mentine intreaga precizie, data de iesire ar necesita
+o mantisa de largime efectiva de : (curs 4-pag 14)
+    •   48
+Memoria B este de tip:
+    •   Uni-port
+Arhitectura Harvard are:
+    •   Memorie pentru instructiuni si memorie pentru date
+    •   Memorie pentru instructiuni si date si memorie pentru instructiuni
+    •   Primele 2 raspunsuri
+In urma efectuarii operatiei A0 = A0 + R2*++R6 , valoarea registrului R2 devine:
+    •   R2 = 0x0103 + 0x00FB = 0x1FE
+Organizarea memoriei din imagine ? are structura de tip:
+    •   Von Neumann
+
+
+In reprezentarea datelor in virgula fixa cu aritmetica fractionara, nr 01010000 devine:
+    •   0101000 = 1 / 2 + 1 / 8 = 0.625
+Daca valoarea initiala a lui A0 este 5, cat devine in urma efectuarii operatiei:
+    •   A0 = A0 + *R7-- = 5 – 1 = 4
+Rezultatul operatiei 16 modul 5 este:
+    •   1
+Daca valoarea initiala a lui A0 este 5 , cat devine registrul R3 in urma efectuarii operatiei: A0 = A0 +
+*R3++
+    •   0x100
+Aplicand operatia de rotunjire convergenta pastrand 6 biti , valoarea 11101010 devine:
+    •   111010 + 0 = 111010
+DMA este o tehnica cu ajutorul careia datele pot fi transferate in si din memoria interna a procesorului:
+    •   Fara ajutorul acestuia
+Cati biti de garda are arhitectura din fig de mai jos?
+    •   4?
+Memoria dinamica (DRAM) este mai rapida decat memoria statica (SRAM):
+    •   False
+Nr in virgula mobila 01001011 cu mantisa pe 5 biti si exponent pe 3 biti este:
+    •   (1/2 + 1/16)* 2^3 = 4.5
+In urma executarii instructiunii: AX0 = DM(0X102),valoarea registrului AX0 devine:
+    •   110 = 6
+  Aplicand operatia de rotunjire convergenta pastrand 4 biti , valoarea 10100101 devine:
+  •   1010 + 0 = 1010
+  Procesoarele de semnal pot executa mai multe operatii de citire sau de scriere din/in memoria intr-
+  un ciclu masina:
+  •   True
+  Nr in virgula mobila 1010001 cu mantisa pe 5 biti si exponent pe 3 biti este:
+  •   1010001 = (-1 + 1/4)*2^1 = -1.5
+  Cati biti de garda ofera arhitectura urmatoare:
+  •   8?
+Rezultatul produs de ALU este preluat de:
+  •   Registrii acumulatori
+  Virgula mobila au:
+  •   Gama dinamica ridicata
+

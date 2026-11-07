@@ -1,0 +1,291 @@
+Verificare 2 (30p) - 17 ianuarie 2022, 9:05-9:25: Attempt review                                 https://curs.upb.ro/2021/mod/quiz/review.php?attempt=246638&cmid=...
+
+
+
+
+           Dashboard / My courses / 04-ELECTRONICA-L-A4-S1-PS-A / 17 ianuarie - 23 ianuarie / Verificare 2 (30p) - 17 ianuarie 2022, 9:05-9:25
+
+
+
+
+                           Started on Monday, 17 January 2022, 9:05 AM
+                                State Finished
+                    Completed on Monday, 17 January 2022, 9:25 AM
+                          Time taken 20 mins 38 secs
+
+
+              Question 1
+
+              Complete
+
+              Marked out of 3.00
+
+
+
+
+                Instrucțiunile de salt pot avea următoarele forme suportate de diverse procesoare de semnal:
+
+
+                     a.     multiciclu (saltul se execută după o întârziere de câteva cicluri)
+
+                     b. saltul întârziat cu anulare (instrucțiunile aflate după instrucțiunea de salt pot anula saltul, dacă anumite condiții nu sunt
+                        îndeplinite)
+
+                     c.     condiționat (să execute saltul doar dacă este îndeplinită una sau mai multe condiții) și necondiționat (saltul se execută mereu)
+
+                     d. întârziat (permite procesorului să execute câteva instrucțiuni aflate după instrucțiunea de salt, înainte ca saltul să fie executat
+                        efectiv)
+
+
+
+
+              Question 2
+
+              Complete
+
+              Marked out of 3.00
+
+
+
+
+                Din ce categorie de moduri de adresare face parte instrucțiunea „MUL a”, care are ca rezultat AX=AL*a, unde AX și AL sunt
+                registrele procesorelui folosite implicit pentru operația de înmulțire și „a” este o variabilă oarecare pe 8 biți:
+
+
+                     a.     adresare directă la memorie
+
+                     b. adresare implicită
+
+                     c.     adresare imediată
+
+                     d. adresare directă la registru
+
+
+
+
+1 din 4                                                                                                                                                        17.01.2022, 09:26
+Verificare 2 (30p) - 17 ianuarie 2022, 9:05-9:25: Attempt review                              https://curs.upb.ro/2021/mod/quiz/review.php?attempt=246638&cmid=...
+
+
+
+              Question 3
+
+              Complete
+
+              Marked out of 3.00
+
+
+
+
+                Din ce categorie de moduri de adresare face parte instrucțiunea „A6=A6+*R6”, care are ca efect adunarea valorii stocate la
+                locația de memorie indicată de conținutul registrului R6 la valoarea stocată în registrul acumulator A6:
+
+
+                     a.    adresare indirectă cu registru cu adresare modulo
+
+                     b. adresare indirectă cu registru
+
+                     c.    adresare indirectă cu registru cu pre sau post incrementare
+
+                     d. adresare indirectă cu registru cu indexare
+
+
+
+
+              Question 4
+
+              Complete
+
+              Marked out of 3.00
+
+
+
+
+                Care din afirmațiile referitoare la setul de instrucțiuni de rotație ale procesoarelor de semnal sunt adevărate:
+
+
+                     a.    pot fi considerate operații de deplasare circulară
+
+
+
+                     b. nu există astfel de operații la procesoarele de semnal
+
+                     c.    operațiile de rotație stânga/dreapta se execută cu un singur bit
+
+                     d. operațiile de rotație stânga/dreapta se execută cu minim 2 sau 4 biți
+
+
+
+
+              Question 5
+
+              Complete
+
+              Marked out of 3.00
+
+
+
+
+                Tensiunea de alimentare nominală a unui procesor de semnal este descrisă ca fiind Vcc=5V +/- 5%. Care din următoarele
+                tensiuni se încadrează în plaja dată:
+
+
+                     a.    4,65V
+
+
+
+                     b.
+                           5,28V
+
+
+
+                     c.    5,40V
+
+                     d. 4,85V
+
+
+
+
+2 din 4                                                                                                                                          17.01.2022, 09:26
+Verificare 2 (30p) - 17 ianuarie 2022, 9:05-9:25: Attempt review                              https://curs.upb.ro/2021/mod/quiz/review.php?attempt=246638&cmid=...
+
+
+
+              Question 6
+
+              Complete
+
+              Marked out of 3.00
+
+
+
+
+                Porturile gazdă întâlnite la procesoarele de semnal:
+
+
+                     a.    lucrează în regim DMA în mod uzual (data prezentă la port este scrisă automat în memoria procesorului de semnal fără a-l opri,
+                           cu sau fără întreruperi)
+
+                     b. sunt porturi seriale bidirecționale specializate de 8 biți sau de 16 biți
+
+                     c.    nu poate fi folosit pentru a controla procesorul digital de semnal (nu poate să-l forțeze să execute intrucțiuni sau rutine de
+                           serviciu de întrerupere, să citească sau să scrie registre/memoria, etc)
+
+                     d. sunt porturi seriale unidirecționale nespecializate
+
+
+
+
+              Question 7
+
+              Complete
+
+              Marked out of 3.00
+
+
+
+
+                În cazul execuției instrucțiunilor în pipeline, hazardul poate fi eliminat prin:
+
+
+
+
+                     a.    reordonarea instrucțiunilor prin încărcarea lor într-un buffer de instrucțiuni și execuția lor în mod dinamic
+
+                     b. hazardul din pipeline nu poate fi eliminat
+
+                     c.    avansarea datelor (rezultatelor) între instrucțiuni și între etapele pipeline-ului
+
+                     d. eliminarea dependenței de date prin introducerea de NOP-uri între instrucțiunile care depind de aceleași date
+
+
+
+
+              Question 8
+
+              Complete
+
+              Marked out of 3.00
+
+
+
+
+                Care din următoarele facilități sunt specifice procesoarelor de semnal pentru execuția buclelor?
+
+
+                     a.    registre speciale pe post de contor de buclă
+
+                     b. buclare hardware pentru execuția buclelor fără cicluri mașină suplimentari
+
+                     c.    sunt identice cu cele de la procesoarele de uz general
+
+                     d.
+                           instrucțiuni de salt (software)
+
+
+
+
+3 din 4                                                                                                                                                     17.01.2022, 09:26
+Verificare 2 (30p) - 17 ianuarie 2022, 9:05-9:25: Attempt review                         https://curs.upb.ro/2021/mod/quiz/review.php?attempt=246638&cmid=...
+
+
+
+              Question 9
+
+              Complete
+
+              Marked out of 3.00
+
+
+
+
+                Modul de adresare care folosește un buffer circular de tip FIFO este:
+
+
+                     a.    adresare indirectă cu registru cu adresare modulo
+
+                     b. adresare indirectă cu registru
+
+                     c.    adresare indirectă cu registru cu pre sau post incrementare
+
+                     d. adresare indirectă cu registru cu indexare
+
+
+
+
+              Question 10
+
+              Complete
+
+              Marked out of 3.00
+
+
+
+
+                În cazul procesoarelor de semnal, realizarea stivei poate fi efectuată prin următoarele metode:
+
+
+                     a.    niciunul din răspunsurile date
+
+
+
+                     b. stiva software cu registru de memorare al vârfului stivei
+
+
+
+                     c.    stiva hardware cu memorie RAM
+
+                     d. cu set specializat de registre
+
+
+
+
+                 ◄ Punctaje Verificarea 1_15 noiembrie 2021
+
+                  Jump to...
+
+
+
+
+4 din 4                                                                                                                                     17.01.2022, 09:26
+
