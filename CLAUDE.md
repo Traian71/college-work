@@ -46,3 +46,18 @@ push everything to `main`, not just the deliverable.
 - Only skip what can be recreated and isn't material: `.DS_Store`, Office lock files, virtual envs, `bin/`, `obj/`,
   `__pycache__` (all in `.gitignore`). Files over 100 MB can't go to GitHub: ask me, and note them in `context.md`.
 
+
+## Moodle (curs.upb.ro/2026), Mac only
+
+`instrumente/moodle.py` talks to Moodle through the mobile app API. The token is in the Mac's Keychain
+(`moodle-upb-token`; the calendar feed URL is `moodle-upb-calendar`), never in the repo or in chat.
+
+- `due` lists what's due or overdue and not submitted; `show <assignid>` the task text and accepted file types;
+  `files <courseid> [--grep lab]` + `get <url> <file>` download handouts (save them to `arhiva/.../materiale/`);
+  `submit <assignid> <file>` shows what it would upload, `--yes` actually submits.
+- "Check my Moodle": run `due`, then for each item say what you can do alone and what needs me.
+- **Never submit without my OK for that exact assignment and file**, even if I asked for "everything".
+- A weekly scheduled task (`moodle-weekly-check`, Mondays 08:30) runs `due` and sends a macOS notification.
+- Token expired: sign me in via UPB Login in the browser pane, then fetch
+  `admin/tool/mobile/launch.php?service=moodle_mobile_app&passport=x&urlscheme=moodlemobile&confirmed=1` from the
+  signed-in page and decode the `moodlemobile://token=` link (base64, token after `:::`).
