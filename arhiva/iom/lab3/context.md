@@ -14,4 +14,7 @@
   F2 ≈ 1600 Hz (sheet says 850 / 1500 for "a", female voice).
 - **Sources:** `sursa/completeaza_fisa.py` fills the sheet and makes `sursa/spectru.png`, `sursa/spectrograma.png`;
   `sursa/gui_fig.png` is a test render of the GUI.
-- **Status (5 Nov 2026):** ex. 1–5 done. Bonus (ex. 6) not done: it needs my recordings. Not uploaded yet.
+- **Status:** ex. 1–5 done (5 Nov). **Uploaded 7 Nov 2026** via `instrumente/moodle.py submit 7220` as `lab3.zip`
+  (the `iom/lab3` folder zipped) to "rezolvare laborator 3" (due 15 Nov; the teacher says it doesn't count toward the
+  grade). Checked before: `lab3.py` runs and gives 6 spectrogram frames. Bonus ex. 6 is a separate assignment
+  ("Bonus ex 6 lab3", due 20 Nov) and needs my recordings.

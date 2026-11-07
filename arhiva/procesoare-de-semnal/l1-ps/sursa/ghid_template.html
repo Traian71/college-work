@@ -1,0 +1,251 @@
+<title>Grile PS L1</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: o coloană de lucru de ~760px, bară de taburi lipicioasă; foaie de date (datasheet) cu pistă de semnal */
+:root {
+  --bg: #f4f6f8;
+  --paper: #ffffff;
+  --ink: #15202b;
+  --muted: #5b6875;
+  --line: #d9dfe5;
+  --accent: #1f4fd1;
+  --accent-soft: #e6ecfc;
+  --ok: #157a46;
+  --ok-soft: #e3f4ea;
+  --bad: #b3261e;
+  --bad-soft: #fbe7e5;
+  --warn: #8a5a00;
+  --warn-soft: #fbf0d9;
+  --display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --body: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f151b; --paper: #161e26; --ink: #e6ebf0; --muted: #9aa7b4; --line: #2a3541;
+    --accent: #7c9cff; --accent-soft: #1e2a4a; --ok: #5fd197; --ok-soft: #12301f;
+    --bad: #ff8a80; --bad-soft: #3a1714; --warn: #f0c060; --warn-soft: #3a2c0c; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f151b; --paper: #161e26; --ink: #e6ebf0; --muted: #9aa7b4; --line: #2a3541;
+  --accent: #7c9cff; --accent-soft: #1e2a4a; --ok: #5fd197; --ok-soft: #12301f;
+  --bad: #ff8a80; --bad-soft: #3a1714; --warn: #f0c060; --warn-soft: #3a2c0c; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.5;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper); }
+.wrap { max-width: 780px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+header { background: var(--paper); border-bottom: 1px solid var(--line); }
+header .wrap { padding-block: 22px 14px; display: grid; gap: 6px; }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+h1 { font-family: var(--display); font-weight: 800; font-size: clamp(26px, 6vw, 36px); line-height: 1.1; margin: 0; text-wrap: balance; }
+.trace { display: block; width: 100%; height: 34px; }
+.trace path { fill: none; stroke: var(--accent); stroke-width: 1.6; }
+.meta { display: flex; flex-wrap: wrap; gap: 8px 16px; color: var(--muted); font-size: 15px; }
+.meta b { color: var(--ink); font-variant-numeric: tabular-nums; }
+nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--paper); border-bottom: 1px solid var(--line); }
+nav .wrap { display: flex; gap: 4px; overflow-x: auto; padding-block: 0; }
+nav button { font: 600 15px var(--body); background: none; border: 0; color: var(--muted); padding: 12px 12px 10px; border-bottom: 3px solid transparent; cursor: pointer; white-space: nowrap; }
+nav button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+nav button:focus-visible, button:focus-visible, label:focus-within { outline: 2px solid var(--accent); outline-offset: 2px; }
+main .wrap { padding-block: 20px 60px; display: grid; gap: 18px; }
+h2 { font-family: var(--display); font-weight: 700; font-size: 22px; margin: 0; text-wrap: balance; }
+h3 { font-family: var(--display); font-weight: 700; font-size: 17px; margin: 0 0 6px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font: 600 14px var(--body); border: 1px solid var(--line); background: var(--paper); color: var(--ink); border-radius: 999px; padding: 5px 12px; cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+.sheet { background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 18px 18px 14px; min-width: 0; }
+.sheet ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.sec { display: grid; gap: 4px; }
+.sec + .sec { border-top: 1px solid var(--line); padding-top: 12px; margin-top: 12px; }
+.trap { background: var(--warn-soft); border-left: 3px solid var(--warn); padding: 10px 14px; border-radius: 6px; }
+.trap ul { padding-left: 18px; }
+code, .mono { font-family: var(--mono); font-size: .88em; }
+.q { display: grid; gap: 12px; }
+.qhead { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px; color: var(--muted); font-size: 14px; }
+.tag { font-family: var(--mono); font-size: 12px; border: 1px solid var(--line); border-radius: 4px; padding: 1px 6px; }
+.tag.vechi { border-color: var(--accent); color: var(--accent); }
+.qtext { font-weight: 600; font-size: 18px; }
+.opts { display: grid; gap: 8px; }
+.opt { display: grid; grid-template-columns: auto auto 1fr; gap: 10px; align-items: start; border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; cursor: pointer; background: var(--paper); }
+.opt input { margin-top: 4px; width: 18px; height: 18px; accent-color: var(--accent); }
+.opt .l { font-family: var(--mono); font-weight: 600; color: var(--muted); }
+.opt.ok { border-color: var(--ok); background: var(--ok-soft); }
+.opt.bad { border-color: var(--bad); background: var(--bad-soft); }
+.opt.miss { border-color: var(--ok); border-style: dashed; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.btn { font: 700 15px var(--body); border-radius: 8px; padding: 9px 16px; border: 1px solid var(--accent); background: var(--accent); color: var(--paper); cursor: pointer; }
+.btn.ghost { background: transparent; color: var(--accent); }
+.btn:disabled { opacity: .45; cursor: default; }
+.verdict { font-weight: 700; }
+.verdict.ok { color: var(--ok); } .verdict.bad { color: var(--bad); }
+.expl { border-top: 1px solid var(--line); padding-top: 10px; color: var(--ink); }
+.expl .unsure { color: var(--warn); font-weight: 600; }
+.score { font-family: var(--display); font-weight: 800; font-size: 44px; line-height: 1; font-variant-numeric: tabular-nums; }
+.muted { color: var(--muted); }
+.progress { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; }
+.progress i { display: block; height: 100%; background: var(--accent); }
+.figure { font-style: italic; color: var(--muted); font-size: 15px; }
+@media (prefers-reduced-motion: no-preference) { .opt { transition: background .15s, border-color .15s; } }
+</style>
+
+<header>
+  <div class="wrap">
+    <span class="eyebrow">Procesoare de semnal · Lucrarea de verificare 1</span>
+    <h1>PS L1 – Grile și rezumat</h1>
+    <svg class="trace" viewBox="0 0 600 34" preserveAspectRatio="none" aria-hidden="true"><path id="trace"></path></svg>
+    <div class="meta"><span>Marți, <b>10 noiembrie 2026</b></span><span id="countdown"></span><span>Cursurile 1–6 · 10 întrebări, a–d, pot fi mai multe corecte</span></div>
+  </div>
+</header>
+<nav><div class="wrap" role="tablist" id="tabs">
+  <button role="tab" data-tab="invata">Învață</button>
+  <button role="tab" data-tab="grile">Grile</button>
+  <button role="tab" data-tab="sim">Simulare</button>
+  <button role="tab" data-tab="gresite">Greșeli</button>
+</div></nav>
+<main><div class="wrap" id="view"></div></main>
+
+<script>
+const DATA = /*__DATA__*/;
+const $ = (s, el = document) => el.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const L = "abcd";
+const store = {
+  get(k, d) { try { const v = localStorage.getItem("psl1:" + k); return v ? JSON.parse(v) : d; } catch { return d; } },
+  set(k, v) { try { localStorage.setItem("psl1:" + k, JSON.stringify(v)); } catch {} }
+};
+const titlu = n => (DATA.cursuri.find(c => c.curs === n) || {}).titlu || "";
+let state = { tab: "invata", curs: store.get("curs", 1), filtru: store.get("filtru", "toate"), idx: 0, sim: null };
+
+// pista de semnal din antet: o sinusoidă eșantionată
+(function () {
+  let d = "";
+  for (let i = 0; i <= 120; i++) { const x = i * 5, y = 17 - 12 * Math.sin(i / 6.5) * Math.cos(i / 31); d += (i ? " L" : "M") + x + " " + y.toFixed(1) + " L" + (x + 5) + " " + y.toFixed(1); }
+  $("#trace").setAttribute("d", d);
+  const t = new Date(2026, 10, 10, 8, 0), now = new Date(), z = Math.ceil((t - now) / 864e5);
+  $("#countdown").innerHTML = z > 1 ? `mai sunt <b>${z} zile</b>` : z === 1 ? "<b>mâine</b>" : z === 0 ? "<b>azi</b>" : "";
+})();
+
+function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function wrong() { return store.get("gresite", []); }
+function mark(id, good) {
+  let w = new Set(wrong()); good ? w.delete(id) : w.add(id); store.set("gresite", [...w]);
+  const st = store.get("stat", {}); st[id] = { ok: good, t: Date.now() }; store.set("stat", st);
+}
+
+function questionCard(q, n, total, onDone) {
+  const el = document.createElement("section");
+  el.className = "sheet q";
+  el.innerHTML = `
+    <div class="qhead"><span>${n ? `Întrebarea ${n}${total ? " / " + total : ""}` : ""}</span>
+      <span class="row"><span class="tag">Curs ${q.curs}</span><span class="tag ${q.tip === "vechi" ? "vechi" : ""}">${q.tip === "vechi" ? "grilă veche" : "nouă"}</span></span></div>
+    <div class="qtext">${esc(q.intrebare)}</div>
+    ${q.figura ? `<div class="figure">Figură: ${esc(q.figura)}</div>` : ""}
+    <div class="opts">${q.variante.map((v, i) => `<label class="opt" for="o-${q.id}-${i}"><input type="checkbox" id="o-${q.id}-${i}" data-i="${i}"><span class="l">${L[i] || i + 1}.</span><span>${esc(v)}</span></label>`).join("")}</div>
+    <div class="row"><button class="btn" data-act="check">Verifică</button><span class="verdict"></span></div>
+    <div class="expl" hidden></div>`;
+  const check = $("[data-act=check]", el);
+  check.onclick = () => {
+    const picked = [...el.querySelectorAll("input")].filter(x => x.checked).map(x => +x.dataset.i);
+    const corect = new Set(q.corecte);
+    el.querySelectorAll(".opt").forEach((o, i) => {
+      const p = picked.includes(i), c = corect.has(i);
+      o.classList.add(p && c ? "ok" : p && !c ? "bad" : !p && c ? "miss" : "x");
+      $("input", o).disabled = true;
+    });
+    const good = picked.length === corect.size && picked.every(i => corect.has(i));
+    const v = $(".verdict", el); v.className = "verdict " + (good ? "ok" : "bad");
+    v.textContent = good ? "Corect" : "Greșit · corect: " + q.corecte.map(i => L[i]).join(", ");
+    const ex = $(".expl", el); ex.hidden = false;
+    ex.innerHTML = (q.sigur === false ? `<p class="unsure">Răspuns dedus, nesigur: cursul nu o spune explicit.</p>` : "") +
+      `<p>${esc(q.explicatie)}</p><p class="muted">${q.tip === "vechi" ? "Din grilele vechi: " + esc(q.sursa) : "Grilă nouă, făcută după curs."}</p>`;
+    check.disabled = true;
+    mark(q.id, good);
+    onDone && onDone(good);
+  };
+  return el;
+}
+
+const views = {
+  invata() {
+    const c = DATA.cursuri.find(x => x.curs === state.curs) || DATA.cursuri[0];
+    const v = $("#view");
+    v.innerHTML = `<div class="chips">${DATA.cursuri.map(x => `<button class="chip" aria-pressed="${x.curs === c.curs}" data-c="${x.curs}">Curs ${x.curs}</button>`).join("")}</div>
+      <h2>Cursul ${c.curs}. ${esc(c.titlu)}</h2>
+      <section class="sheet">${c.rezumat.map(s => `<div class="sec"><h3>${esc(s.titlu)}</h3><ul>${s.puncte.map(p => `<li>${esc(p)}</li>`).join("")}</ul></div>`).join("")}</section>
+      ${c.capcane && c.capcane.length ? `<section class="trap"><h3>Capcane</h3><ul>${c.capcane.map(p => `<li>${esc(p)}</li>`).join("")}</ul></section>` : ""}
+      <div class="row"><button class="btn" id="go-grile">Grile din cursul ${c.curs} (${DATA.grile.filter(q => q.curs === c.curs).length})</button></div>`;
+    v.querySelectorAll("[data-c]").forEach(b => b.onclick = () => { state.curs = +b.dataset.c; store.set("curs", state.curs); render(); });
+    $("#go-grile").onclick = () => { state.filtru = "c" + c.curs; state.idx = 0; store.set("filtru", state.filtru); go("grile"); };
+  },
+  grile() {
+    const f = state.filtru;
+    const list = DATA.grile.filter(q => f === "toate" ? true : f === "vechi" ? q.tip === "vechi" : q.curs === +f.slice(1));
+    if (state.idx >= list.length) state.idx = 0;
+    const v = $("#view");
+    const filters = [["toate", "Toate"], ["vechi", "Doar grile vechi"], ...DATA.cursuri.map(c => ["c" + c.curs, "Curs " + c.curs])];
+    v.innerHTML = `<div class="chips">${filters.map(([k, t]) => `<button class="chip" aria-pressed="${k === f}" data-f="${k}">${t}</button>`).join("")}</div>
+      <div class="progress" aria-hidden="true"><i style="width:${list.length ? ((state.idx + 1) / list.length * 100) : 0}%"></i></div>`;
+    v.querySelectorAll("[data-f]").forEach(b => b.onclick = () => { state.filtru = b.dataset.f; state.idx = 0; store.set("filtru", state.filtru); render(); });
+    if (!list.length) { v.insertAdjacentHTML("beforeend", `<p class="muted">Nicio grilă aici.</p>`); return; }
+    v.appendChild(questionCard(list[state.idx], state.idx + 1, list.length));
+    v.insertAdjacentHTML("beforeend", `<div class="row"><button class="btn ghost" id="prev">Înapoi</button><button class="btn" id="next">Următoarea</button></div>`);
+    $("#prev").onclick = () => { state.idx = (state.idx - 1 + list.length) % list.length; render(); };
+    $("#next").onclick = () => { state.idx = (state.idx + 1) % list.length; render(); window.scrollTo(0, 0); };
+  },
+  sim() {
+    const v = $("#view");
+    if (!state.sim) {
+      const best = store.get("sim", []);
+      v.innerHTML = `<h2>Simulare de test</h2>
+        <section class="sheet"><p>10 întrebări din cursurile 1–6, ca la test: patru variante, una sau mai multe corecte. Bifează tot ce e corect și apasă Verifică; o întrebare e bună doar dacă ai bifat exact variantele corecte. Scorul apare după ce le verifici pe toate 10.</p>
+        <p class="muted">Jumătate din întrebări vin din grilele vechi, restul sunt noi, din toate cursurile.</p>
+        <div class="row"><button class="btn" id="start">Începe simularea</button></div></section>
+        ${best.length ? `<section class="sheet"><h3>Simulările tale</h3><ul>${best.slice(-8).reverse().map(s => `<li><span class="mono">${s.p}/10</span> · ${new Date(s.t).toLocaleString("ro-RO", { dateStyle: "short", timeStyle: "short" })}</li>`).join("")}</ul></section>` : ""}`;
+      $("#start").onclick = () => {
+        const vechi = shuffle(DATA.grile.filter(q => q.tip === "vechi")), noi = shuffle(DATA.grile.filter(q => q.tip !== "vechi"));
+        const pick = [], seenC = {};
+        const take = (src, n) => { for (const q of src) { if (pick.length >= n) break; if (!pick.includes(q) && (seenC[q.curs] || 0) < 3) { pick.push(q); seenC[q.curs] = (seenC[q.curs] || 0) + 1; } } };
+        take(vechi, 5); take(noi, 10); take(shuffle(DATA.grile), 10);
+        state.sim = { qs: shuffle(pick), done: 0, good: 0 };
+        render();
+      };
+      return;
+    }
+    const s = state.sim;
+    v.innerHTML = `<h2>Simulare · <span class="mono">${s.done}/10</span> răspunse</h2>`;
+    s.qs.forEach((q, i) => v.appendChild(questionCard(q, i + 1, 10, good => {
+      s.done++; if (good) s.good++;
+      $("h2", v).innerHTML = `Simulare · <span class="mono">${s.done}/10</span> răspunse`;
+      if (s.done === 10) {
+        const all = store.get("sim", []); all.push({ p: s.good, t: Date.now() }); store.set("sim", all);
+        v.insertAdjacentHTML("beforeend", `<section class="sheet"><div class="score">${s.good}/10</div><p>${s.good >= 8 ? "Ești pregătit." : s.good >= 5 ? "Aproape. Reia grilele greșite din tabul Greșeli." : "Mai citește rezumatul cursurilor la care ai greșit și reia grilele."}</p><div class="row"><button class="btn" id="again">Încă o simulare</button></div></section>`);
+        $("#again").onclick = () => { state.sim = null; render(); window.scrollTo(0, 0); };
+      }
+    })));
+  },
+  gresite() {
+    const ids = new Set(wrong());
+    const list = DATA.grile.filter(q => ids.has(q.id));
+    const v = $("#view");
+    v.innerHTML = `<h2>Grilele greșite (${list.length})</h2>
+      <p class="muted">Aici ajung grilele la care ai greșit. Când răspunzi corect, ies din listă. Se păstrează doar în browserul ăsta.</p>`;
+    if (!list.length) { v.insertAdjacentHTML("beforeend", `<section class="sheet"><p>Nicio grilă greșită momentan. Fă o simulare sau treci prin grile.</p></section>`); return; }
+    list.forEach((q, i) => v.appendChild(questionCard(q, i + 1, list.length)));
+  }
+};
+
+function go(tab) { state.tab = tab; render(); window.scrollTo(0, 0); }
+function render() {
+  document.querySelectorAll("#tabs button").forEach(b => b.setAttribute("aria-selected", b.dataset.tab === state.tab));
+  views[state.tab]();
+}
+document.querySelectorAll("#tabs button").forEach(b => b.onclick = () => go(b.dataset.tab));
+render();
+</script>

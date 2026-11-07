@@ -1,0 +1,952 @@
+{
+  "curs": 4,
+  "titlu": "Calea de date",
+  "rezumat": [
+    {
+      "titlu": "Introducere: ce este calea de date",
+      "puncte": [
+        "Calea de date (data path) a unui procesor DSP este locul din structură unde au loc operațiile de prelucrare a datelor.",
+        "La procesoarele DSP calea de date este foarte specializată pentru a atinge performanțe înalte la execuția operațiilor cerute de algoritmii DSP: transfer de date, multiplicare și acumulare, scalare ș.a.",
+        "Facilitățile căii de date, împreună cu arhitectura memoriei, sunt caracteristicile care diferențiază cel mai clar procesoarele DSP de alte tipuri de procesoare.",
+        "Calea de date la DSP în virgulă mobilă este semnificativ diferită de cea de la DSP în virgulă fixă, datorită cerințelor diferite ale aritmeticilor folosite.",
+        "Calea de date în virgulă fixă conține: multiplicator, ALU (UAL), unul sau mai multe registre de deplasare (shiftere), registre de lucru, acumulatoare și alte unități specializate. Exemplu (Fig. 4.1): DSP5600x (Motorola), virgulă fixă pe 24 de biți.",
+        "Calea de date NU este folosită pentru calculul adreselor: DSP-urile au o unitate separată, unitatea de generare a adreselor (adresare modulo, cu inversarea biților etc.)."
+      ]
+    },
+    {
+      "titlu": "4.1 Virgulă fixă – Multiplicatorul",
+      "puncte": [
+        "Multiplicarea este esențială în toate aplicațiile DSP (jumătate sau chiar mai multe operații o implică), de aceea aproape toate DSP-urile au un multiplicator hardware de tip paralel care înmulțește doi operanzi de mărime nativă într-un singur ciclu instrucțiune.",
+        "Timpul de latență = întârzierea (poate fi mai mare de un ciclu, din cauza pipeline-ului intern al multiplicatorului) de la aplicarea operanzilor la intrări până când rezultatul este disponibil. Multiplicatoarele pipeline dau un rezultat la fiecare ciclu doar la șiruri lungi de înmulțiri.",
+        "Multiplicatorul poate fi integrat cu un sumator într-o unitate multiplicator-acumulator (DSP5600x) sau separat, cu ieșirea într-un registru de produs (DSP16xx); la variantă separată rezultatul MAC e întârziat în general cu un ciclu.",
+        "Legea de conservare a biților: produsul a două numere în virgulă fixă pe n biți necesită 2n biți pentru a fi reprezentat fără eroare; multiplicarea în virgulă fixă produce un rezultat de două ori mai mare decât operanzii (ex. Z893xx face excepție: 16×16 → 24 biți, cu erori).",
+        "Programatorul selectează un subset din biții de la ieșirea multiplicatorului pentru pasul următor; sau, la un șir de produse adunate, se păstrează toți biții și lungimea se reduce la final.",
+        "Poziția virgulei în rezultatul complet depinde de poziția virgulei operanzilor. Aritmetică întreagă: ieșirea e tot un întreg, se rețin în general cei mai puțin semnificativi biți (operanzii constrânși astfel încât valoarea semnificativă să ocupe jumătatea de ordin inferior).",
+        "Aritmetică fracționară: rezultatul complet are de două ori mai mulți biți la dreapta virgulei decât operanzii; se descarcă jumătatea cea mai puțin semnificativă, posibil prin rotunjire.",
+        "Deosebirea dintre care parte a rezultatului multiplicării este selectată pentru pasul următor constituie diferența principală între aritmetica întreagă și cea fracționară la DSP-urile în virgulă fixă.",
+        "Optimizare: interzicerea ca un operand să ia cea mai negativă valoare (NMAX) → rezultatul are 2n−1 biți în loc de 2n; la fracții rezultă un singur bit de semn și niciun bit întreg.",
+        "Hardware ajutător: registrul de la ieșirea multiplicatorului (2n biți) sau acumulatorul văzut ca doi registri de n biți adresabili independent (jumătatea superioară pentru fracții, cea inferioară pentru întregi) și deplasarea automată la stânga cu un bit după multiplicare (la unele procesoare activată/dezactivată printr-un bit de mod)."
+      ]
+    },
+    {
+      "titlu": "4.1 Virgulă fixă – Regiștrii acumulator și biții de gardă",
+      "puncte": [
+        "Regiștrii acumulator rețin rezultate parțiale și finale ale operației de multiplicare-acumulare și ale altor operații aritmetice. Majoritatea DSP-urilor au doi sau mai mulți acumulatori; un singur acumulator devine deseori o „gâtuire” (trebuie încărcat/stocat frecvent).",
+        "Ideal, acumulatorul este mai mare decât cuvântul de la ieșirea multiplicatorului cu câțiva biți: biții suplimentari se numesc biți de gardă și permit adunarea unui număr de valori fără riscul depășirii și fără scalarea rezultatelor intermediare.",
+        "Un acumulator cu n biți de gardă permite adunarea a până la 2ⁿ valori fără depășirea scalei.",
+        "Majoritatea procesoarelor au 4 sau 8 biți de gardă: DSP16xx (AT&T) – acumulator 36 biți, multiplicator 32 biți → 4 biți de gardă; ADSP-21xx (Analog Devices) – acumulator 40 biți, multiplicator 32 biți → 8 biți de gardă (DSP5600x: acumulator 56 biți, produs 48 biți).",
+        "Fără biți de gardă, datele de intrare sau rezultatele intermediare trebuie scalate înainte de acumulare, în general prin deplasarea produsului la dreapta cu câțiva biți (TMS320C2x/C5x: deplasare automată la dreapta cu 6 biți); pierderea de precizie e mică.",
+        "Biții de gardă oferă o flexibilitate mai mare decât scalarea produsului, pentru că păstrează precizia maximă în etapele intermediare; TMS320C1x nu are nici biți de gardă, nici scalarea produsului (limitare serioasă)."
+      ]
+    },
+    {
+      "titlu": "4.1 Virgulă fixă – UAL (ALU)",
+      "puncte": [
+        "ALU execută operațiile logice și aritmetice de bază într-un singur ciclu instrucțiune: adunare, scădere, incrementare, negare și operațiile logice ȘI, SAU, NU.",
+        "ALU diferă prin mărimea cuvintelor folosite pentru operațiile logice: unele lucrează pe lărgimea completă a acumulatorului (DSP16xx – 36 biți), altele doar pe cuvinte de lărgime nativă (DSP5600x – 24 biți, deși acumulatorul are 56). Altfel operațiile logice se fac în mai multe etape: programare complicată și cicluri suplimentare.",
+        "În unele procesoare ALU execută adunarea pentru operația de multiplicare-acumulare; în altele se folosește un sumator separat."
+      ]
+    },
+    {
+      "titlu": "4.1 Virgulă fixă – Deplasatorul (shifter)",
+      "puncte": [
+        "Multiplicarea și acumularea cresc numărul de biți ai rezultatelor; deplasatorul ușurează selecția setului de biți scalând (multiplicând) ieșirea cu o putere a lui doi.",
+        "Scalarea este importantă în virgulă fixă deoarece multe operații produc expandarea sau contractarea gamei valorilor semnalelor; trebuie făcută cu grijă (depășire vs. gamă dinamică și precizie).",
+        "Scalarea este complementară biților de gardă (ambele elimină/reduc depășirea): scalarea reduce gama rezultatelor la domeniul reprezentabil, biții de gardă dau o reprezentare intermediară cu gamă dinamică mai largă. Biții de gardă NU înlătură nevoia scalării finale (ex.: 16 biți + 4 biți de gardă → scalare cu 2⁻⁴ înainte de scrierea în memorie).",
+        "Amplasare: adesea imediat după multiplicator și ALU; la unele între multiplicator și ALU (scalarea produsului); unele DSP au mai multe shiftere (DSP5600x – două, independente). Shiftere limitate: stânga 1 bit, dreapta 1 bit, fără deplasare; barrel shifter = deplasări cu mai multe ranguri într-un singur ciclu de tact."
+      ]
+    },
+    {
+      "titlu": "4.1 Virgulă fixă – Depășirea și saturația",
+      "puncte": [
+        "Depășirea de scală (overflow): la acumularea unui șir de numere (ex. filtrare) suma poate depăși valoarea maximă reprezentabilă în acumulator → se înmagazinează o valoare incorectă, posibil foarte îndepărtată de cea corectă (ex. 2 cifre: 50+45+20 → 15 în loc de 115).",
+        "Chiar dacă acumulatorul nu intră în depășire, aceasta poate apărea la transferul în memorie, dacă acumulatorul are biți de gardă (reprezintă numere mai lungi decât o locație de memorie), sau la scalarea cu deplasatorul pentru stocare.",
+        "Două modalități obișnuite de tratare a depășirii: (1) scalarea cu grijă a tuturor rezultatelor (risc: valori prea mici, fidelitate slabă); (2) aritmetica cu saturare: un circuit special detectează depășirea și înlocuiește valoarea eronată cu cel mai mare număr pozitiv reprezentabil (depășire pozitivă) sau cel mai mic număr negativ reprezentabil (depășire negativă).",
+        "Rezultatul saturat este tot incorect, dar eroarea e mai mică (ex. 99 în loc de 15). Saturarea intervine automat (uneori controlată de un registru de mod) sau printr-o instrucțiune specială; unitatea hardware se numește uneori limitator."
+      ]
+    },
+    {
+      "titlu": "4.1 Virgulă fixă – Trunchierea și rotunjirea",
+      "puncte": [
+        "Trunchierea = descărcarea unui număr din cei mai puțin semnificativi biți (ex.: 36 → 16 biți, se descarcă cei 20 LSB). Valoarea trunchiată e întotdeauna ≤ originala; la semnale trunchierea introduce un deplasament (bias sau offset) sau o componentă continuă.",
+        "Tehnicile de rotunjire reduc eroarea aritmetică și bias-ul introdus de reducerea preciziei; rotunjirea se face automat (registru de mod) la transferuri sau printr-o instrucțiune specială.",
+        "Rotunjirea la valoarea cea mai apropiată (cea convențională, folosită de majoritatea DSP în virgulă fixă): numerele aflate exact la mijloc sunt întotdeauna rotunjite la valoarea mai mare; implementare: se adună jumătate din LSB-ul ieșirii, apoi se trunchiază. Introduce un bias mai mic decât trunchierea (problemă la filtre IIR și adaptive), dar e ușor de implementat.",
+        "Rotunjirea convergentă (reduce bias-ul): la mijloc, direcția depinde de bitul care va deveni LSB al ieșirii: 0 → în jos, 1 → în sus; rotunjește în sus jumătate din cazuri. Are suport hardware la puține DSP în virgulă fixă (ADSP-21xx, DSP5600x).",
+        "Eroarea de rotunjire/trunchiere e modelată ca zgomot aleator; diferența principală între cele trei tehnici este bias-ul adăugat semnalului; în telecomunicații tehnica e impusă de standard."
+      ]
+    },
+    {
+      "titlu": "4.1 Virgulă fixă – Operanzii și regiștrii operand",
+      "puncte": [
+        "În majoritatea DSP în virgulă fixă operanzii provin de la un mic număr de regiștri operand sau de la acumulator; datele se aduc din memorie în regiștrii operand cu instrucțiuni „move”, celelalte instrucțiuni nu pot adresa direct memoria → arhitectură „load-store” (încarcă-stochează); regiștrii operand se accesează prin adresare directă la registru (register-direct). Excepții: TMS320C2x/5x, PineDSPCore – operanzi direct din memorie."
+      ]
+    },
+    {
+      "titlu": "4.2 Virgulă mobilă – structură, multiplicator, ALU",
+      "puncte": [
+        "La majoritatea DSP în virgulă mobilă calea principală face calcule și în virgulă mobilă și în virgulă fixă, dar un singur tip de operație într-un ciclu. Unele au două căi de date: una pentru virgulă mobilă și una (cu mai puține facilități) pentru virgulă fixă, fără multiplicator pe calea în virgulă fixă. Exemplu (Fig. 4.6): DSP3210 (AT&T), 32 biți.",
+        "Multiplicatorul în virgulă mobilă acceptă doi operanzi de mărime nativă (de obicei 32 biți) și NU produce un cuvânt suficient de mare pentru a evita pierderea preciziei: mantisele de 24 biți (precizie simplă) ar cere o mantisă de 48 biți; ieșirea are în general 8 sau 12 biți în plus pentru mantisă.",
+        "ALU în virgulă mobilă: adunări, scăderi, valoare absolută, negări, minim/maxim; execută adunarea din MAC. Multiplicare-adunare (ex. DSP32C) ≠ multiplicare-acumulare: rezultatul e scris într-un acumulator diferit de cel care furnizează data adunată cu produsul.",
+        "Operațiile logice pe bit (ȘI, SAU, NEGARE) nu sunt semnificative pentru datele în virgulă mobilă și în general nu sunt executate de ALU destinată numai virgulei mobile."
+      ]
+    },
+    {
+      "titlu": "4.2 Virgulă mobilă – Overflow, underflow și alte excepții",
+      "puncte": [
+        "Overflow-ul și situațiile asemănătoare se numesc excepții = situații neobișnuite care pot cauza rezultate eronate; semnalizare prin setarea unui bit într-un registru de stare sau prin întrerupere (opțional) care lansează o rutină de tratare scrisă de programator.",
+        "Depășirea e mai puțin gravă decât în virgulă fixă (gamă dinamică mai mare); majoritatea procesoarelor setează un bit de stare și limitează automat rezultatul la cea mai pozitivă sau cea mai negativă valoare reprezentabilă.",
+        "Underflow = rezultat prea mic pentru a fi reprezentat (ex. produsul a două numere subunitare mici) → rezultatul se setează la zero și se setează un bit de stare. Împărțirea la zero cauzează o excepție la procesoarele cu operația „reciprocal seed”."
+      ]
+    },
+    {
+      "titlu": "4.2 Virgulă mobilă – Rotunjire, acumulatori, deplasator, operanzi",
+      "puncte": [
+        "Majoritatea DSP în virgulă mobilă rotunjesc automat rezultatele la un format intermediar de 40÷44 biți folosit în calea de date; în memorie datele se scriu fie în precizie extinsă (mai multe locații și operații „move”), fie rotunjite la formatul nativ, în general 32 biți.",
+        "Majoritatea asigură rotunjirea la cel mai apropiat; unele au mai multe opțiuni; DSP96002 (Motorola) asigură toate modurile IEEE 754 pentru precizie simplă: rotunjirea convergentă, către +∞, către zero și către −∞.",
+        "Procesoarele în virgulă mobilă au regiștri mai mulți și mai mari: unele au câțiva regiștri dedicați ca acumulatori (DSP3210), altele regiștri de uz general care pot primi rezultatele MAC (TMS320C3x: 8 regiștri pe 40 biți și 8 pe 32 biți).",
+        "În virgulă mobilă hardware-ul scalează automat rezultatele pentru precizie maximă (principalul avantaj al virgulei mobile); deplasatorul nu e vizibil sau nu e controlabil explicit de programator; la procesoarele cu o singură cale pentru ambele aritmetici el poate fi controlat explicit pentru datele în virgulă fixă.",
+        "Operanzii provin de la regiștri operand sau acumulatoare (adresare directă la registru), încărcați cu „move” explicite (unele în paralel cu instrucțiuni aritmetice); câteva procesoare (DSP32xx) iau operanzi direct din memorie prin adresare indirectă cu registru."
+      ]
+    }
+  ],
+  "capcane": [
+    "Biți de gardă: n biți de gardă → până la 2ⁿ valori adunate fără depășire (nu 2n, nu n). În textul extras apare „2n” pentru că exponentul s-a pierdut.",
+    "Numărul de biți de gardă = lățimea acumulatorului − lățimea ieșirii multiplicatorului (nu − lățimea operandului): DSP16xx 36−32 = 4, ADSP-21xx 40−32 = 8, DSP5600x 56−48 = 8.",
+    "Biții de gardă PERMIT acumularea fără depășire și fără scalarea rezultatelor intermediare, sunt integrați în acumulator și dau flexibilitate mai mare decât scalarea produsului; NU semnalizează erori de memorie și NU înlătură nevoia scalării finale.",
+    "Multiplicatorul în virgulă fixă dă 2n biți (fără eroare); cel în virgulă mobilă NU dă destui biți (ar trebui mantisă de 48, dă doar 8 sau 12 biți în plus).",
+    "Aritmetică întreagă → se păstrează jumătatea MAI PUȚIN semnificativă a produsului; aritmetică fracționară → se păstrează jumătatea MAI semnificativă (se descarcă LSB-urile). Diferența principală întreg/fracționar = ce parte a rezultatului multiplicării se selectează.",
+    "Calea de date NU calculează adresele: există o unitate separată de generare a adreselor.",
+    "Depășirea poate apărea și când acumulatorul NU a intrat în depășire: la transferul în memorie (acumulator cu biți de gardă) sau la scalarea cu deplasatorul.",
+    "Saturarea nu dă rezultatul corect, doar o eroare mai mică (99 în loc de 115, față de 15 fără saturare).",
+    "Rotunjirea la cel mai apropiat (cea mai folosită) are tot bias, dar mai mic decât trunchierea; rotunjirea convergentă e cea care evită bias-ul și are suport hardware la PUȚINE DSP (ADSP-21xx, DSP5600x).",
+    "Rotunjirea convergentă contează doar la mijloc exact: bitul care devine LSB = 0 → în jos, = 1 → în sus. Dacă partea eliminată e sub/peste jumătate, se rotunjește normal.",
+    "Trunchierea dă o valoare ≤ originala și introduce bias / componentă continuă.",
+    "Overflow în virgulă mobilă → bit de stare + limitare la cea mai pozitivă/negativă valoare; underflow → rezultat setat la ZERO + bit de stare (nu la valoarea minimă).",
+    "Multiplicare-adunare ≠ multiplicare-acumulare: la multiplicare-adunare rezultatul se scrie într-un acumulator diferit de cel care dă data adunată.",
+    "ALU numai pentru virgulă mobilă nu face operații logice pe bit (ȘI, SAU, NEGARE) și nu face înmulțirea (o face multiplicatorul); ALU în virgulă fixă face ȘI, SAU, NU.",
+    "Deplasatorul în virgulă mobilă e invizibil/necontrolabil de programator (scalarea e automată); controlabil explicit doar pentru date în virgulă fixă pe o cale comună.",
+    "Procesoarele cu două căi de date (mobilă + fixă) NU au multiplicator pe calea în virgulă fixă, iar calea în virgulă fixă are mai puține facilități. Căile de date fixă/mobilă NU sunt identice.",
+    "Operanzii regiștrilor operand se accesează prin adresare directă la registru (register-direct); arhitectura în care se lucrează doar din regiștri = „load-store”, nu Von Neumann/Harvard.",
+    "Formatul intermediar de rotunjire în virgulă mobilă este 40÷44 biți; formatul nativ în memorie, în general 32 biți."
+  ],
+  "grile_vechi": [
+    {
+      "sursa": "GRILE PS PARTIAL #3",
+      "intrebare": "Care din afirmațiile următoare sunt adevărate:",
+      "variante": [
+        "deoarece multiplicarea este operația principală în PDS, procesoarele digitale de semnal realizează multiplicarea într-un singur ciclu mașină",
+        "există procesoare cu două căi de date: una în virgulă fixă și una în virgulă mobilă",
+        "calea de date la procesoarele în virgulă fixă este identică cu cea a procesoarelor în virgulă mobilă",
+        "procesoarele digitale de semnal nu permit operații de multiplicare-acumulare în același ciclu mașină"
+      ],
+      "corecte": [
+        0,
+        1
+      ],
+      "explicatie": "a) Curs 4 §4.1 Multiplicatorul: multiplicarea e esențială, de aceea aproape toate DSP-urile au un multiplicator hardware paralel care înmulțește doi operanzi într-un singur ciclu instrucțiune. b) Capitol 4 §4.2: unele procesoare cu virgulă mobilă furnizează două căi de date, una pentru virgulă mobilă și una (cu mai puține facilități) pentru virgulă fixă. c) fals: calea de date în virgulă mobilă este „semnificativ diferită” (Curs 4, introducere). d) fals: MAC într-un singur ciclu e o caracteristică de bază a DSP-urilor (Curs 1/2).",
+      "sigur": true
+    },
+    {
+      "sursa": "GRILE PS PARTIAL #10",
+      "intrebare": "În cazul procesoarelor în virgulă fixă, principala diferență între aritmeticile pentru numere întregi și cele pentru numere fracționare este:",
+      "variante": [
+        "numărul de pini ai capsulei procesorului",
+        "dimensiunea memoriei externe",
+        "complexitatea circuitelor hardware",
+        "modul de manipulare a rezultatului multiplicărilor"
+      ],
+      "corecte": [
+        3
+      ],
+      "explicatie": "Curs 4 §4.1 Multiplicatorul: deosebirea dintre care parte a rezultatului multiplicării e selectată pentru pasul următor constituie diferența principală între aritmetica întreagă și cea fracționară (la fel în Curs 3: „modul în care sunt manipulate rezultatele operațiilor de multiplicare”). Hardware-ul e virtual identic, deci c) e fals.",
+      "sigur": true
+    },
+    {
+      "sursa": "GRILE PS PARTIAL – SUBIECT POZA #4",
+      "intrebare": "Biții de gardă:",
+      "variante": [
+        "sunt biți suplimentari, integrați în registrele acumulator",
+        "sunt folosiți pentru a semnaliza erorile de accesare la memorie",
+        "nu permit acumularea numerelor fără a avea depășiri și fără a fi nevoie de scalare",
+        "oferă o flexibilitate mai mare decât scalarea produsului"
+      ],
+      "corecte": [
+        0,
+        3
+      ],
+      "explicatie": "Curs 4 §4.1 Regiștrii acumulator: acumulatorul e mai mare decât ieșirea multiplicatorului cu câțiva biți, biții suplimentari = biți de gardă (a); ei PERMIT adunarea unui număr de valori fără depășire și fără scalarea rezultatelor intermediare, deci c) e fals. Capitol 4: „biții de gardă asigură o mai mare flexibilitate în evitarea depășirilor de scală decât scalarea produsului” (d). b) nu are legătură.",
+      "sigur": true
+    },
+    {
+      "sursa": "GRILE PS PARTIAL – SUBIECT POZA #6",
+      "intrebare": "În cazul procesoarelor în virgulă mobilă, tratarea depășirilor se face prin:",
+      "variante": [
+        "scalarea corespunzătoare a tuturor valorilor",
+        "creșterea gamei dinamice",
+        "saturarea aritmetică",
+        "creșterea preciziei"
+      ],
+      "corecte": [
+        2
+      ],
+      "explicatie": "Curs 4 §4.2 Overflow, underflow: majoritatea DSP în virgulă mobilă înregistrează depășirea setând un bit de stare și limitând automat rezultatul la cea mai pozitivă sau cea mai negativă valoare reprezentabilă – adică saturare (c). Scalarea tuturor valorilor (a) e prima tehnică de la virgulă fixă. Nesigur: gama dinamică mai mare (b) este motivul pentru care depășirea e „mai puțin gravă” în virgulă mobilă și profesorul ar putea-o considera și ea corectă; cursul nu o prezintă însă ca metodă de tratare.",
+      "sigur": false
+    },
+    {
+      "sursa": "GRILE PS PARTIAL – SUBIECT POZA #7",
+      "intrebare": "În cazul procesoarelor în virgulă mobilă, rotunjirea se referă la:",
+      "variante": [
+        "egalarea valorilor foarte mici cu 0",
+        "reducerea lungimii cuvintelor prin eliminarea unui număr de biți",
+        "reducerea spațiului de memorie ocupat prin suprapunerea biților",
+        "trunchierea rezultatelor prin ignorarea biților cei mai nesemnificativi"
+      ],
+      "corecte": [
+        1
+      ],
+      "explicatie": "Curs 4 §4.2 Rotunjirea: operațiile cresc numărul de biți, iar procesoarele rezolvă creșterea preciziei rotunjind automat la formatul intermediar de 40÷44 biți și, la scrierea în memorie, la formatul nativ de 32 biți – deci reducerea lungimii cuvintelor (b). a) descrie underflow-ul (rezultat setat la zero). d) descrie trunchierea, tratată în curs ca tehnică distinctă de rotunjire. Nesigur pentru că formularea lui b) e vagă, iar „rotunjirea către zero” din IEEE 754 seamănă cu trunchierea.",
+      "sigur": false
+    },
+    {
+      "sursa": "Grile final – GRILE.RTF (variantele originale lipsesc, reconstituite)",
+      "intrebare": "Dacă multiplicatorul operează cu 2 numere pe n biți, registrul de la ieșirea acestuia ar trebui să aibă:",
+      "variante": [
+        "n biți",
+        "2n biți",
+        "n + 4 biți",
+        "n/2 biți"
+      ],
+      "corecte": [
+        1
+      ],
+      "explicatie": "Capitol 4 §4.1 Multiplicatorul (pag. 3): când înmulțim două numere în virgulă fixă pe n biți sunt necesari 2n biți pentru a reprezenta produsul fără eroare (legea de conservare a biților).",
+      "sigur": true
+    },
+    {
+      "sursa": "Grile final – GRILE.RTF (variantele originale lipsesc, reconstituite)",
+      "intrebare": "La DSP-ul DSP16xx (AT&T) multiplicatorul lucrează pe 32 biți și acumulatoarele au capacitatea de 36 biți. Cu câți biți de gardă este prevăzut acest model de DSP?",
+      "variante": [
+        "2",
+        "4",
+        "8",
+        "36"
+      ],
+      "corecte": [
+        1
+      ],
+      "explicatie": "Capitol 4 §4.1 Regiștrii acumulator: DSP16xx asigură patru biți de gardă (acumulatoare de 36 biți, multiplicator pe 32 biți); 36 − 32 = 4.",
+      "sigur": true
+    },
+    {
+      "sursa": "Grile final – GRILE.RTF (variantele originale lipsesc, reconstituite)",
+      "intrebare": "Ce valoare are numărul 0010101 în urma operației de trunchiere cu 4 biți?",
+      "variante": [
+        "001 = 1",
+        "0010 = 2",
+        "0011 = 3",
+        "0101 = 5"
+      ],
+      "corecte": [
+        0
+      ],
+      "explicatie": "Curs 4 §4.1 Trunchierea: se descarcă cei mai puțin semnificativi biți. Eliminând 4 LSB din 0010101 rămâne 001 = 1 (răspunsul din notițele studenților). Nesigur din cauza formulării: dacă „cu 4 biți” înseamnă „păstrând 4 biți”, rămân cei mai semnificativi 4 biți, 0010 = 2.",
+      "sigur": false
+    },
+    {
+      "sursa": "Grile final – GRILE.RTF (variantele originale lipsesc, reconstituite)",
+      "intrebare": "Aplicând operația de rotunjire convergentă păstrând 6 biți, valoarea 1010011000 devine:",
+      "variante": [
+        "101001",
+        "101010",
+        "101000",
+        "101011"
+      ],
+      "corecte": [
+        1
+      ],
+      "explicatie": "Curs 4 §4.1 Rotunjirea: se păstrează 101001, partea eliminată 1000 este exact jumătate; la rotunjirea convergentă direcția depinde de bitul care devine LSB: aici e 1 → rotunjire în sus: 101001 + 1 = 101010.",
+      "sigur": true
+    },
+    {
+      "sursa": "Grile final – GRILE.RTF (variantele originale lipsesc, reconstituite)",
+      "intrebare": "Aplicând operația de rotunjire convergentă păstrând 6 biți, valoarea 11101010 devine:",
+      "variante": [
+        "111010",
+        "111011",
+        "111001",
+        "111100"
+      ],
+      "corecte": [
+        0
+      ],
+      "explicatie": "Curs 4 §4.1 Rotunjirea: se păstrează 111010, partea eliminată 10 este exact jumătate; bitul care devine LSB e 0 → rotunjire în jos, rezultatul rămâne 111010.",
+      "sigur": true
+    },
+    {
+      "sursa": "Grile final – GRILE.RTF (variantele originale lipsesc, reconstituite)",
+      "intrebare": "Aplicând operația de rotunjire convergentă păstrând 4 biți, valoarea 10100101 devine:",
+      "variante": [
+        "1010",
+        "1011",
+        "1001",
+        "0101"
+      ],
+      "corecte": [
+        0
+      ],
+      "explicatie": "Se păstrează 1010; partea eliminată 0101 e sub jumătate (1000), deci se rotunjește în jos la cea mai apropiată valoare: 1010 (regula LSB 0/1 a rotunjirii convergente contează doar la mijloc exact) – Curs 4 §4.1 Trunchierea și rotunjirea.",
+      "sigur": true
+    },
+    {
+      "sursa": "Grile final – GRILE.RTF (variantele originale lipsesc, reconstituite)",
+      "intrebare": "Unitatea ALU a procesorului DSP cu virgulă mobilă nu poate executa operațiile:",
+      "variante": [
+        "adunări și scăderi",
+        "calculul valorii absolute și negări",
+        "înmulțire",
+        "calculul valorii minime și maxime"
+      ],
+      "corecte": [
+        2
+      ],
+      "explicatie": "Curs 4 §4.2 UAL: ALU în virgulă mobilă execută adunări, scăderi, valoare absolută, negări, minim/maxim; înmulțirea e făcută de multiplicator (răspunsul din notițe: c, înmulțire). Dacă pe foaie apare și „operații logice pe bit (ȘI, SAU, NEGARE)”, și aceea e corectă: nu sunt executate de ALU numai pentru virgulă mobilă.",
+      "sigur": true
+    },
+    {
+      "sursa": "Grile final – GRILE.RTF (variantele originale lipsesc, reconstituite)",
+      "intrebare": "În general, într-un DSP succesiunea proceselor pe calea de date este:",
+      "variante": [
+        "Multiplicare, Acumulare, Deplasare, Rotunjire",
+        "Acumulare, Multiplicare, Rotunjire, Deplasare",
+        "Deplasare, Multiplicare, Rotunjire, Acumulare",
+        "Rotunjire, Deplasare, Acumulare, Multiplicare"
+      ],
+      "corecte": [
+        0
+      ],
+      "explicatie": "Ordinea secțiunilor din Curs 4 §4.1 și din Fig. 4.1: multiplicatorul → acumulatorul (MAC) → deplasatorul (scalarea pentru memorie) → trunchierea/rotunjirea la scrierea în memorie. Cursul nu formulează explicit o „succesiune”, răspunsul vine din notițele studenților.",
+      "sigur": false
+    },
+    {
+      "sursa": "Grile final – GRILE.RTF (variantele originale lipsesc, reconstituite)",
+      "intrebare": "Scalarea (multiplicarea) ieșirii cu o dată putere a lui doi este realizată de:",
+      "variante": [
+        "multiplicator",
+        "ALU",
+        "deplasator",
+        "acumulator"
+      ],
+      "corecte": [
+        2
+      ],
+      "explicatie": "Curs 4 §4.1 Deplasatorul: un deplasator (shifter) pe calea de date ușurează selecția biților scalând (multiplicând) ieșirea cu o dată putere a lui doi.",
+      "sigur": true
+    },
+    {
+      "sursa": "Grile final – GRILE.RTF (variantele originale lipsesc, reconstituite)",
+      "intrebare": "Când sunt înmulțite două date în virgulă mobilă cu precizie simplă IEEE-754, fiecare dată de intrare are lărgimea efectivă a mantisei de 24 biți. Pentru a menține întreaga precizie, data de ieșire ar necesita o mantisă de lărgime efectivă de:",
+      "variante": [
+        "24 biți",
+        "32 biți",
+        "48 biți",
+        "56 biți"
+      ],
+      "corecte": [
+        2
+      ],
+      "explicatie": "Curs 4 §4.2 Multiplicatorul: pentru a menține întreaga precizie ieșirea ar necesita o mantisă de 48 biți; majoritatea DSP-urilor nu admit această lungime și dau doar 8 sau 12 biți în plus.",
+      "sigur": true
+    },
+    {
+      "sursa": "Grile final – GRILE.RTF: „Câți biți de gardă are arhitectura din fig. de mai jos?” (notat 4?) și „Câți biți de gardă oferă arhitectura următoare?” (notat 8?) – figurile lipsesc",
+      "intrebare": "Câți biți de gardă oferă arhitectura din figură (calea de date DSP5600x, Fig. 4.1: operanzi pe 24 biți, produs pe 48 biți, acumulatoare pe 56 biți)?",
+      "variante": [
+        "2",
+        "4",
+        "8",
+        "16"
+      ],
+      "corecte": [
+        2
+      ],
+      "explicatie": "Numărul de biți de gardă = lățimea acumulatorului − lățimea ieșirii multiplicatorului (Capitol 4 §4.1 Regiștrii acumulator). Pentru DSP5600x: 56 − 48 = 8. Figurile din grilele vechi nu s-au păstrat: dacă figura arată acumulator de 36 biți și multiplicator pe 32 (DSP16xx), răspunsul e 4; dacă arată 40/32 (ADSP-21xx), e 8. Pe foaie: scazi biții produsului din biții acumulatorului.",
+      "sigur": false
+    },
+    {
+      "sursa": "Grile final – GRILE.RTF (variantele originale lipsesc, reconstituite)",
+      "intrebare": "Rezultatul produs de ALU este preluat de:",
+      "variante": [
+        "registrii acumulatori",
+        "registrii de adresă",
+        "numărătorul de program",
+        "unitatea de generare a adreselor"
+      ],
+      "corecte": [
+        0
+      ],
+      "explicatie": "Curs 4 §4.1 Regiștrii acumulator: rețin rezultatele parțiale și finale ale operației de multiplicare-acumulare și ale altor operații aritmetice; acumulatorul e folosit ca operand sursă și destinație pentru operațiile ALU (Capitol 4).",
+      "sigur": true
+    },
+    {
+      "sursa": "PS Grile (Google Form), PS Grile (1), Grile final – SUBIECTE POZA .PNG #21",
+      "intrebare": "Regiștrii ce se pot utiliza ca operanzi pentru majoritatea operațiilor aritmetice și de multiplicare sunt:",
+      "variante": [
+        "regiștri acumulatori",
+        "regiștri pentru adresă",
+        "registrul de uz general",
+        "numărătorul de program"
+      ],
+      "corecte": [
+        0,
+        2
+      ],
+      "explicatie": "Curs 4 §4.1/§4.2 Operanzii și regiștrii operand: operanzii provin de la regiștri operand sau de la acumulator (a); la virgulă mobilă, regiștrii de uz general pot primi rezultatele MAC și ale altor operații (TMS320C3x) (c). Regiștrii de adresă țin de unitatea de generare a adreselor, iar PC-ul de controlul programului. Nesigur: întrebarea pare luată din alt curs (setul de instrucțiuni / regiștri), iar varianta oficială poate fi doar a).",
+      "sigur": false
+    },
+    {
+      "sursa": "PS Grile (Google Form), PS Grile (1), Grile final – SUBIECTE POZA .PNG #15",
+      "intrebare": "La deplasarea aritmetică la dreapta, numărul 010010 devine:",
+      "variante": [
+        "100101",
+        "100100",
+        "101001",
+        "001001"
+      ],
+      "corecte": [
+        3
+      ],
+      "explicatie": "Deplasarea aritmetică la dreapta copiază bitul de semn (0) în MSB: 010010 → 001001. Curs 4 §4.1 Deplasatorul menționează deplasările logice „fără extensie de semn” (DSP5600x), deci cele aritmetice păstrează/extind semnul.",
+      "sigur": true
+    }
+  ],
+  "grile_noi": [
+    {
+      "sursa": "nou",
+      "intrebare": "Calea de date a unui procesor DSP:",
+      "variante": [
+        "este locul din structură unde au loc operațiile de prelucrare a datelor",
+        "este foarte specializată pentru operații ca transferul de date, multiplicarea și acumularea, scalarea",
+        "împreună cu arhitectura memoriei, diferențiază cel mai clar procesoarele DSP de alte tipuri de procesoare",
+        "este identică la procesoarele în virgulă fixă și la cele în virgulă mobilă"
+      ],
+      "corecte": [
+        0,
+        1,
+        2
+      ],
+      "explicatie": "Curs 4, introducere: definiția (a), specializarea (b), diferențierea împreună cu arhitectura memoriei (c). Calea de date în virgulă mobilă este semnificativ diferită de cea în virgulă fixă (d fals).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Calea de date la procesoarele DSP cu virgulă fixă conține:",
+      "variante": [
+        "multiplicator și ALU",
+        "unul sau mai multe shiftere, registre de lucru și acumulatoare",
+        "unitatea de generare a adreselor",
+        "memoria cache de program"
+      ],
+      "corecte": [
+        0,
+        1
+      ],
+      "explicatie": "Capitol 4 §4.1: multiplicator, ALU, shiftere, registre de lucru, acumulatoare și alte unități specializate. Calculul adreselor se face într-o unitate separată (unitatea de generare a adreselor), iar cache-ul ține de arhitectura memoriei (Curs 5).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Timpul de latență al multiplicatorului:",
+      "variante": [
+        "este întârzierea de la aplicarea operanzilor la intrările multiplicatorului până când rezultatul este disponibil",
+        "poate fi mai mare de un ciclu, din cauza pipeline-ului intern al multiplicatorului",
+        "este nul la multiplicatoarele pipeline, chiar și pentru înmulțiri izolate",
+        "scade când multiplicatorul este separat de sumator"
+      ],
+      "corecte": [
+        0,
+        1
+      ],
+      "explicatie": "Curs 4 §4.1 Multiplicatorul: definiția latenței (a, b). Multiplicatoarele pipeline dau un rezultat la fiecare ciclu doar la șiruri lungi de înmulțiri; la înmulțiri izolate rezultatul vine după unul sau mai multe cicluri (c fals). Separarea multiplicatorului de sumator întârzie rezultatul MAC cu un ciclu (d fals) – Capitol 4.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "În aritmetica fracționară, după multiplicare programatorul păstrează în general:",
+      "variante": [
+        "jumătatea cea mai semnificativă a rezultatului, descărcând jumătatea cea mai puțin semnificativă (posibil prin rotunjire)",
+        "jumătatea cea mai puțin semnificativă a rezultatului",
+        "întregul rezultat pe 2n biți, la fiecare pas de calcul",
+        "doar bitul de semn"
+      ],
+      "corecte": [
+        0
+      ],
+      "explicatie": "Curs 4 §4.1 Multiplicatorul: la fracții produsul are de două ori mai mulți biți la dreapta virgulei, iar programatorul descarcă jumătatea cea mai puțin semnificativă, posibil prin rotunjire. Jumătatea inferioară (b) se păstrează la aritmetica întreagă.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Pentru a ajuta programatorul să selecteze subsetul de biți de la ieșirea multiplicatorului, DSP-urile în virgulă fixă oferă:",
+      "variante": [
+        "registrul de la ieșirea multiplicatorului sau acumulatorul tratat ca doi registri de n biți adresabili independent",
+        "o deplasare automată la stânga cu un bit după multiplicare",
+        "la unele procesoare, un bit de mod care activează sau dezactivează această deplasare, simplificând trecerea între aritmetica fracționară și cea întreagă",
+        "posibilitatea de a citi direct jumătatea mai semnificativă (pentru fracții) sau mai puțin semnificativă (pentru întregi)"
+      ],
+      "corecte": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "explicatie": "Capitol 4 §4.1 Multiplicatorul (paragraful despre hardware-ul specific): toate cele patru facilități sunt descrise acolo.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Regiștrii acumulator:",
+      "variante": [
+        "rețin rezultatele parțiale și finale ale operației de multiplicare-acumulare și ale altor operații aritmetice",
+        "majoritatea procesoarelor DSP posedă doi sau mai mulți acumulatori",
+        "când există un singur acumulator, acesta poate deveni o „gâtuire” în arhitectură",
+        "ideal, ar trebui să aibă exact aceeași mărime ca ieșirea multiplicatorului"
+      ],
+      "corecte": [
+        0,
+        1,
+        2
+      ],
+      "explicatie": "Curs 4 §4.1 Regiștrii acumulator (a, b) și Capitol 4 (c). Ideal acumulatorul e mai mare decât ieșirea multiplicatorului cu câțiva biți (biții de gardă), deci d) e fals.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Un acumulator cu 8 biți de gardă permite adunarea fără depășire a până la:",
+      "variante": [
+        "8 valori",
+        "16 valori",
+        "256 valori",
+        "2⁸ valori"
+      ],
+      "corecte": [
+        2,
+        3
+      ],
+      "explicatie": "Curs 4 §4.1: un acumulator cu n biți de gardă face posibilă adunarea a până la 2ⁿ valori fără depășire; 2⁸ = 256.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Procesoarele ADSP-21xx (Analog Devices) au acumulatoare pe 40 biți și multiplicatoare pe 32 biți. Câți biți de gardă asigură?",
+      "variante": [
+        "4",
+        "8",
+        "32",
+        "40"
+      ],
+      "corecte": [
+        1
+      ],
+      "explicatie": "Capitol 4 §4.1 Regiștrii acumulator: ADSP-21xx asigură opt biți de gardă (40 − 32 = 8); DSP16xx asigură patru.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Într-un procesor fără biți de gardă, pentru a elimina posibilitatea apariției depășirii:",
+      "variante": [
+        "datele de intrare sau rezultatele intermediare trebuie adesea scalate înainte de a fi adunate în acumulator",
+        "rezultatul înmulțirii se deplasează la dreapta cu câțiva biți",
+        "rezultatul înmulțirii se deplasează la stânga cu câțiva biți",
+        "acumulatorul își mărește automat lungimea"
+      ],
+      "corecte": [
+        0,
+        1
+      ],
+      "explicatie": "Curs 4 §4.1 Regiștrii acumulator: fără biți de gardă datele se scalează înainte de acumulare, în general prin deplasarea produsului la dreapta cu câțiva biți (ex. TMS320C2x/C5x: 6 biți).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Care afirmații despre scalare și biții de gardă sunt adevărate?",
+      "variante": [
+        "scalarea este complementară folosirii biților de gardă, ambele reducând sau eliminând posibilitatea depășirii",
+        "scalarea mărește gama dinamică a rezultatelor intermediare",
+        "biții de gardă asigură o reprezentare intermediară cu o gamă dinamică mai largă",
+        "biții de gardă înlătură complet nevoia scalării"
+      ],
+      "corecte": [
+        0,
+        2
+      ],
+      "explicatie": "Curs 4 §4.1 Deplasatorul: scalarea e complementară biților de gardă; scalarea REDUCE gama rezultatelor la domeniul reprezentabil (b fals), biții de gardă dau gamă dinamică mai largă. Capitol 4: biții de gardă nu înlătură nevoia scalării finale (d fals).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Unitatea ALU a procesoarelor DSP cu virgulă fixă:",
+      "variante": [
+        "execută operațiile logice și aritmetice de bază într-un singur ciclu instrucțiune",
+        "execută adunarea, scăderea, incrementarea și operațiile logice ȘI, SAU, NU",
+        "execută la toate procesoarele operațiile logice pe întreaga lărgime a acumulatorului",
+        "la unele procesoare execută adunarea pentru operația de multiplicare-acumulare, la altele aceasta e făcută de un sumator separat"
+      ],
+      "corecte": [
+        0,
+        1,
+        3
+      ],
+      "explicatie": "Curs 4 §4.1 UAL: a, b, d sunt citate din curs. ALU-urile diferă prin mărimea cuvintelor pentru operații logice: unele lucrează pe lărgimea acumulatorului, altele doar pe cuvinte native (c fals).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Procesorul DSP5600x (Motorola), cu acumulator pe 56 biți, realizează operațiile logice asupra:",
+      "variante": [
+        "tuturor celor 56 de biți ai acumulatorului",
+        "cuvintelor de date native pe 24 biți",
+        "a 36 de biți",
+        "a 48 de biți"
+      ],
+      "corecte": [
+        1
+      ],
+      "explicatie": "Capitol 4 §4.1 ALU: DSP5600x realizează operații logice doar asupra cuvintelor native pe 24 biți, spre deosebire de DSP16xx care lucrează pe toți cei 36 de biți ai acumulatorului.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Deplasatorul (shifter) din calea de date în virgulă fixă:",
+      "variante": [
+        "scalează (multiplică) ieșirea cu o putere a lui doi",
+        "ușurează selecția setului de biți ai rezultatului folosit la etapa următoare",
+        "poate fi plasat imediat după multiplicator și ALU sau între multiplicator și ALU",
+        "poate fi de tip barrel shifter, care face deplasări cu mai multe ranguri binare într-un singur ciclu de tact"
+      ],
+      "corecte": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "explicatie": "Curs 4 §4.1 Deplasatorul și Capitol 4: toate variantele sunt descrise acolo (rolul, amplasarea, barrel shifter-ul).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Scalarea este o operație importantă în aplicațiile DSP cu aritmetică în virgulă fixă deoarece:",
+      "variante": [
+        "multe operații produc expandarea sau contractarea gamei valorilor semnalelor procesate",
+        "hardware-ul scalează automat rezultatele pentru a conserva precizia",
+        "elimină nevoia rotunjirii",
+        "mărește precizia rezultatelor"
+      ],
+      "corecte": [
+        0
+      ],
+      "explicatie": "Curs 4 §4.1 Deplasatorul (citat). Scalarea automată prin hardware (b) e specifică virgulei mobile (§4.2 Deplasatorul).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Depășirea de scală (overflow) la procesoarele în virgulă fixă:",
+      "variante": [
+        "apare când suma depășește valoarea maximă care poate fi reprezentată în registrul acumulator",
+        "face ca valoarea din acumulator să poată fi foarte îndepărtată de valoarea corectă",
+        "poate apărea la transferul valorilor acumulate în memorie, dacă acumulatorul are biți de gardă",
+        "poate apărea când un deplasator scalează valoarea acumulatorului pentru stocarea în memorie"
+      ],
+      "corecte": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "explicatie": "Curs 4 §4.1 Depășirea și saturația (a, b, c) și Capitol 4 (d: „depășirea poate să apară și dacă un deplasator este folosit pentru a scala valoarea acumulatorului în vederea stocării”).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Modalitățile obișnuite de tratare a depășirii la procesoarele în virgulă fixă sunt:",
+      "variante": [
+        "scalarea cu grijă a tuturor rezultatelor calculelor",
+        "aritmetica cu saturare",
+        "rotunjirea convergentă",
+        "setarea rezultatului la zero"
+      ],
+      "corecte": [
+        0,
+        1
+      ],
+      "explicatie": "Curs 4 §4.1: „Există două modalități obișnuite de tratare a depășirii”: scalarea tuturor rezultatelor și aritmetica cu saturare. Rotunjirea reduce bias-ul, iar setarea la zero e acțiunea la underflow în virgulă mobilă.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Aritmetica cu saturare:",
+      "variante": [
+        "folosește un circuit special care detectează apariția depășirii scalei",
+        "înlocuiește valoarea eronată cu cel mai mare număr pozitiv sau cel mai mic număr negativ reprezentabil, după direcția depășirii",
+        "furnizează întotdeauna rezultatul corect",
+        "este implementată de o unitate hardware numită de unii producători limitator"
+      ],
+      "corecte": [
+        0,
+        1,
+        3
+      ],
+      "explicatie": "Curs 4 §4.1 Depășirea și saturația; Capitol 4: rezultatul saturat este „desigur incorect”, dar eroarea e mai mică (c fals); unitatea = limitator.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Trunchierea:",
+      "variante": [
+        "constă în descărcarea unui număr din cei mai puțin semnificativi biți ai reprezentării",
+        "dă o valoare întotdeauna mai mare sau egală cu data originală",
+        "introduce la semnale un deplasament (bias sau offset) sau o componentă continuă",
+        "introduce un bias mai mic decât rotunjirea la valoarea cea mai apropiată"
+      ],
+      "corecte": [
+        0,
+        2
+      ],
+      "explicatie": "Curs 4 §4.1 Trunchierea și rotunjirea: definiția (a) și bias-ul (c). Valoarea trunchiată e ≤ originala (b fals); bias-ul rotunjirii e mai mic decât al trunchierii (d fals).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Rotunjirea la valoarea cea mai apropiată:",
+      "variante": [
+        "rotunjește întotdeauna la valoarea mai mare numerele aflate exact la mijloc între două valori consecutive",
+        "se implementează adunând jumătate din valoarea LSB-ului cuvântului de ieșire și apoi trunchiind",
+        "nu introduce niciun bias",
+        "este tipul de rotunjire folosit de majoritatea procesoarelor DSP cu virgulă fixă"
+      ],
+      "corecte": [
+        0,
+        1,
+        3
+      ],
+      "explicatie": "Curs 4 §4.1 și Capitol 4: a, b, d sunt citate. Introduce o asimetrie, deci un bias (mai mic decât al trunchierii), care poate crea probleme la filtrele IIR și adaptive (c fals).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Rotunjirea convergentă:",
+      "variante": [
+        "reduce bias-ul care apare la rotunjirea la valoarea cea mai apropiată",
+        "pentru numerele aflate exact la mijloc, direcția depinde de bitul care va deveni LSB al ieșirii: 0 → în jos, 1 → în sus",
+        "are suport hardware la majoritatea procesoarelor DSP cu virgulă fixă",
+        "este efectuată de familiile ADSP-21xx și DSP5600x"
+      ],
+      "corecte": [
+        0,
+        1,
+        3
+      ],
+      "explicatie": "Curs 4 §4.1 și Capitol 4: a, b, d. Capitol 4: „mecanismul de rotunjire convergentă nu are suport hardware pentru majoritatea procesoarelor DSP cu virgulă fixă” (c fals).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Aplicând rotunjirea convergentă și păstrând 4 biți, valoarea 01111000 devine:",
+      "variante": [
+        "0111",
+        "1000",
+        "0110",
+        "1001"
+      ],
+      "corecte": [
+        1
+      ],
+      "explicatie": "Se păstrează 0111, partea eliminată 1000 e exact jumătate; bitul care devine LSB e 1 → rotunjire în sus: 0111 + 1 = 1000 (Curs 4 §4.1 Trunchierea și rotunjirea).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Operanzii la procesoarele DSP cu virgulă fixă:",
+      "variante": [
+        "sunt obținuți, în majoritatea procesoarelor, de la un mic număr de regiștri operand sau de la acumulator",
+        "sunt aduși din memorie în regiștrii operand printr-o arhitectură de tip Von Neumann",
+        "un procesor care prelucrează datele numai din regiștrii operand are arhitectură „load-store”",
+        "regiștrii operand sunt accesați prin adresare indirectă cu registru"
+      ],
+      "corecte": [
+        0,
+        2
+      ],
+      "explicatie": "Curs 4 §4.1 Operanzii și regiștrii operand: a, c; datele se aduc cu instrucțiuni „move”, iar regiștrii operand se accesează prin adresare directă la registru (register-direct), nu indirectă (d fals).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Despre calea de date la procesoarele DSP cu virgulă mobilă, sunt adevărate:",
+      "variante": [
+        "la majoritatea, calea principală face calcule și în virgulă mobilă și în virgulă fixă, dar un singur tip de operație într-un ciclu",
+        "unele procesoare au două căi de date: una pentru virgulă mobilă și una pentru virgulă fixă",
+        "procesoarele cu căi de date separate au multiplicator pe calea pentru virgulă fixă",
+        "calea pentru virgulă fixă, când există separat, are mai puține facilități"
+      ],
+      "corecte": [
+        0,
+        1,
+        3
+      ],
+      "explicatie": "Capitol 4 §4.2 (introducere): a, b, d. „Procesoarele care au căi de date diferite pentru virgulă mobilă și virgulă fixă nu posedă multiplicator pe calea de date pentru operații în virgulă fixă” (c fals).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Multiplicatoarele procesoarelor DSP cu virgulă mobilă:",
+      "variante": [
+        "acceptă doi operanzi cu virgulă mobilă de mărime nativă, de obicei 32 biți",
+        "produc la ieșire un cuvânt suficient de mare pentru a evita pierderea preciziei",
+        "pentru mantise de intrare de 24 biți ar avea nevoie de o mantisă de 48 biți la ieșire",
+        "au formatul de ieșire în general ceva mai lung decât cel de intrare, cu 8 sau 12 biți în plus pentru mantisă"
+      ],
+      "corecte": [
+        0,
+        2,
+        3
+      ],
+      "explicatie": "Curs 4 §4.2 Multiplicatorul: spre deosebire de virgula fixă, multiplicatoarele în virgulă mobilă NU produc un cuvânt suficient de mare (b fals); restul sunt citate din curs.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Unitatea ALU a procesorului DSP cu virgulă mobilă execută:",
+      "variante": [
+        "adunări și scăderi",
+        "calculul valorii absolute, negări, calculul valorii minime și/sau maxime",
+        "operațiile logice pe bit ȘI, SAU, NEGARE asupra datelor în virgulă mobilă",
+        "înmulțirea operanzilor"
+      ],
+      "corecte": [
+        0,
+        1
+      ],
+      "explicatie": "Curs 4 §4.2 UAL: operații simple (a, b). Operațiile logice pe bit nu sunt semnificative pentru date în virgulă mobilă și în general nu sunt executate de ALU numai pentru virgulă mobilă (c fals); înmulțirea o face multiplicatorul (d fals).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Operația de multiplicare-adunare:",
+      "variante": [
+        "diferă de multiplicare-acumulare prin faptul că rezultatul este scris într-un acumulator diferit de cel care furnizează data adunată cu produsul",
+        "scrie rezultatul în același acumulator care furnizează data adunată",
+        "este executată de unele procesoare, de exemplu DSP32C (AT&T)",
+        "nu folosește multiplicatorul"
+      ],
+      "corecte": [
+        0,
+        2
+      ],
+      "explicatie": "Curs 4 §4.2 UAL și Capitol 4: definiția (a) și exemplul DSP32C (c). Varianta b descrie multiplicarea-acumularea.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "La aritmetica în virgulă mobilă, excepțiile:",
+      "variante": [
+        "sunt situații neobișnuite care pot cauza rezultate aritmetice eronate (ex. depășirea de scală)",
+        "sunt semnalizate prin setarea unui bit într-un registru de stare",
+        "pot genera, opțional la unele procesoare, o întrerupere care lansează o rutină de tratare furnizată de programator",
+        "sunt mai grave decât la virgulă fixă, din cauza gamei dinamice mai mici"
+      ],
+      "corecte": [
+        0,
+        1,
+        2
+      ],
+      "explicatie": "Curs 4 §4.2 Overflow, underflow și alte excepții: a, b, c. Depășirea e MAI PUȚIN gravă în virgulă mobilă datorită gamei dinamice mai mari (d fals).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "La majoritatea procesoarelor DSP cu virgulă mobilă, la apariția depășirii (overflow):",
+      "variante": [
+        "se setează un bit de stare",
+        "rezultatul este limitat automat la cea mai pozitivă sau cea mai negativă valoare reprezentabilă",
+        "rezultatul este setat la zero",
+        "procesorul se oprește din execuție"
+      ],
+      "corecte": [
+        0,
+        1
+      ],
+      "explicatie": "Curs 4 §4.2: bit de stare și limitare automată a rezultatului. Setarea la zero (c) este acțiunea la underflow.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Underflow-ul:",
+      "variante": [
+        "apare când rezultatul unei operații aritmetice este prea mic pentru a fi reprezentat",
+        "se poate produce, de exemplu, la înmulțirea a două numere subunitare mici",
+        "este tratat la multe procesoare prin setarea rezultatului la zero și setarea unui bit într-un registru de stare",
+        "apare la împărțirea la zero"
+      ],
+      "corecte": [
+        0,
+        1,
+        2
+      ],
+      "explicatie": "Curs 4 §4.2: a, b, c sunt citate. Împărțirea la zero e o altă excepție, semnalată la procesoarele cu operația „reciprocal seed” (d fals).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Rotunjirea la procesoarele DSP cu virgulă mobilă:",
+      "variante": [
+        "rezultatele sunt rotunjite automat la un format intermediar de 40÷44 biți, folosit în interiorul căii de date",
+        "la transferul în memorie, datele pot fi scrise în precizie extinsă sau rotunjite la formatul nativ, în general 32 biți",
+        "majoritatea procesoarelor asigură rotunjirea la cel mai apropiat",
+        "DSP96002 (Motorola) asigură toate modurile IEEE 754: convergentă, către +∞, către zero și către −∞"
+      ],
+      "corecte": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "explicatie": "Curs 4 §4.2 Rotunjirea și Capitol 4: toate afirmațiile sunt din curs.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Deplasatorul la procesoarele DSP cu virgulă mobilă:",
+      "variante": [
+        "execută scalarea automată a rezultatelor pentru a conserva maximul de precizie",
+        "scalarea automată prin hardware este principalul avantaj al aritmeticii în virgulă mobilă",
+        "este explicit controlat de programator la operațiile în virgulă mobilă",
+        "la procesoarele cu o singură cale de date pentru ambele aritmetici poate fi controlat explicit pentru datele în virgulă fixă"
+      ],
+      "corecte": [
+        0,
+        1,
+        3
+      ],
+      "explicatie": "Curs 4 §4.2 Deplasatorul: în virgulă mobilă deplasatorul fie nu este vizibil, fie nu este explicit controlabil de programator (c fals); restul sunt citate.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Regiștrii și operanzii la procesoarele DSP cu virgulă mobilă:",
+      "variante": [
+        "au în general regiștri mai mulți și de capacitate mai mare decât procesoarele cu virgulă fixă",
+        "TMS320C3x are opt regiștri pe 40 biți și opt pe 32 biți care pot primi rezultatele operațiilor aritmetice",
+        "operanzii provin de la regiștri operand sau acumulatoare, accesați prin adresare directă la registru",
+        "câteva procesoare (DSP32xx) transferă operanzi pe calea de date direct din memorie, prin adresare indirectă cu registru"
+      ],
+      "corecte": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "explicatie": "Curs 4 §4.2 Regiștrii acumulator și Operanzii și regiștrii operand; exemplele din Capitol 4.",
+      "sigur": true
+    }
+  ]
+}

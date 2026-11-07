@@ -1,0 +1,705 @@
+{
+  "curs": 5,
+  "titlu": "Arhitectura memoriei",
+  "rezumat": [
+    {
+      "titlu": "Introducere: de ce contează arhitectura memoriei",
+      "puncte": [
+        "Căile de date ale DSP sunt optimizate pentru performanțe ridicate; pentru a menține fluxul de date și a memora rezultatele, procesoarele de semnal trebuie să transfere cantități mari de date în și din memorie.",
+        "Organizarea memoriei și modul de interconectare a acesteia cu calea de procesare a datelor = arhitectura memoriei procesorului (alt factor important pentru performanță).",
+        "DSP execută operația de multiplicare-adunare (MAC) de regulă într-un singur ciclu de tact, cu o instrucțiune specializată.",
+        "Filtrul RFI (FIR) în structură transversală: N prize, (N-1) eșantioane în linia de întârziere; fiecare priză = un multiplicator și un sumator (executate prin software).",
+        "Pentru fiecare instrucțiune MAC din FIR procesorul trebuie să execute PATRU accesări ale memoriei într-un ciclu de tact: (1) citirea codului instrucțiunii MAC (fetch); (2) citirea eșantionului din linia de întârziere; (3) citirea coeficientului filtrului; (4) scrierea eșantionului în următoarea locație a liniei de întârziere (deplasarea datelor).",
+        "Unele procesoare reduc numărul de accesări necesare la trei sau chiar două; procesoarele de semnal pot executa mai multe operații de citire sau scriere din/în memorie într-un ciclu-mașină."
+      ]
+    },
+    {
+      "titlu": "5.1 Organizarea memoriei – von Neumann și Harvard",
+      "puncte": [
+        "Arhitectura von Neumann: cea mai simplă structură – un singur bloc de memorie, accesat printr-un singur set de magistrale de adrese și date; memoria conține atât instrucțiunile programului cât și datele; folosită la primele generații de microprocesoare și la multe procesoare de uz general.",
+        "Von Neumann, cazul cel mai simplu: un singur acces la memorie (o citire sau o scriere) pe ciclu-mașină → MAC din FIR necesită 4 cicluri cu memoria (accesări secvențiale); de aceea von Neumann nu execută eficient algoritmii de prelucrare a semnalelor.",
+        "Arhitectura Harvard: procesorul este conectat la două blocuri independente de memorie prin două magistrale separate; în varianta standard un bloc conține instrucțiunile programului, iar celălalt datele.",
+        "La DSP se folosește arhitectura Harvard MODIFICATĂ: un bloc de memorie conține instrucțiunile programului și date, iar celălalt conține numai date; datele pot fi mutate între cele două blocuri (imposibil la arhitectura standard).",
+        "Avantajul principal al arhitecturii Harvard: două accesări ale memoriei într-un ciclu-mașină → cele 4 accesări ale FIR se fac în 2 cicluri-mașină. Exemple: ADSP-21xx (Analog Devices), DSP16xx (AT&T) – la DSP16xx o scriere durează 2 cicluri, deci nu se folosește întregul potențial.",
+        "Harvard modificată cu trei blocuri (PineDSPCore, OakDSPCore – DSP Group): un bloc de memorie de program și două blocuri de date X și Y, fiecare cu setul ei de magistrale → trei accesări independente pe ciclu-mașină (citirea instrucțiunii + câte un acces la X și Y). Și la Z839xx (Zilog), D950-CORE (SGS-Thomson), DSP5600x, DSP563xx, DSP96002 (Motorola).",
+        "A patra accesare a FIR este eliminată la procesoarele cu 3 accesări/ciclu prin adresarea modulo n.",
+        "Extinderea magistralelor în afara chip-ului e costisitoare (crește complexitatea capsulei) → DSP au în general un singur set de magistrale pentru memoria externă (o magistrală de adrese și una de date); accesările multiple la memoria externă nu se pot face în paralel, se execută secvențial și execuția instrucțiunii se prelungește."
+      ]
+    },
+    {
+      "titlu": "5.1 Memoriile cu acces multiplu și operațiile specializate de scriere",
+      "puncte": [
+        "Alte soluții (pe lângă Harvard) pentru mai multe accesări ale memoriei într-un ciclu-mașină: (1) memorii rapide care permit mai multe accesări SECVENȚIALE pe ciclu-mașină, printr-un singur set de magistrale (bus); (2) memorii multiport care permit mai multe accesări CONCURENTE prin două sau mai multe seturi de magistrale.",
+        "Memorii rapide: unele DSP au memorii interne care fac un acces în jumătate de ciclu-mașină → două accesări independente secvențiale; combinate cu Harvard (două blocuri rapide) dau 4 accesări pe ciclu, dacă datele sunt ordonate câte două pe fiecare bloc.",
+        "Dacă datele nu sunt ordonate (ex. 3 accesări într-un bloc și 1 în celălalt), procesorul prelungește automat execuția instrucțiunii; o ordonare suboptimă NU produce rezultate eronate, doar crește timpul de execuție.",
+        "Memoria multiport are mai multe seturi de bus-uri de adrese și de date → mai multe accesări în paralel; cele mai folosite sunt memoriile dual-port (două accesări simultane), mai rar cu trei sau patru porturi; elimină necesitatea ordonării datelor în mai multe blocuri independente.",
+        "Dezavantajul principal al memoriilor multiport: ocupă o arie mare din suprafața chip-ului.",
+        "Harvard + multiport (Fig. 5.4 / slide 8): memorie de date dual-port (A) și memorie de program uni-port (B) → într-un ciclu: două accesări la A și una la B, prin trei seturi independente de magistrale (DSP561xx, Motorola).",
+        "Limitări: capacitatea de integrare pe chip lângă nucleu și performanțele sistemului I/O; memoria rapidă mutată în afara chip-ului → întârzieri ce fac imposibil accesul multiplu secvențial; memoria multiport în afara chip-ului → bus-uri suplimentare, mai mulți pini I/O, capsulă și pastilă de siliciu mai mari.",
+        "Operații specializate de scriere: unele DSP permit ca scrierea în memoria de date să se execute în paralel cu o citire din aceasta și cu o citire din memoria de program; prin instrucțiuni speciale, dar cu anumite circumstanțe restrictive; folosite la deplasarea datelor în lungul liniei de întârziere a filtrului RFI."
+      ]
+    },
+    {
+      "titlu": "5.2 Metode de reducere a numărului de accesări ale memoriei",
+      "puncte": [
+        "Scop: procesoarele cu lățime mare a benzii de transfer cu memoria sunt scumpe; caracteristicile speciale de reducere a accesărilor permit performanțe egale cu ale acestora la cost mai mic. Metode: cache pentru program, adresarea modulo n, abordări bazate pe algoritmi.",
+        "Memoria cache pentru program: memorie de capacitate mică în interiorul procesorului, folosită pentru memorarea instrucțiunilor, eliminând necesitatea accesării blocului de memorie de program de câte ori este executată o instrucțiune.",
+        "Prin eliminarea ciclilor de acces pentru citirea instrucțiunii se pot face accesări pentru citirea/scrierea datelor și se reduce timpul de execuție prin eliminarea întârzierilor asociate memoriei de program externe.",
+        "Cache-ul DSP variază mult prin capacitate și mod de operare; în general e mai mic și mai simplu decât cache-ul intern al procesoarelor de uz general; este folosit DOAR pentru instrucțiuni (un cache de date ar cere un mecanism de coerență – actualizarea cache-ului și a memoriei externe – deci complexitate mai mare).",
+        "Adresarea modulo n: implementarea unei linii de întârziere (ca la RFI) fără ca datele să fie mutate efectiv în memorie; datele rămân în aceeași locație cât timp e nevoie de ele; deplasarea e simulată prin modificarea pointerilor cu aritmetica modulo n; la FIR reduce accesările de la PATRU pe ciclu-mașină la TREI (detalii în Cap. 6).",
+        "Abordări bazate pe algoritmi (nu sunt o caracteristică a procesoarelor): algoritmi care exploatează modul de aranjare a datelor; algoritmii pe blocuri citesc repetat aceleași date, iar un programator bun reutilizează datele deja citite."
+      ]
+    },
+    {
+      "titlu": "5.3 Stările de așteptare (wait states)",
+      "puncte": [
+        "Definiție: stări în care procesorul nu poate continua execuția programului deoarece așteaptă finalizarea unei activități începute.",
+        "Cauze (3): apariția unor conflicte la accesarea resurselor; folosirea unor memorii lente; împărțirea magistralei (bus-ului) cu alte dispozitive.",
+        "Stările datorate conflictelor apar când procesorul încearcă mai multe accesări simultane ale unei memorii care nu suportă acces multiplu (ex. un bloc uni-port care conține și instrucțiuni și date); în pipeline – o instrucțiune nu poate accesa un bloc pe care îl accesează instrucțiuni alăturate.",
+        "Unele DSP au blocuri mici de RAM și/sau ROM interne cu una sau mai multe accesări pe ciclu; la extinderea cu memorie externă, prea lentă pentru mai multe accesări pe ciclu, procesorul introduce stări de așteptare PROGRAMATE în timpul accesului la memoria externă.",
+        "Stările programate sunt configurate de programator ca să încetinească deliberat accesul și să respecte timpii de acces ai memoriilor lente; unele procesoare permit un număr diferit de stări pentru regiuni diferite ale memoriei externe → combinații de memorie rapidă și lentă.",
+        "Durata unei stări de așteptare: de la un sfert de ciclu-mașină (DSP32C, AT&T) la un ciclu-mașină (majoritatea procesoarelor); stările mai scurte permit operare mai eficientă."
+      ]
+    },
+    {
+      "titlu": "5.4 Memoria ROM",
+      "puncte": [
+        "DSP pentru aplicații ieftine (electronică de uz general, echipamente de telecomunicații) au memorie ROM internă pentru programe și constante.",
+        "Versiuni diferite: cu memorie RAM internă pentru prototipuri și producție de volum scăzut; cu memorie ROM programabilă la fabricarea circuitului pentru producție de volum mare. ROM-ul de pe chip: între 256 și 36 K locații (ex. TI TMS320P17, TMS320P25 cu ROM programabil o singură dată).",
+        "Pentru mai mult ROM decât pe chip se conectează o extensie de ROM prin interfața cu memoria externă; de obicei mai multe chipuri ROM formează un bloc cu lățimea unei instrucțiuni; unele procesoare citesc instrucțiunile doar pe octeți și le refac intern prin concatenarea octeților."
+      ]
+    },
+    {
+      "titlu": "5.5 Interfețele cu memoria externă",
+      "puncte": [
+        "Interfețele cu memoria externă diferă prin trei caracteristici principale: numărul de porturi de memorie; flexibilitatea și complexitatea interfeței; constrângerile privitoare la timpii de acces.",
+        "Cele mai multe DSP au un SINGUR port extern pentru memorie (magistrală de adrese, magistrală de date și set de semnale de control), chiar dacă au mai multe blocuri de memorie independente pe chip – bus-urile externe cer mulți pini → cost mai mare; portul extern poate extinde oricare bloc intern, dar accesul multiplu la memoria externă într-un ciclu nu e posibil.",
+        "Există și DSP cu mai multe porturi externe (mai scumpe): ADSP-21020 (port program: adrese 24 b, date 48 b; port date: 32/32 b), TMS320C30 (24/32 și 13/32), TMS320C40 (două porturi identice, adrese 31 b, date 32 b), DSP96002 (două porturi identice de 32 b).",
+        "Unele interfețe sunt simple și directe, cu câțiva pini de control; altele complexe, permit conectarea la o mare diversitate de dispozitive și bus-uri fără hardware suplimentar. Alte caracteristici: stări de așteptare flexibile/configurabile, pin „wait” (memoria externă disponibilă), pini de cerere și confirmare a accesului la bus, suport pentru DRAM în modul pagină.",
+        "Aplicațiile de performanță folosesc memorii externe SRAM rapide → inginerul trebuie să consulte timpii de acces ai porturilor externe; două procesoare cu același ciclu-mașină pot avea timpi de acces foarte diferiți, cu impact asupra costului (memoriile rapide sunt mai scumpe).",
+        "Cache manual: chiar fără cache specializat, programatorul poate copia o secțiune de cod din memoria lentă sau mai folosită (în termeni de acces) într-o memorie mai rapidă sau mai puțin accesată – ex. din ROM extern lent în RAM intern, la pornirea procesorului sau la prima accesare a acelei zone.",
+        "Suport multiprocesor: (1) două porturi pentru memoria externă – unul la o memorie locală, folosită doar de acest procesor, celălalt la o memorie partajată cu alte procesoare (ex. DSP96002); (2) mecanism de arbitrare a magistralei – procesoarele negociază controlul bus-ului, iar cele fără control nu pot transfera date pe el; (3) blocarea bus-ului = operația test-and-set (citește, modifică și scrie înapoi o variabilă partajată fără întrerupere de la alt procesor).",
+        "SRAM față de DRAM: SRAM e mai ușor de folosit și mai rapidă, dar necesită o suprafață mai mare pe chip și e mai scumpă pentru aceeași capacitate; interfețele cu SRAM sunt mai simple.",
+        "Deosebirea principală: SRAM reține datele cât timp e alimentată (perioadă nelimitată, până e rescrisă); DRAM trebuie reîmprospătată periodic (refresh la fiecare câteva fracțiuni de secundă, altfel datele se pierd), aplicându-i-se o secvență specială de semnale.",
+        "DRAM presupune de regulă un controler de DRAM separat care generează semnalele de control (crește costul); unele DSP integrează controlerul pe chip (DSP56004, DSP56007 – cu suport pentru modul pagină); DRAM paginate sau cu coloane statice dau acces mult mai rapid la accesarea repetată a aceleiași pagini.",
+        "DMA (Direct Memory Access): tehnică prin care datele sunt transferate în și din memoria internă a DSP fără intervenția acestuia; tip aparte de întrerupere, tehnică pur hardware, fără pregătiri în programe; oferă performanțe mai bune pentru dispozitivele I/O, printr-un controler DMA separat, pe același chip sau extern.",
+        "DMA extern: procesorul îi transmite controlerului adresa de start, numărul de locații, direcția transferului și dispozitivul sursă/destinație; controlerul cere bus-ul pe pinul de cerere, procesorul termină instrucțiunea curentă, cedează controlul și confirmă pe pinul de acces la bus; la final controlerul poate semnala printr-o întrerupere.",
+        "Controlerele DMA integrate pot accesa atât memoria internă cât și pe cea externă și diferă prin performanțe și flexibilitate; pot avea mai multe canale, fiecare cu propriul set de registre: TMS320C4x – 6 canale, ADSP-2106x – 10, DSP96002 – 2; transferuri memorie-memorie sau memorie-periferic."
+      ]
+    }
+  ],
+  "capcane": [
+    "DSP NU folosesc arhitectura von Neumann (un singur bloc, un singur set de magistrale), ci Harvard MODIFICATĂ: un bloc pentru program ȘI date, celălalt NUMAI pentru date (nu „ambele numai date” sau „ambele program”).",
+    "Numere FIR: MAC cere 4 accesări; von Neumann → 4 cicluri; Harvard → 2 cicluri; cu adresare modulo n → 3 accesări (NU 2); 3 blocuri (program + X + Y) → 3 accesări pe ciclu.",
+    "Memorii rapide = accesări SECVENȚIALE, un SINGUR set de magistrale; memorii multiport = accesări CONCURENTE, DOUĂ SAU MAI MULTE seturi de magistrale. Nu le inversa.",
+    "Ordonarea suboptimă a datelor la memoriile rapide NU dă rezultate eronate – doar prelungește automat execuția (timp mai mare).",
+    "Dezavantajul memoriilor multiport este aria mare pe chip, nu viteza; cele mai folosite sunt dual-port (3–4 porturi mai rar).",
+    "Cauzele stărilor de așteptare sunt exact trei: conflicte la accesarea resurselor, memorii lente, împărțirea magistralei cu alte dispozitive. Memoria cache NU este o cauză (este o metodă de reducere a accesărilor).",
+    "Durata unei stări de așteptare: ¼ ciclu (DSP32C, AT&T) până la 1 ciclu-mașină (majoritatea); stările mai SCURTE sunt mai eficiente.",
+    "Cache-ul DSP: doar pentru instrucțiuni, mai mic și mai simplu decât la procesoarele de uz general; cache de date ar cere coerență (complexitate). Cache manual = copiere făcută de programator, nu automat.",
+    "SRAM: mai rapidă, mai ușor de folosit, interfață mai simplă, dar mai scumpă și cu suprafață mai mare; reține datele cât e alimentată. DRAM: trebuie reîmprospătată periodic, cere controler DRAM (separat sau integrat). „DRAM e mai rapidă decât SRAM” = FALS.",
+    "Majoritatea DSP au UN singur port extern pentru memorie, chiar dacă au mai multe blocuri interne (motiv: pini → cost); accesul multiplu la memoria externă într-un ciclu nu e posibil.",
+    "ROM: versiunea cu RAM internă este pentru prototipuri și volum scăzut; ROM programat la fabricare este pentru volum mare (nu invers).",
+    "DMA: transfer FĂRĂ intervenția procesorului; tip aparte de întrerupere, pur hardware, FĂRĂ pregătiri în programe; controlerul DMA poate fi pe același chip sau extern.",
+    "Abordările bazate pe algoritmi reduc accesările, dar NU sunt o caracteristică a procesoarelor de semnal (țin de programator).",
+    "Operațiile specializate de scriere: scriere în memoria de date în paralel cu o citire din aceasta ȘI o citire din memoria de program, doar cu instrucțiuni speciale și în circumstanțe restrictive."
+  ],
+  "grile_vechi": [
+    {
+      "sursa": "GRILE PS PARTIAL #4",
+      "intrebare": "Arhitectura memoriei la procesoarele de semnal este:",
+      "variante": [
+        "o singură arie de memorie și pentru date și pentru instrucțiuni",
+        "de tip Von Neumann",
+        "împărțită în blocuri de memorie separate pentru date și pentru instrucțiuni",
+        "de tip Harvard"
+      ],
+      "corecte": [2, 3],
+      "explicatie": "Curs 5, 5.1 (slide 7) / Capitol 5, 5.1: la DSP se folosește o variantă modificată a arhitecturii Harvard – două blocuri independente de memorie, cu magistrale separate (unul cu program și date, celălalt numai cu date). O singură arie de memorie pentru date și instrucțiuni = von Neumann, întâlnită la procesoarele de uz general.",
+      "sigur": true
+    },
+    {
+      "sursa": "GRILE PS PARTIAL #6",
+      "intrebare": "Stările de așteptare pot avea următoarele cauze:",
+      "variante": [
+        "folosirea unor memorii lente",
+        "împărțirea magistralei cu alte dispozitive",
+        "memorie cache pentru secvențe de instrucțiuni",
+        "apariția unor conflicte la accesarea resurselor"
+      ],
+      "corecte": [0, 1, 3],
+      "explicatie": "Curs 5, 5.3 (slide 12): „Stările de așteptare pot avea următoarele cauze: apariția unor conflicte la accesarea resurselor, folosirea unor memorii lente, împărțirea magistralei cu alte dispozitive.” Cache-ul pentru program este o metodă de reducere a accesărilor (5.2), nu o cauză.",
+      "sigur": true
+    },
+    {
+      "sursa": "GRILE PS PARTIAL #7",
+      "intrebare": "Caracteristicile memoriilor cu acces multiplu sunt:",
+      "variante": [
+        "sunt mai eficiente decât folosirea mai multor blocuri de memorii separate",
+        "cu instrucțiuni speciale, se pot executa în paralel operații de scriere și operații de citire",
+        "se pot realiza, în cazul unui singur ciclu instrucțiune, două cicluri de acces la memorie",
+        "au cel puțin două porturi de acces la memorie"
+      ],
+      "corecte": [1, 2, 3],
+      "explicatie": "b: Curs 5, 5.1 „Operații specializate de scriere” – instrucțiuni speciale permit scrieri în paralel cu citirile. c: Curs 2 / Capitol 2 „arhitectura multiacces” – mai multe cicluri de acces la memorie într-un singur ciclu instrucțiune; Capitol 5: memoriile rapide fac două accesări pe ciclu, dual-port permite două accesări simultane. d: memoriile multiport au mai multe seturi de bus-uri, cele mai folosite fiind dual-port (minim două porturi). a: cursul nu spune că ar fi „mai eficiente” decât blocurile separate – spune doar că elimină necesitatea ordonării datelor în blocuri și că au dezavantajul ariei mari pe chip. Nesigur: d e adevărat strict pentru memoriile multiport (memoriile rapide au un singur set de bus-uri), iar a ar putea fi considerat adevărat de profesor.",
+      "sigur": false
+    },
+    {
+      "sursa": "SUBIECT POZA #9 (variantă a GRILE PS PARTIAL #7)",
+      "intrebare": "Caracteristicile memoriilor cu acces multiplu sunt:",
+      "variante": [
+        "nu se pot realiza, în cadrul unui singur ciclu instrucțiune, două cicluri de acces la memorie",
+        "cu instrucțiuni speciale, se pot executa în paralel operații de scriere și operații de citire",
+        "au cel puțin patru porturi de acces la memorie",
+        "sunt mai eficiente decât folosirea mai multor blocuri de memorii separate"
+      ],
+      "corecte": [1],
+      "explicatie": "b: Curs 5, 5.1 – operații specializate de scriere, executate în paralel cu citirile prin instrucțiuni speciale. a e negația proprietății de bază (se pot face două sau mai multe accesări într-un ciclu). c: cele mai folosite sunt dual-port; 3–4 porturi doar rar (Capitol 5, 5.1). d: cursul nu afirmă asta (vezi PARTIAL #7). Nesigur doar din cauza lui d.",
+      "sigur": false
+    },
+    {
+      "sursa": "SUBIECT POZA #3",
+      "intrebare": "Măsurile folosite pentru reducerea timpului de acces la memorie sunt:",
+      "variante": [
+        "folosirea unui singur bloc de memorie pentru date și instrucțiuni, cu acces multiplu prin porturi separate",
+        "prevederea de memorii cache rapide, situate între memoria principală, de mare capacitate, și procesor",
+        "introducerea unor arii de memorie în structura internă a procesorului, pentru stocarea programelor și a datelor, evitând astfel folosirea memoriei externe",
+        "folosirea arhitecturii Harvard (blocuri separate de memorie cu magistrale separate de acces)"
+      ],
+      "corecte": [1, 2, 3],
+      "explicatie": "Lista nu apare identic în curs. d: Capitol 5, 5.1 – Harvard permite două accesări pe ciclu. b: 5.2 – cache-ul elimină întârzierile memoriei de program externe (și Capitol 1: cache-ul intern evită accesul la memoria externă mai lentă). c: Capitol 1 – arii de RAM/ROM interne pentru accelerarea transferului și reducerea transferurilor cu exteriorul; Capitol 5, 5.3 – memoria internă permite mai multe accesări pe ciclu, cea externă e lentă. a descrie o memorie de tip von Neumann; deși o memorie multiport ar permite acces multiplu, varianta pare distractorul. Nesigur pentru a.",
+      "sigur": false
+    },
+    {
+      "sursa": "SUBIECT POZA #5",
+      "intrebare": "Spre deosebire de SRAM, memoriile DRAM au următoarele caracteristici:",
+      "variante": [
+        "sunt mai potrivite pentru aplicații cu volum mare de date",
+        "au viteză de lucru mai mare",
+        "mențin informațiile stocate cât timp sunt alimentate",
+        "au un mecanism intern sau extern de reîmprospătare a memoriei"
+      ],
+      "corecte": [0, 3],
+      "explicatie": "Curs 5, 5.5 „Memoria dinamică” (slide 17): SRAM e mai rapidă (b fals) și reține datele cât e alimentată (c descrie SRAM); DRAM trebuie reîmprospătată periodic, cu un controler DRAM separat sau integrat pe chip (d). a: cursul spune că SRAM necesită suprafață mai mare și e mai scumpă pentru aceeași capacitate, deci DRAM e mai potrivită pentru capacități mari – deducție, nu afirmație explicită, de aici nesiguranța.",
+      "sigur": false
+    },
+    {
+      "sursa": "GRILE FINAL (GRILE.RTF) – „In Fig. 2, memoriile reprezentate sunt de tip”",
+      "intrebare": "În figură (arhitectură Harvard cu memoria A și memoria B, ca în Fig. 5.4), memoriile reprezentate sunt de tip:",
+      "variante": [
+        "memoria A uni-port",
+        "memoria B uni-port",
+        "memoria A dublu-port",
+        "(b) și (c)"
+      ],
+      "corecte": [1, 2, 3],
+      "explicatie": "În sursă apar doar răspunsurile („Memoria A dublu-port (c), Memoria B uni-port (b), (b) și (c)”), variantele sunt reconstruite. Curs 5, 5.1, slide 8 / Fig. 5.4: arhitectură Harvard cu o memorie de date cu două porturi (A) și o memorie de program cu un singur port (B) – două accesări la A și una la B pe ciclu, prin trei seturi de magistrale.",
+      "sigur": true
+    },
+    {
+      "sursa": "GRILE FINAL (GRILE.RTF) – „Memoria B este de tip”",
+      "intrebare": "În arhitectura din figură (memorie de date A și memorie de program B, ca în Fig. 5.4), memoria B este de tip:",
+      "variante": [
+        "uni-port",
+        "dublu-port",
+        "cu patru porturi",
+        "memorie cache pentru date"
+      ],
+      "corecte": [0],
+      "explicatie": "Variante reconstruite (sursa dă doar răspunsul „Uni-port”). Curs 5, slide 8: memoria de program B are un singur port; memoria de date A are două porturi.",
+      "sigur": true
+    },
+    {
+      "sursa": "GRILE FINAL (GRILE.RTF) – pag. 7, curs 5",
+      "intrebare": "Memoria de capacitate mică din interiorul procesorului, folosită pentru memorarea instrucțiunilor, poartă numele de:",
+      "variante": [
+        "cache pentru program",
+        "memorie ROM internă",
+        "memorie dual-port de date",
+        "linie de întârziere"
+      ],
+      "corecte": [0],
+      "explicatie": "Variante reconstruite (sursa dă doar răspunsul). Curs 5, 5.2 (slide 10): memoria cache pentru program este o memorie de capacitate mică în interiorul procesorului, folosită pentru memorarea instrucțiunilor.",
+      "sigur": true
+    },
+    {
+      "sursa": "GRILE FINAL (GRILE.RTF) – pag. 11, curs 5",
+      "intrebare": "Față de memoria dinamică, memoria statică:",
+      "variante": [
+        "este mai ușor de folosit și mai rapidă",
+        "necesită o suprafață mai mare pentru integrarea pe chip și este mai scumpă",
+        "trebuie reîmprospătată periodic",
+        "are interfețe mai simple"
+      ],
+      "corecte": [0, 1, 3],
+      "explicatie": "Variante reconstruite din lista de răspunsuri din sursă (mai ușor de folosit, mai rapidă, mai scumpă, suprafață mai mare, interfețe mai simple). Curs 5, 5.5 „Memoria dinamică” (slide 17): SRAM e mai ușor de folosit și mai rapidă decât DRAM, dar necesită suprafață mai mare și e mai scumpă; interfețele cu SRAM sunt mai simple. Reîmprospătarea periodică e specifică DRAM.",
+      "sigur": true
+    },
+    {
+      "sursa": "GRILE FINAL (GRILE.RTF)",
+      "intrebare": "Interfețele cu memoria externă ale procesoarelor de semnal diferă prin:",
+      "variante": [
+        "numărul de porturi de memorie",
+        "flexibilitatea și complexitatea interfeței",
+        "constrângerile privitoare la timpii de acces",
+        "a, b și c"
+      ],
+      "corecte": [0, 1, 2, 3],
+      "explicatie": "Curs 5, 5.5 (slide 14): interfețele diferă prin trei caracteristici principale: numărul de porturi de memorie, flexibilitatea și complexitatea interfeței și constrângerile privitoare la timpii de acces. Sursa dă ca răspuns „a, b și c”; la grila cu mai multe răspunsuri se bifează toate patru.",
+      "sigur": true
+    },
+    {
+      "sursa": "GRILE FINAL (GRILE.RTF)",
+      "intrebare": "Arhitectura Harvard are:",
+      "variante": [
+        "memorie pentru instrucțiuni și memorie pentru date",
+        "memorie pentru instrucțiuni și date și memorie numai pentru date",
+        "un singur bloc de memorie pentru instrucțiuni și date, accesat printr-un singur set de magistrale",
+        "primele 2 răspunsuri"
+      ],
+      "corecte": [0, 1, 3],
+      "explicatie": "Variante reconstruite; în sursă a doua variantă apare greșit („memorie pentru instrucțiuni și date și memorie pentru instrucțiuni”) și a fost corectată după curs. Curs 5, 5.1 (slide 7): Harvard standard – un bloc cu instrucțiunile, celălalt cu datele; varianta modificată de la DSP – un bloc cu instrucțiuni și date, celălalt numai cu date. c descrie arhitectura von Neumann. Nesigur din cauza textului reconstruit.",
+      "sigur": false
+    },
+    {
+      "sursa": "GRILE FINAL (GRILE.RTF) – „Organizarea memoriei din imagine”",
+      "intrebare": "Organizarea memoriei din imagine (un singur bloc de memorie conectat la procesor printr-un singur set de magistrale de adrese și date) are structura de tip:",
+      "variante": [
+        "von Neumann",
+        "Harvard",
+        "Harvard modificată",
+        "cu memorie multiport"
+      ],
+      "corecte": [0],
+      "explicatie": "Imaginea lipsește din sursă; răspunsul dat acolo este „Von Neumann”, deci figura e probabil Fig. 5.2 (slide 6). Curs 5, 5.1: structura cu un singur bloc, accesat printr-un singur set de magistrale de adrese și date, este arhitectura von Neumann. Nesigur pentru că figura nu se vede.",
+      "sigur": false
+    },
+    {
+      "sursa": "GRILE FINAL (GRILE.RTF)",
+      "intrebare": "DMA este o tehnică cu ajutorul căreia datele pot fi transferate în și din memoria internă a procesorului:",
+      "variante": [
+        "fără intervenția acestuia",
+        "numai prin instrucțiuni executate de procesor",
+        "numai după pregătiri speciale în programul procesorului",
+        "numai între două procesoare dintr-un sistem multiprocesor"
+      ],
+      "corecte": [0],
+      "explicatie": "Variante reconstruite (sursa dă doar „Fără ajutorul acestuia”). Curs 5, 5.5 (slide 18): DMA – datele sunt transferate în și din memoria internă a DSP fără intervenția acestuia; tehnică pur hardware, fără pregătiri în programe.",
+      "sigur": true
+    },
+    {
+      "sursa": "GRILE FINAL (GRILE.RTF)",
+      "intrebare": "Memoria dinamică (DRAM) este mai rapidă decât memoria statică (SRAM).",
+      "variante": [
+        "Adevărat",
+        "Fals"
+      ],
+      "corecte": [1],
+      "explicatie": "Curs 5, 5.5 (slide 17): memoria statică (SRAM) este mai ușor de folosit și mai rapidă decât memoria dinamică (DRAM). Întrebare Adevărat/Fals în sursă.",
+      "sigur": true
+    },
+    {
+      "sursa": "GRILE FINAL (GRILE.RTF)",
+      "intrebare": "Procesoarele de semnal pot executa mai multe operații de citire sau de scriere din/în memorie într-un ciclu mașină.",
+      "variante": [
+        "Adevărat",
+        "Fals"
+      ],
+      "corecte": [0],
+      "explicatie": "Capitol 5, introducere: „procesoarele de semnal pot executa mai multe operații de citire sau de scriere din/în memorie într-un ciclu-mașină” (ex. 4 accesări pentru MAC la FIR; Harvard, memorii rapide, multiport). Întrebare Adevărat/Fals în sursă.",
+      "sigur": true
+    }
+  ],
+  "grile_noi": [
+    {
+      "sursa": "nou",
+      "intrebare": "Pentru fiecare instrucțiune de multiplicare-adunare dintr-un filtru RFI, procesorul trebuie să execute într-un ciclu de tact următoarele accesări ale memoriei:",
+      "variante": [
+        "citirea codului instrucțiunii de multiplicare-adunare (fetch)",
+        "citirea valorii eșantionului corespunzător din linia de întârziere",
+        "citirea valorii corespunzătoare a coeficientului filtrului",
+        "scrierea eșantionului în următoarea locație a liniei de întârziere"
+      ],
+      "corecte": [0, 1, 2, 3],
+      "explicatie": "Capitol 5, introducere (Curs 5, slide 5): patru accesări pe ciclu – fetch, citirea eșantionului, citirea coeficientului și scrierea eșantionului pentru deplasarea datelor în linia de întârziere.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Arhitectura von Neumann se caracterizează prin:",
+      "variante": [
+        "un singur bloc de memorie care conține atât instrucțiunile programului cât și datele",
+        "accesarea memoriei printr-un singur set de magistrale de adrese și date",
+        "două blocuri independente de memorie conectate prin două magistrale separate",
+        "este întâlnită la multe tipuri de procesoare de uz general"
+      ],
+      "corecte": [0, 1, 3],
+      "explicatie": "Curs 5, 5.1 (slide 6): cea mai simplă structură, un singur bloc accesat printr-un singur set de magistrale, cu instrucțiuni și date; întâlnită la multe procesoare de uz general. c descrie arhitectura Harvard.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Pe o mașină cu arhitectură von Neumann (un acces la memorie pe ciclu-mașină), operația de multiplicare-adunare dintr-un filtru FIR necesită:",
+      "variante": [
+        "un ciclu cu memoria",
+        "două cicluri cu memoria",
+        "trei cicluri cu memoria",
+        "patru cicluri cu memoria"
+      ],
+      "corecte": [3],
+      "explicatie": "Capitol 5, 5.1: chiar dacă MAC s-ar face într-un ciclu, sunt necesare patru cicluri cu memoria, deoarece cele patru accesări se execută secvențial – motiv pentru care von Neumann nu e eficientă pentru DSP.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Varianta modificată a arhitecturii Harvard folosită la procesoarele de semnal presupune:",
+      "variante": [
+        "un bloc de memorie conține instrucțiunile programului și date, iar celălalt conține numai date",
+        "ambele blocuri de memorie conțin numai instrucțiuni",
+        "datele pot fi mutate între cele două blocuri de memorie",
+        "un singur set de magistrale pentru ambele blocuri"
+      ],
+      "corecte": [0, 2],
+      "explicatie": "Curs 5, 5.1 (slide 7) și Capitol 5: în varianta modificată un bloc are program și date, celălalt numai date; datele pot fi mutate între blocuri, lucru imposibil la Harvard standard. Blocurile au magistrale separate.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Avantajul principal al arhitecturii Harvard permite ca cele patru accesări ale memoriei necesare filtrului RFI să fie executate în:",
+      "variante": [
+        "un ciclu-mașină",
+        "două cicluri-mașină",
+        "trei cicluri-mașină",
+        "patru cicluri-mașină"
+      ],
+      "corecte": [1],
+      "explicatie": "Capitol 5, 5.1: avantajul principal al arhitecturii Harvard este că pot fi efectuate două accesări ale memoriei într-un ciclu-mașină, deci cele patru operații ale FIR se fac în două cicluri-mașină.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Arhitectura Harvard modificată cu trei blocuri de memorie (de exemplu nucleele PineDSPCore și OakDSPCore):",
+      "variante": [
+        "conține un bloc de memorie de program și două blocuri de memorie de date, X și Y",
+        "permite trei accesări independente ale memoriei într-un ciclu-mașină",
+        "fiecare bloc este accesat cu setul lui propriu de magistrale",
+        "este folosită de familia ADSP-21xx (Analog Devices)"
+      ],
+      "corecte": [0, 1, 2],
+      "explicatie": "Capitol 5, 5.1: trei blocuri (program, X, Y), fiecare cu setul ei de magistrale → o citire a instrucțiunii și câte un acces la X și Y pe ciclu (și la DSP5600x, DSP563xx, DSP96002, Z839xx, D950-CORE). ADSP-21xx este dat ca exemplu de Harvard cu două blocuri.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Pe lângă arhitectura Harvard, alte soluții care permit mai multe accesări ale memoriei într-un ciclu-mașină sunt:",
+      "variante": [
+        "folosirea de memorii rapide care permit mai multe accesări secvențiale pe ciclu-mașină, printr-un singur set de magistrale",
+        "utilizarea de memorii multiport care permit mai multe accesări concurente prin două sau mai multe seturi de magistrale",
+        "folosirea memoriilor DRAM paginate",
+        "introducerea de stări de așteptare programate"
+      ],
+      "corecte": [0, 1],
+      "explicatie": "Curs 5, 5.1 „Memoriile cu acces multiplu” (slide 8): cele două soluții sunt memoriile rapide (accesări secvențiale, un set de bus-uri) și memoriile multiport (accesări concurente, mai multe seturi). Stările de așteptare încetinesc accesul; DRAM paginată ține de interfața externă.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Într-o arhitectură Harvard modificată cu două blocuri de memorie rapidă, dacă datele nu sunt ordonate (un bloc necesită trei accesări, iar celălalt una):",
+      "variante": [
+        "se obțin rezultate eronate",
+        "procesorul prelungește automat execuția instrucțiunii pentru a finaliza accesarea memoriei",
+        "crește timpul de execuție a programului",
+        "se generează o întrerupere de cod ilegal"
+      ],
+      "corecte": [1, 2],
+      "explicatie": "Capitol 5, 5.1: procesorul prelungește automat execuția instrucțiunii; o ordonare suboptimă nu produce rezultate eronate, ci doar o creștere a timpului de execuție.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Memoriile multi-port:",
+      "variante": [
+        "au mai multe seturi de bus-uri de adrese și de date, permițând mai multe accesări în paralel",
+        "cele mai folosite sunt memoriile dual-port, care permit două accesări simultane",
+        "elimină necesitatea ordonării datelor în mai multe blocuri independente de memorie",
+        "au ca dezavantaj principal viteza mai mică decât a memoriilor uni-port"
+      ],
+      "corecte": [0, 1, 2],
+      "explicatie": "Capitol 5, 5.1: memoria multiport are mai multe seturi de bus-uri; cele mai folosite sunt dual-port (mai rar 3 sau 4 porturi); elimină necesitatea ordonării datelor în blocuri. Dezavantajul principal este folosirea unei arii mari de pe suprafața chip-ului, nu viteza.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "O arhitectură Harvard cu o memorie de date cu două porturi (A) și o memorie de program cu un singur port (B):",
+      "variante": [
+        "permite într-un ciclu-mașină două accesări la memoria A și o accesare la memoria B",
+        "folosește trei seturi independente de magistrale",
+        "este folosită de procesoarele DSP561xx (Motorola)",
+        "permite două accesări la memoria de program într-un ciclu-mașină"
+      ],
+      "corecte": [0, 1, 2],
+      "explicatie": "Curs 5, slide 8 și Capitol 5, Fig. 5.4: nucleul poate efectua simultan două accesări la bancul A și una la bancul B, prin trei seturi independente de magistrale; configurația e folosită de DSP561xx. Memoria de program e uni-port, deci un singur acces.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Operațiile specializate de scriere în memorie oferite de unele procesoare de semnal:",
+      "variante": [
+        "permit ca scrierea în memoria de date să fie executată în paralel cu o citire din aceasta și cu o citire din memoria de program",
+        "se realizează cu instrucțiuni speciale, dar cu anumite circumstanțe restrictive",
+        "pot fi folosite pentru deplasarea datelor în lungul liniei de întârziere a filtrului RFI",
+        "pot fi folosite cu orice instrucțiune, fără nicio restricție"
+      ],
+      "corecte": [0, 1, 2],
+      "explicatie": "Curs 5, 5.1 (slide 9): scrierea în paralel cu o citire din memoria de date și o citire din memoria de program, prin instrucțiuni speciale, cu circumstanțe restrictive; folosite la deplasarea datelor în linia de întârziere RFI.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Procesoarele de semnal au în general un singur set de magistrale pentru extinderea memoriei în afara chip-ului deoarece:",
+      "variante": [
+        "extinderea magistralelor de accesare a memoriei în afara chip-ului este o soluție costisitoare",
+        "bus-urile care se extind în afara chip-ului necesită un număr mare de pini",
+        "memoria externă nu poate fi extinsă pentru mai multe blocuri interne",
+        "accesul la memoria externă este întotdeauna mai rapid decât la cea internă"
+      ],
+      "corecte": [0, 1],
+      "explicatie": "Capitol 5, 5.1 și 5.5: extinderea magistralelor în afara chip-ului e costisitoare (crește complexitatea capsulei), iar bus-urile externe cer mulți pini → cost mai mare. Portul extern poate extinde oricare bloc intern; memoria externă e mai lentă.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Memoria cache pentru program a procesoarelor de semnal:",
+      "variante": [
+        "este o memorie de capacitate mică în interiorul procesorului, folosită pentru memorarea instrucțiunilor",
+        "elimină necesitatea accesării blocului de memorie de program de câte ori este executată o instrucțiune",
+        "este folosită atât pentru instrucțiuni cât și pentru date",
+        "este în general mai mică și mai simplă decât memoria cache internă a procesoarelor de uz general"
+      ],
+      "corecte": [0, 1, 3],
+      "explicatie": "Curs 5, 5.2 (slide 10) și Capitol 5: cache-ul pentru program memorează instrucțiunile, eliminând accesările memoriei de program; e mai mic și mai simplu decât la procesoarele de uz general. Capitol 5: cache-ul DSP este folosit doar pentru instrucțiuni (un cache de date ar cere coerență).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Metodele de reducere a numărului de accesări ale memoriei prezentate în curs sunt:",
+      "variante": [
+        "memoria cache pentru program",
+        "adresarea modulo n",
+        "abordările bazate pe algoritmi",
+        "introducerea stărilor de așteptare"
+      ],
+      "corecte": [0, 1, 2],
+      "explicatie": "Curs 5 / Capitol 5, 5.2: cache-ul pentru program, adresarea modulo n și abordările bazate pe algoritmi. Stările de așteptare (5.3) nu reduc numărul de accesări, ci întârzie execuția.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Adresarea modulo n:",
+      "variante": [
+        "permite implementarea unei linii de întârziere fără ca datele să fie mutate efectiv în memorie",
+        "simulează deplasarea datelor prin modificarea pointerilor de accesare folosind aritmetica modulo n",
+        "realizează deplasarea prin mutarea fiecărui eșantion în locația următoare",
+        "reduce numărul de accesări la memorie ale filtrului RFI de la patru la două pe ciclu-mașină"
+      ],
+      "corecte": [0, 1],
+      "explicatie": "Curs 5, 5.2 (slide 11): datele rămân în aceeași locație, iar deplasarea e simulată prin modificarea pointerilor cu aritmetica modulo n; la RFI reduce accesările de la patru la TREI pe ciclu-mașină.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Despre abordările bazate pe algoritmi pentru reducerea numărului de accesări ale memoriei sunt adevărate afirmațiile:",
+      "variante": [
+        "nu sunt o caracteristică a procesoarelor de semnal",
+        "folosesc algoritmi care exploatează modul de aranjare a datelor",
+        "algoritmii care operează pe blocuri de date citesc de multe ori aceleași date în mod repetat",
+        "un programator bun poate reutiliza date deja citite pentru a reduce numărul de accesări"
+      ],
+      "corecte": [0, 1, 2, 3],
+      "explicatie": "Capitol 5, 5.2 „Abordări bazate pe algoritmi”: deși nu e o caracteristică a procesoarelor, folosirea algoritmilor care exploatează aranjarea datelor reduce accesările; algoritmii pe blocuri citesc repetat aceleași date, iar programatorul poate reutiliza datele deja citite.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Stările de așteptare (wait states):",
+      "variante": [
+        "sunt stări în care procesorul nu poate continua execuția programului deoarece așteaptă finalizarea unei activități începute",
+        "sunt moduri de consum redus în care ceasul este oprit",
+        "pot fi programate în timpul accesului la memoria externă lentă",
+        "apar atunci când se folosește o memorie dual-port pentru două accesări simultane"
+      ],
+      "corecte": [0, 2],
+      "explicatie": "Curs 5, 5.3 (slide 12): definiția stărilor de așteptare și stările programate la accesul memoriei externe prea lente. Memoria dual-port suportă tocmai două accesări simultane, deci nu produce conflicte; modurile de consum redus țin de alt capitol.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Stările de așteptare datorate conflictelor la accesarea resurselor apar:",
+      "variante": [
+        "când procesorul încearcă să realizeze mai multe accesări simultane ale unei memorii care nu suportă acces multiplu",
+        "de exemplu, când un bloc de memorie uni-port conține atât instrucțiuni cât și date",
+        "când o instrucțiune nu poate accesa un bloc de memorie deoarece instrucțiuni alăturate (în pipeline) îl accesează",
+        "numai la procesoarele cu arhitectură Harvard cu memorii multiport"
+      ],
+      "corecte": [0, 1, 2],
+      "explicatie": "Capitol 5, 5.3: conflictele apar la accesări simultane ale unei memorii fără acces multiplu (ex. bloc uni-port cu instrucțiuni și date) și, din cauza pipeline-ului, când instrucțiuni alăturate accesează același bloc.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Stările de așteptare programate:",
+      "variante": [
+        "sunt introduse de procesor în timpul accesului la memoria externă, prea lentă pentru mai multe accesări pe ciclu",
+        "sunt configurate de programator pentru a încetini deliberat accesul și a respecta timpii de acces ai memoriilor lente",
+        "la unele procesoare pot avea un număr diferit pentru regiuni diferite ale memoriei externe, permițând combinații de memorie rapidă și lentă",
+        "au o durată cuprinsă între un sfert de ciclu-mașină și un ciclu-mașină, în funcție de procesor"
+      ],
+      "corecte": [0, 1, 2, 3],
+      "explicatie": "Capitol 5, 5.3: toate cele patru afirmații apar în text (durata: un sfert de ciclu la DSP32C, AT&T, un ciclu la majoritatea procesoarelor).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Durata cea mai scurtă a unei stări de așteptare, menționată în curs pentru procesorul DSP32C (AT&T), este de:",
+      "variante": [
+        "un sfert de ciclu-mașină",
+        "o jumătate de ciclu-mașină",
+        "un ciclu-mașină",
+        "două cicluri-mașină"
+      ],
+      "corecte": [0],
+      "explicatie": "Capitol 5, 5.3: stările de așteptare au durate între un sfert de ciclu-mașină (DSP32C, AT&T) și un ciclu-mașină (majoritatea procesoarelor); cele mai scurte permit operare mai eficientă.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Referitor la memoria ROM a procesoarelor de semnal, sunt adevărate afirmațiile:",
+      "variante": [
+        "procesoarele destinate aplicațiilor ieftine (electronică de uz general, telecomunicații) au o memorie ROM internă pentru programe și constante",
+        "versiunea cu memorie RAM internă este destinată prototipurilor și producției de volum scăzut",
+        "versiunea cu ROM programabil la fabricarea circuitului este destinată prototipurilor",
+        "unele procesoare citesc instrucțiunile din ROM pe octeți și le refac intern prin concatenare"
+      ],
+      "corecte": [0, 1, 3],
+      "explicatie": "Curs 5, 5.4 (slide 13): ROM intern la aplicațiile ieftine; RAM intern pentru prototipuri și volum scăzut; ROM programat la fabricare pentru producție de VOLUM MARE (c fals); citirea pe octeți și concatenarea internă.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Majoritatea procesoarelor de semnal oferă pentru memoria externă:",
+      "variante": [
+        "un singur port extern, format dintr-o magistrală de adrese, una de date și un set de semnale de control",
+        "un singur port extern chiar dacă au mai multe blocuri de memorie independente pe chip",
+        "câte un port extern pentru fiecare bloc de memorie internă",
+        "posibilitatea accesului multiplu la memoria externă într-un singur ciclu-mașină"
+      ],
+      "corecte": [0, 1],
+      "explicatie": "Curs 5, 5.5 (slide 14) și Capitol 5: cele mai multe DSP au un singur port extern, chiar dacă au mai multe blocuri interne; lipsa mai multor porturi externe face ca accesul multiplu la memoria externă într-un ciclu să nu fie posibil.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Dintre procesoarele de mai jos, au mai multe porturi pentru memoria externă:",
+      "variante": [
+        "ADSP-21020 (Analog Devices)",
+        "TMS320C30 (TI)",
+        "TMS320C40 (TI)",
+        "DSP96002 (Motorola)"
+      ],
+      "corecte": [0, 1, 2, 3],
+      "explicatie": "Capitol 5, 5.5: ADSP-21020 (port de program și port de date), TMS320C30 (două porturi), TMS320C40 (două porturi identice), DSP96002 (două porturi identice); sunt mai scumpe decât procesoarele cu un singur port.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Posibilitatea de a lucra cu memorie cache manual înseamnă:",
+      "variante": [
+        "copierea unei secțiuni de cod din memoria lentă sau mai folosită într-o memorie mai rapidă sau mai puțin accesată",
+        "poate fi folosită chiar dacă procesorul nu conține o zonă de memorie cache specializată",
+        "copierea, de exemplu, a unei secțiuni de cod din ROM extern lent în RAM intern, la pornire sau la prima accesare",
+        "transferul automat al instrucțiunilor în cache de către logica de comandă, transparent pentru programator"
+      ],
+      "corecte": [0, 1, 2],
+      "explicatie": "Curs 5, 5.5 (slide 15): programatorul mărește performanța copiind cod din memoria lentă/mai folosită într-una mai rapidă/mai puțin accesată, chiar fără cache specializat (ex. ROM extern → RAM intern). Copierea e făcută de programator, nu automat.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Procesoarele de semnal proiectate pentru sisteme multiprocesor oferă pentru interfața cu memoria externă:",
+      "variante": [
+        "două porturi pentru memoria externă: unul pentru o memorie locală și unul pentru o memorie partajată cu alte procesoare",
+        "un mecanism de arbitrare a magistralei, prin care procesoarele negociază controlul acesteia",
+        "posibilitatea ca procesoarele care nu dețin controlul magistralei să transfere date pe aceasta",
+        "blocarea bus-ului (operația test-and-set) pentru variabilele partajate"
+      ],
+      "corecte": [0, 1, 3],
+      "explicatie": "Curs 5, 5.5 (slide 16) și Capitol 5: două porturi externe (local + partajat, ex. DSP96002), arbitrarea magistralei care ÎMPIEDICĂ procesoarele fără control să transfere date, și blocarea bus-ului (test-and-set).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Deosebirea principală dintre memoria statică (SRAM) și memoria dinamică (DRAM) este:",
+      "variante": [
+        "memoria statică reține datele atâta timp cât este alimentată",
+        "memoria dinamică trebuie să fie periodic reîmprospătată",
+        "memoria statică trebuie rescrisă la fiecare câteva fracțiuni de secundă",
+        "memoria dinamică este mai ușor de folosit și mai rapidă"
+      ],
+      "corecte": [0, 1],
+      "explicatie": "Curs 5, 5.5 „Memoria dinamică” (slide 17): SRAM reține datele cât timp e alimentată, DRAM trebuie reîmprospătată periodic (rescriere la fiecare câteva fracțiuni de secundă). SRAM este cea mai ușor de folosit și mai rapidă.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Folosirea memoriei DRAM ca memorie externă pentru procesoarele de semnal:",
+      "variante": [
+        "presupune de regulă un controler de DRAM separat care generează semnalele de control",
+        "poate fi îmbunătățită prin memorii paginate sau cu coloane statice, cu acces rapid la accesarea repetată a aceleiași pagini",
+        "este simplificată la unele procesoare care integrează controlerul DRAM pe chip (ex. DSP56004, DSP56007)",
+        "are o interfață mai simplă decât memoria statică"
+      ],
+      "corecte": [0, 1, 2],
+      "explicatie": "Capitol 5, 5.5 „Memoria dinamică”: controler DRAM separat (cost suplimentar), DRAM paginate/cu coloane statice, controlere integrate la DSP56004/DSP56007. Interfețele cu memoria statică sunt mai simple, nu cele cu DRAM.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Accesul direct la memorie (DMA):",
+      "variante": [
+        "este o tehnică prin care datele sunt transferate în și din memoria internă a procesorului fără intervenția acestuia",
+        "constituie un tip aparte de întrerupere, fiind o tehnică pur hardware",
+        "presupune pregătiri speciale în programele procesorului pentru fiecare transfer",
+        "folosește un controler DMA care poate fi pe același chip cu procesorul sau extern acestuia"
+      ],
+      "corecte": [0, 1, 3],
+      "explicatie": "Curs 5, 5.5 (slide 18): DMA transferă date fără intervenția procesorului, este un tip aparte de întrerupere, tehnică pur hardware care NU presupune niciun fel de pregătiri în programe; controlerul DMA poate fi periferic pe chip sau extern.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Pentru un transfer cu un controler DMA extern, procesorul transmite controlerului informații de control care conțin:",
+      "variante": [
+        "adresa de start a datelor în memorie",
+        "numărul de locații care trebuie transferate",
+        "direcția de transfer",
+        "dispozitivul sursă sau destinație"
+      ],
+      "corecte": [0, 1, 2, 3],
+      "explicatie": "Capitol 5, 5.5 DMA: procesorul transmite adresa de start, numărul de locații, direcția de transfer și dispozitivul sursă sau destinație; apoi controlerul cere bus-ul, iar procesorul cedează controlul după instrucțiunea curentă.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Controlerul DMA integrat al procesorului ADSP-2106x are:",
+      "variante": [
+        "două canale",
+        "șase canale",
+        "zece canale",
+        "un singur canal"
+      ],
+      "corecte": [2],
+      "explicatie": "Capitol 5, 5.5 DMA: TMS320C4x – șase canale, ADSP-2106x – zece canale, DSP96002 – două canale; fiecare canal are propriul set de registre.",
+      "sigur": true
+    }
+  ]
+}

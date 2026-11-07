@@ -1,0 +1,840 @@
+{
+  "curs": 3,
+  "titlu": "Reprezentarea numerelor. Aritmetici.",
+  "rezumat": [
+    {
+      "titlu": "Introducere (Capitol 3, Fig. 3.1)",
+      "puncte": [
+        "Una dintre cele mai importante caracteristici care determină disponibilitatea unui procesor DSP pentru o aplicație este tipul de reprezentare numerică binară folosită de procesor.",
+        "Fig. 3.1 – reprezentări uzuale la DSP-urile comerciale: virgulă fixă pe 16, 20 sau 24 de biți; virgulă mobilă pe 32 de biți (IEEE 754 sau alt format)."
+      ]
+    },
+    {
+      "titlu": "3.1 Virgula fixă (aritmetică întreagă și fracționară)",
+      "puncte": [
+        "Primele procesoare DSP au folosit aritmetica în virgulă fixă; procesoarele DSP cu virgulă fixă încă sunt utilizate (capitolul: „încă sunt dominante”).",
+        "În procesoarele cu virgulă fixă numerele sunt reprezentate fie ca întregi (aritmetica întreagă), fie ca fracții cu valoarea între –1,0 și +1,0 (aritmetica fracționară).",
+        "Algoritmii și hardware-ul utilizate pentru aritmetica fracționară sunt virtual identici cu cei pentru aritmetica cu întregi; principala diferență este modul în care sunt manipulate rezultatele operațiilor de multiplicare.",
+        "În practică, (majoritatea) procesoarelor DSP cu virgulă fixă suportă atât aritmetica fracționară, cât și cea cu întregi: prima e mai folositoare pentru algoritmii de procesare a semnalului, a doua pentru operații de control, calculul adreselor și alte operații fără legătură cu semnalele.",
+        "Folosind aritmetica cu întregi pe un DSP cu virgulă fixă, uneori calculele consumă mai mult timp sau sunt supuse unor constrângeri decât cu aritmetica fracționară.",
+        "Complement față de 2: întreg pe 8 biți – ponderi –2^7, 2^6, …, 2^0 (ex. 01010011 = 83; 10101100 = –84); fracționar pe 8 biți – ponderi –2^0, 2^-1, …, 2^-7, virgula după bitul de semn (ex. 01010000 = 0,625).",
+        "Domenii (calcul derivat): întreg pe N biți: –2^(N-1) … 2^(N-1)–1 (16 biți: –32768 … 32767); fracționar pe N biți: –1 … 1–2^-(N-1), pas 2^-(N-1) (8 biți: –1 … 0,9921875; 16 biți „Q15”: –1 … 1–2^-15); +1,0 nu se poate reprezenta exact."
+      ]
+    },
+    {
+      "titlu": "3.1 Virgula mobilă",
+      "puncte": [
+        "Altă clasă de procesoare DSP folosește aritmetica cu virgulă mobilă, unde numerele sunt reprezentate prin mantisă și exponent.",
+        "Mantisa este de obicei valoarea fracționară a semnalului; exponentul este un întreg care reprezintă numărul de ranguri binare cu care virgula mantisei trebuie deplasată la stânga sau la dreapta pentru a obține valoarea numărului inițial. Valoarea: valoare = mantisa × 2^exponent (în cursul 1: N = M × 2^E).",
+        "Format din exemple: întâi mantisa (fracționară, complement față de 2, bitul de semn are ponderea –2^0), apoi exponentul (întreg, complement față de 2). Ex. (mantisă 10 biți, exponent 6 biți): 0110100000 000011 = 0,8125 × 2^3 = 6,5; 0100000000 111110 = 0,5 × 2^-2 = 0,125; 1110100000 000011 = –0,1875 × 2^3 = –1,5; 1100000000 111110 = –0,5 × 2^-2 = –0,125.",
+        "În general, procesoarele cu virgulă mobilă acceptă și date cu virgulă fixă (de obicei întregi), necesare pentru operații cu date inerent întregi, cum ar fi adresele memoriei.",
+        "Aritmetica cu virgulă mobilă este un mecanism mai flexibil și mai general decât cea cu virgulă fixă: acces la o gamă dinamică mai largă și, în multe cazuri, la o precizie mai bună."
+      ]
+    },
+    {
+      "titlu": "3.1 Precizia",
+      "puncte": [
+        "Definiția preciziei este bazată pe ideea erorii de cuantizare = eroarea numerică introdusă atunci când un format de număr mai lung (cu mai mulți biți) este convertit la unul mai scurt (ex. 1,325 rotunjit la 1,33 → eroare 0,005).",
+        "Cu cât eroarea de cuantizare posibilă este mai mare față de mărimea valorii reprezentate, cu atât precizia este mai mică.",
+        "Virgulă fixă: precizia maximă posibilă = numărul de biți din format; Precizia maximă [biți] = log2(|valoarea maximă| / |eroarea maximă de cuantizare|). Ex. fracționar pe 16 biți: log2(1/2^-16) = 16 biți.",
+        "Dacă data are o mărime mai mică decât cea maximă, precizia obținută e mai mică decât precizia maximă – de aici importanța scalării atente a semnalului în virgulă fixă (scalarea: cap. 4).",
+        "Virgulă mobilă: precizia maximă posibilă = numărul de biți din mantisă; procesoarele cu virgulă mobilă mențin o precizie foarte bună fără efort suplimentar din partea programatorului; în teorie alegerea fixă/mobilă e independentă de precizie, în practică virgula mobilă asigură o precizie mai înaltă."
+      ]
+    },
+    {
+      "titlu": "3.1 Gama dinamică",
+      "puncte": [
+        "Gama dinamică = raportul dintre cel mai mare și cel mai mic număr reprezentabil într-un anumit format de date; aici formatele cu virgulă mobilă au avantajul major.",
+        "Virgulă fixă fracționară pe 32 de biți: minim 2^-31, maxim 1,0 – 2^-31 → gama dinamică ≈ 2,15 × 10^9 ≈ 187 dB.",
+        "Virgulă mobilă pe 32 de biți (mantisă 24 biți, exponent 8 biți): de la ≈ 5,88 × 10^-39 la 3,40 × 10^38 → gama dinamică ≈ 5,79 × 10^76, peste 1535 dB; cu același număr de biți, virgula mobilă dă o gamă dinamică mult mai mare.",
+        "În dB: 20·log10(raport). Pentru N biți în virgulă fixă raportul ≈ 2^(N-1) → ≈ 6,02·(N–1) dB (16 biți ≈ 90 dB, 24 biți ≈ 138 dB, 32 biți ≈ 187 dB).",
+        "Gama dinamică = interval de amplitudini ale semnalului care pot fi prelucrate menținând o fidelitate suficient de mare; aplicații diferite au nevoie de game diferite: telecomunicații ≈ 50 dB, audio de înaltă fidelitate ≈ 90 dB; o gamă mai mare decât minimul degrevează programatorul de o parte din problemele de scalare."
+      ]
+    },
+    {
+      "titlu": "3.1 Cost, programare, alegerea procesorului",
+      "puncte": [
+        "Procesoarele DSP cu virgulă mobilă sunt în general mai scumpe decât cele cu virgulă fixă, dar mai ușor de programat.",
+        "Costul ridicat: circuit mai complex → cip mai mare; lungimea mai mare a cuvintelor cere magistrale externe și memorii externe mai mari → crește costul total al sistemului.",
+        "Ușurința programării în virgulă mobilă: programatorul e degrevat de controlul gamei dinamice și al preciziei; la virgulă fixă trebuie să fie atent la scalarea datelor în diverse stadii ale programului.",
+        "Deși virgula mobilă oferă performanțe superioare, din cauza dificultăților de implementare potențialul ei nu este deplin valorificat – doar prin arhitecturi complet paralele combinate cu logică combinațională pipeline.",
+        "Cea mai mare parte a aplicațiilor dedicate folosesc procesoare cu virgulă fixă, pentru că prioritatea este costul scăzut (gama dinamică și precizia se stabilesc analitic sau prin simulare, apoi se adaugă scalare în cod). Virgula mobilă e mai potrivită pentru aplicații mai puțin sensibile la cost, cu cerințe stricte de gamă dinamică și precizie, sau unde programarea mai ușoară e mai importantă."
+      ]
+    },
+    {
+      "titlu": "3.2 Lărgimea nativă a cuvintelor pentru date",
+      "puncte": [
+        "Lungimea nativă a cuvintelor de date = lungimea datelor pe care magistralele procesorului și calea de date le pot manipula într-un singur ciclu instrucțiune.",
+        "DSP-uri cu virgulă mobilă uzuale: 32 de biți (slide: 32 sau 64 de biți); virgulă fixă: cea mai folosită 16 biți; DSP5600x/DSP563xx (Motorola) 24 biți; ZR3800x (Zoran) 20 biți; nucleul CD2450 (Clarkspur Design) permite orice mărime între 16 și 24 de biți.",
+        "Mărimea cuvintelor are impact major asupra costului: influențează mărimea cipului, numărul de pini ai capsulei (package pins) și mărimea și numărul dispozitivelor de memorie externă; de aceea se alege cea mai mică lungime acceptată de aplicație.",
+        "La alegerea fixă/mobilă există adesea un compromis (trade-off) între mărimea cuvântului și creșterea complexității: o aplicație ce pare să ceară 24 de biți poate fi făcută uneori pe 16 biți, cu algoritmi și/sau programare mai complexe."
+      ]
+    },
+    {
+      "titlu": "3.3 Precizia extinsă",
+      "puncte": [
+        "Precizia extinsă = folosirea reprezentărilor care asigură o precizie mai mare decât cea oferită de formatul de date nativ al procesorului.",
+        "Se obține în două moduri: (1) suport încorporat pentru un format cu precizie extinsă pentru operații care au loc exclusiv în interiorul căii de date (fără transfer de date intermediare la/de la memorie; rotunjire finală la stocarea în memorie); (2) construirea unor cuvinte mai mari din secvențe de cuvinte de date native (ex. pe 16 biți se leagă perechi → cuvinte pe 32 de biți).",
+        "Fiecare operație în precizie extinsă necesită o secvență de instrucțiuni în precizie simplă → aritmetica cu precizie extinsă este mult mai lentă decât precizia simplă.",
+        "Suport hardware la unele procesoare: păstrarea bitului de transport (carry) de la o adunare în precizie simplă pentru o adunare ulterioară; considerarea operanzilor multiplicării cu sau fără semn, sub controlul programului.",
+        "Dacă doar o mică secțiune a codului cere precizie mai mare → folosire selectivă a preciziei extinse; dacă cea mai mare parte a aplicației cere precizie ridicată → un procesor cu lungime nativă mai mare a datelor."
+      ]
+    },
+    {
+      "titlu": "3.4 Emularea virgulei mobile și virgula mobilă pe bloc",
+      "puncte": [
+        "Pe un procesor cu virgulă fixă se pot obține precizia și gama dinamică ale aritmeticii de precizie extinsă prin rutine software care emulează comportamentul unui procesor cu virgulă mobilă.",
+        "Unii producători furnizează o bibliotecă de rutine de emulare a virgulei mobile; dacă nu există, rutinele trebuie scrise de utilizator.",
+        "Rutinele de emulare sunt foarte scumpe în număr de tacte → emularea e potrivită doar dacă o parte foarte mică a calculelor implică virgula mobilă; altfel se alege un procesor cu virgulă mobilă.",
+        "Virgula mobilă pe bloc (block floating point): un grup de numere cu mantise diferite, dar un singur exponent, tratat ca un bloc de date; exponentul comun este înmagazinat într-un cuvânt de date separat (nu în fiecare cuvânt). Ex.: bloc de 8 valori → 9 locații de memorie (8 mantise + 1 exponent).",
+        "Exponentul blocului e determinat de elementul cu cea mai mare magnitudine: valori mici → deplasate (ex. 7 poziții) la stânga → exponent negativ relativ mare; valori mari → deplasare mică/nulă → exponent negativ mic sau nul; dacă data nu poate fi deplasată, precizia este aceeași ca în formatul nativ în virgulă fixă. Ex.: ieșiri pe 32 de biți → mantise pe 16 biți + exponent pe 4 biți per bloc.",
+        "Conversia între formatul nativ în virgulă fixă și virgula mobilă pe bloc este executată de programator prin software; unele procesoare au hardware specializat – cea mai cunoscută: instrucțiunea de „detecție a exponentului”, care calculează deplasarea necesară pentru a converti un rezultat intermediar de precizie înaltă (ex. din acumulator) în virgulă mobilă pe bloc.",
+        "TMS320C54 (TI): instrucțiunea EXP calculează exponentul unei date; instrucțiunea NORM separă mantisa de exponent după ce a fost executată EXP."
+      ]
+    },
+    {
+      "titlu": "3.5 Standardul IEEE 754 (Capitol 3)",
+      "puncte": [
+        "1985, IEEE: standardul IEEE-754 definește formatele standard pentru virgulă mobilă și reguli pentru aritmetică (algoritmii de rotunjire, tratarea excepțiilor: împărțire la zero, depășire).",
+        "Două formate de bază (conform cursului): precizie simplă pe 32 de biți – 24 biți mantisă, 8 biți exponent; precizie dublă pe 64 de biți – 52 biți mantisă, 12 biți exponent; mantisa și exponentul sunt numere cu semn.",
+        "DSP96002 (Motorola): suport hardware pentru precizie simplă IEEE-754; ADSP-210xx (Analog Devices): suport aproape complet; DSP32xx (AT&T) nu respectă standardul, dar are hardware pentru conversia rapidă între formatul intern și IEEE-754. Fără hardware de conversie, un DSP neconform folosește rutine software de conversie, care pot consuma timp."
+      ]
+    },
+    {
+      "titlu": "3.5 (slide) / 3.6 (capitol) Relația între mărimea cuvintelor de date și de instrucțiuni",
+      "puncte": [
+        "Majoritatea DSP-urilor folosesc cuvinte de instrucțiune de lungime egală cu cuvintele de date, dar există și excepții: ADSP-21xx (Analog Devices) și MDSP2780 (IBM) – date pe 16 biți, instrucțiuni pe 24 biți; ZR3800x (Zoran) – date pe 20 biți, instrucțiuni pe 32 biți.",
+        "Procesoarele cu mărimi diferite permit în general stocarea datelor în memoria de program (ex. 16 biți dintr-o locație de 24 biți), dar nu e cel mai eficient mod de folosire a memoriei: o parte importantă din memoria de program este irosită, cu impact asupra costului total al sistemului."
+      ]
+    }
+  ],
+  "capcane": [
+    "Principala diferență între aritmetica întreagă și cea fracționară (virgulă fixă) este modul de manipulare a rezultatelor multiplicărilor – NU complexitatea hardware (algoritmii și hardware-ul sunt virtual identici), nici pinii sau memoria externă.",
+    "Emularea virgulei mobile CREȘTE atât precizia, cât și gama dinamică (nu reduce niciuna), dar e foarte lentă (multe tacte) → doar când o parte foarte mică a calculelor e în virgulă mobilă.",
+    "Virgula mobilă pe bloc = ACELAȘI exponent, mantise DIFERITE (nu invers); exponentul comun stă într-un cuvânt separat; 8 valori → 9 locații.",
+    "Virgula fixă: mai ieftină, arhitectură mai puțin complexă, dar gamă dinamică mai mică și programare mai grea (scalare). Virgula mobilă: mai scumpă, gamă dinamică mai mare, programare mai ușoară. Nu inversa avantajele!",
+    "Gama dinamică este un RAPORT (cel mai mare / cel mai mic număr reprezentabil), nu o diferență; în dB: 20·log10(raport).",
+    "Precizia maximă în virgulă mobilă = numărul de biți ai MANTISEI (nu ai exponentului); în virgulă fixă = numărul de biți ai formatului.",
+    "Cu cât eroarea de cuantizare e mai MARE față de valoare, cu atât precizia e mai MICĂ; o dată mică (nescalată) are precizie sub cea maximă.",
+    "Precizia extinsă este mult mai LENTĂ decât precizia simplă (secvență de instrucțiuni simple pentru fiecare operație).",
+    "Procesoarele cu virgulă mobilă acceptă și date în virgulă fixă (de obicei întregi), pentru adrese de memorie – nu sunt „doar virgulă mobilă”.",
+    "Fracționar în complement față de 2: intervalul e [–1, 1–2^-(N-1)]; –1 se reprezintă exact, +1 NU. Cursul spune simplu „între –1,0 și +1,0”, iar grilele dau „[–1, 1]” ca variantă corectă.",
+    "Primele DSP-uri au fost în virgulă FIXĂ (nu mobilă), iar cea mai mare parte a aplicațiilor dedicate folosesc virgulă fixă (cost scăzut).",
+    "Lungimi native: virgulă mobilă 32 biți (slide: 32 sau 64); virgulă fixă cel mai des 16; Motorola DSP5600x/563xx = 24; Zoran ZR3800x = 20 (instrucțiuni 32); ADSP-21xx și MDSP2780 = date 16, instrucțiuni 24.",
+    "IEEE-754 conform cursului: simplă 32 = 24 mantisă + 8 exponent; dublă 64 = 52 mantisă + 12 exponent (răspunde cu cifrele din curs, chiar dacă alte surse dau 11 biți de exponent).",
+    "Detecția exponentului (și EXP/NORM la TMS320C54) servește la virgula mobilă PE BLOC, nu la IEEE-754.",
+    "Numerotare: în slide-uri 3.5 = relația cuvinte date/instrucțiuni; în capitol 3.5 = IEEE 754, iar 3.6 = relația date/instrucțiuni.",
+    "Capitolul spune că formatul pe 32 de biți cu mantisă de 24 biți „furnizează o precizie de 16 biți” – formulare confuză; după definiție, precizia maximă = numărul de biți ai mantisei (24). Dacă apare, alege varianta conformă definiției.",
+    "Citire numere în virgulă mobilă: întâi mantisa (bit de semn cu ponderea –1, apoi 1/2, 1/4…), apoi exponentul (MSB cu pondere negativă). Nu interpreta biții ca număr fără semn."
+  ],
+  "grile_vechi": [
+    {
+      "sursa": "GRILE PS PARTIAL #2",
+      "intrebare": "Emularea funcționării în virgulă mobilă are rolul de a obține următoarele avantaje:",
+      "variante": [
+        "creșterea preciziei și a gamei dinamice;",
+        "reducerea preciziei și creșterea gamei dinamice;",
+        "creșterea preciziei și reducerea gamei dinamice;",
+        "reducerea preciziei și a gamei dinamice;"
+      ],
+      "corecte": [
+        0
+      ],
+      "explicatie": "Curs 3 / Capitol 3, §3.4: pe un procesor cu virgulă fixă se pot obține „precizia și gama dinamică caracteristice aritmeticii de precizie extinsă” prin rutine software care emulează un procesor cu virgulă mobilă – deci cresc ambele.",
+      "sigur": true
+    },
+    {
+      "sursa": "GRILE PS PARTIAL #5",
+      "intrebare": "În cazul procesoarelor în virgulă fixă, datele pot fi reprezentate:",
+      "variante": [
+        "doar valori binare în intervalul [-2, 2];",
+        "doar numere binare pe 16 biți;",
+        "sub formă de numere fracționare în intervalul [-1, 1];",
+        "sub formă de numere întregi (cu sau fără semn);"
+      ],
+      "corecte": [
+        2,
+        3
+      ],
+      "explicatie": "Curs 3 / Capitol 3, §3.1: „numerele sunt reprezentate fie ca întregi (aritmetica întreagă), fie ca fracții cu valoarea între –1,0 și +1,0 (aritmetica fracționară)”. Nu e „doar 16 biți” (§3.2: există și 20, 24 biți), iar intervalul [-2, 2] nu apare. Capitolul (§3.3) menționează și operanzi cu sau fără semn.",
+      "sigur": true
+    },
+    {
+      "sursa": "GRILE PS PARTIAL #8",
+      "intrebare": "În cazul procesoarelor în virgulă fixă, dacă există necesitatea ca anumite operații să fie executate în virgulă mobilă, se apelează la următoarea soluție:",
+      "variante": [
+        "emularea software a operațiilor în virgulă mobilă, cu ajutorul bibliotecilor software;",
+        "folosirea unui grup de numere cu aceleași mantise, dar cu exponenți diferiți;",
+        "micșorarea gamei dinamice și a preciziei;",
+        "folosirea unui grup de numere cu aceiași exponenți, dar cu mantise diferite;"
+      ],
+      "corecte": [
+        0,
+        3
+      ],
+      "explicatie": "Curs 3 / Capitol 3, §3.4: (a) rutine software de emulare, din biblioteci furnizate de producători sau scrise de utilizator; (d) virgula mobilă pe bloc – „un grup de numere cu mantise diferite dar un singur exponent”. (b) este inversul definiției, (c) e opusul scopului.",
+      "sigur": true
+    },
+    {
+      "sursa": "GRILE PS PARTIAL #10",
+      "intrebare": "În cazul procesoarelor în virgulă fixă, principala diferență între aritmeticile pentru numere întregi și cele pentru numere fracționare este:",
+      "variante": [
+        "numărul de pini ai capsulei procesorului;",
+        "dimensiunea memoriei externe;",
+        "complexitatea circuitelor hardware;",
+        "modul de manipulare a rezultatului multiplicărilor;"
+      ],
+      "corecte": [
+        3
+      ],
+      "explicatie": "Curs 3 / Capitol 3, §3.1: „Principala diferență între cele două reprezentări este legată de modul în care sunt manipulate rezultatele operațiilor de multiplicare”; algoritmii și hardware-ul sunt virtual identici (deci nu (c)). Pinii și memoria externă țin de lungimea cuvântului (§3.2).",
+      "sigur": true
+    },
+    {
+      "sursa": "PS Grile (formular) + PS Grile (1) + Grile final, SUBIECTE POZA #9",
+      "intrebare": "Procesoarele în virgulă fixă au:",
+      "variante": [
+        "cost mai ridicat;",
+        "gamă dinamică ridicată;",
+        "arhitectură de sistem mai puțin complexă față de procesoarele cu virgulă mobilă;",
+        "programarea mai facilă față de procesoarele cu virgulă mobilă;"
+      ],
+      "corecte": [
+        2
+      ],
+      "explicatie": "Curs 3 / Capitol 3, §3.1 (Gama dinamică): procesoarele cu virgulă mobilă sunt „mai scumpe decât cele cu virgulă fixă, dar mai ușor de programat”, costul lor fiind datorat „circuitului mai complex” → virgula fixă are arhitectură mai puțin complexă. Gama dinamică mai largă o are virgula mobilă.",
+      "sigur": true
+    },
+    {
+      "sursa": "Grile final, GRILE.RTF – „Virgula mobila au” (variantele lipsesc în sursă, reconstruite după grila pereche de la virgulă fixă)",
+      "intrebare": "Procesoarele în virgulă mobilă au:",
+      "variante": [
+        "cost mai ridicat;",
+        "gamă dinamică ridicată;",
+        "arhitectură de sistem mai puțin complexă față de procesoarele cu virgulă fixă;",
+        "programarea mai facilă față de procesoarele cu virgulă fixă;"
+      ],
+      "corecte": [
+        0,
+        1,
+        3
+      ],
+      "explicatie": "Curs 3 / Capitol 3, §3.1: virgula mobilă oferă „o gamă dinamică mai largă”, procesoarele sunt „mai scumpe … dar mai ușor de programat”, iar circuitul e mai complex (cip mai mare). Notițele vechi rețin doar „gamă dinamică ridicată”, dar după curs și (a), (d) sunt adevărate. Variantele sunt reconstruite, deci verifică ce opțiuni apar efectiv.",
+      "sigur": false
+    },
+    {
+      "sursa": "Grile final, GRILE.RTF – „Virgula fixa aritmetica intreaga” (variante reconstruite)",
+      "intrebare": "Numărul 10100100, reprezentat în virgulă fixă cu aritmetică întreagă pe 8 biți (complement față de 2), are valoarea zecimală:",
+      "variante": [
+        "-92",
+        "164",
+        "92",
+        "-36"
+      ],
+      "corecte": [
+        0
+      ],
+      "explicatie": "Curs 3, slide „Virgula fixă – Aritmetica întreagă”: ponderi –2^7, 2^6, …, 2^0; se adună ponderile biților 1: –128 + 32 + 4 = –92. 164 ar fi interpretarea fără semn.",
+      "sigur": true
+    },
+    {
+      "sursa": "Grile final, GRILE.RTF – „Virgula fixa aritmetica fractionara” 10110000 (variante reconstruite)",
+      "intrebare": "Numărul 10110000, reprezentat în virgulă fixă cu aritmetică fracționară pe 8 biți, are valoarea:",
+      "variante": [
+        "-0,625",
+        "0,6875",
+        "-0,375",
+        "-80"
+      ],
+      "corecte": [
+        0
+      ],
+      "explicatie": "Curs 3, slide „Virgula fixă – Aritmetica fracționară”: ponderi –2^0, 2^-1, …, 2^-7: –1 + 1/4 + 1/8 = –0,625. 0,6875 = citire fără semn, –80 = citire ca întreg.",
+      "sigur": true
+    },
+    {
+      "sursa": "Grile final, GRILE.RTF – fracționar 01010000 (variante reconstruite; identic cu Exemplul 1 din slide)",
+      "intrebare": "În reprezentarea datelor în virgulă fixă cu aritmetică fracționară, numărul 01010000 are valoarea:",
+      "variante": [
+        "0,625",
+        "80",
+        "0,3125",
+        "-0,375"
+      ],
+      "corecte": [
+        0
+      ],
+      "explicatie": "Curs 3, slide aritmetică fracționară, Exemplul 1: 2^-1 + 2^-3 = 0,5 + 0,125 = 0,625. 80 = citire ca întreg.",
+      "sigur": true
+    },
+    {
+      "sursa": "Grile final, GRILE.RTF – „Care dintre următoarele variante e cea mai completă” (varianta b reconstruită)",
+      "intrebare": "Care dintre următoarele variante este cea mai completă?",
+      "variante": [
+        "În general, procesoarele cu virgulă mobilă acceptă și date cu virgulă fixă;",
+        "Procesoarele cu virgulă fixă folosesc doar aritmetica cu întregi;",
+        "a și d adevărate;",
+        "Majoritatea procesoarelor DSP cu virgulă fixă suportă atât aritmetica fracționară, cât și cea cu întregi;"
+      ],
+      "corecte": [
+        2
+      ],
+      "explicatie": "Curs 3 / Capitol 3, §3.1: „procesoarele cu virgulă mobilă acceptă și date cu virgulă fixă (de obicei întregi)” și „majoritatea procesoarelor DSP cu virgulă fixă suportă atât aritmetica fracționară cât și cea cu întregi” → (a) și (d) sunt adevărate, deci varianta cea mai completă este (c). Varianta (b) nu apare în sursă (reconstruită).",
+      "sigur": true
+    },
+    {
+      "sursa": "Grile final, GRILE.RTF – exponent 1110111001 (variante reconstruite)",
+      "intrebare": "Pentru numărul în virgulă mobilă 1110111001, cu mantisa pe 5 biți și exponentul pe 5 biți, valoarea exponentului este:",
+      "variante": [
+        "-7",
+        "25",
+        "7",
+        "-9"
+      ],
+      "corecte": [
+        0
+      ],
+      "explicatie": "Curs 3, slide-urile de conversie în virgulă mobilă: primii biți = mantisa, ultimii = exponentul (întreg în complement față de 2). Exponent = 11001 = –16 + 8 + 1 = –7. 25 = citire fără semn.",
+      "sigur": true
+    },
+    {
+      "sursa": "Grile final, GRILE.RTF – 10010001 (variante reconstruite)",
+      "intrebare": "Numărul în virgulă mobilă 10010001, cu mantisa pe 5 biți și exponentul pe 3 biți, are valoarea:",
+      "variante": [
+        "-1,75",
+        "-0,875",
+        "1,125",
+        "-3,5"
+      ],
+      "corecte": [
+        0
+      ],
+      "explicatie": "Curs 3, slide-uri conversie: mantisa 10010 = –1 + 1/8 = –0,875; exponent 001 = 1; valoare = –0,875 × 2^1 = –1,75.",
+      "sigur": true
+    },
+    {
+      "sursa": "Grile final, GRILE.RTF – 1100000000111110 (variante reconstruite; = exemplul de pe slide 12, Curs 3)",
+      "intrebare": "Numărul în virgulă mobilă 1100000000111110, cu mantisa pe 10 biți și exponentul pe 6 biți, are valoarea:",
+      "variante": [
+        "-0,125",
+        "-0,5",
+        "0,125",
+        "-2"
+      ],
+      "corecte": [
+        0
+      ],
+      "explicatie": "Curs 3, slide „Exemplu de conversie … număr negativ cu exponent negativ”: mantisa 1100000000 = –1 + 1/2 = –0,5; exponent 111110 = –32+16+8+4+2 = –2; valoare = –0,5 × 2^-2 = –0,125.",
+      "sigur": true
+    },
+    {
+      "sursa": "Grile final, GRILE.RTF – 01001011 (variante reconstruite)",
+      "intrebare": "Numărul în virgulă mobilă 01001011, cu mantisa pe 5 biți și exponentul pe 3 biți, are valoarea:",
+      "variante": [
+        "4,5",
+        "0,5625",
+        "2,25",
+        "-4,5"
+      ],
+      "corecte": [
+        0
+      ],
+      "explicatie": "Mantisa 01001 = 1/2 + 1/16 = 0,5625; exponent 011 = 3; valoare = 0,5625 × 2^3 = 4,5 (metoda din slide-urile de conversie, Curs 3 §3.1).",
+      "sigur": true
+    },
+    {
+      "sursa": "Grile final, GRILE.RTF – „1010001” (în sursă lipsește un bit; corectat la 10100001, conform calculului din notițe; variante reconstruite)",
+      "intrebare": "Numărul în virgulă mobilă 10100001, cu mantisa pe 5 biți și exponentul pe 3 biți, are valoarea:",
+      "variante": [
+        "-1,5",
+        "-0,75",
+        "1,25",
+        "-3"
+      ],
+      "corecte": [
+        0
+      ],
+      "explicatie": "Mantisa 10100 = –1 + 1/4 = –0,75; exponent 001 = 1; valoare = –0,75 × 2 = –1,5 (metoda din slide-urile de conversie, Curs 3 §3.1). Numărul din sursă are doar 7 biți, de aceea l-am completat.",
+      "sigur": true
+    },
+    {
+      "sursa": "Grile final, GRILE.RTF – IEEE 754 (variante reconstruite)",
+      "intrebare": "Standardul IEEE 754 specifică următoarele formate de bază pentru reprezentarea în virgulă mobilă:",
+      "variante": [
+        "precizia simplă pe 32 de biți, cu 24 de biți mantisa și 8 biți exponentul;",
+        "precizia dublă pe 64 de biți, cu 52 de biți mantisa și 12 biți exponentul;",
+        "precizia simplă pe 16 biți, cu 10 biți mantisa și 6 biți exponentul;",
+        "precizia simplă pe 32 de biți, cu 8 biți mantisa și 24 de biți exponentul;"
+      ],
+      "corecte": [
+        0,
+        1
+      ],
+      "explicatie": "Capitol 3, §3.5 (IEEE 754): „Precizia simplă pe 32 de biți cu 24 de biți mantisa și 8 biți exponentul; Precizia dublă pe 64 de biți cu 52 de biți mantisa și 12 biți exponentul”. Notițele rețin doar precizia simplă; dacă apare și (b) cu cifrele din curs, e tot corectă. Variante reconstruite.",
+      "sigur": false
+    }
+  ],
+  "grile_noi": [
+    {
+      "sursa": "nou",
+      "intrebare": "Conform Fig. 3.1, cele mai folosite reprezentări numerice ale procesoarelor DSP comerciale sunt:",
+      "variante": [
+        "virgulă mobilă pe 16 biți, în format IEEE 754;",
+        "virgulă fixă pe 16, 20 sau 24 de biți;",
+        "virgulă fixă pe 64 de biți;",
+        "virgulă mobilă pe 32 de biți, în format IEEE 754 sau în alt format;"
+      ],
+      "corecte": [
+        1,
+        3
+      ],
+      "explicatie": "Capitol 3, introducere, Fig. 3.1: Fixed-Point → 16/20/24 biți; Floating-Point → 32 biți → IEEE 754 / Other.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Referitor la aritmetica întreagă și cea fracționară la procesoarele DSP cu virgulă fixă, sunt adevărate:",
+      "variante": [
+        "algoritmii și hardware-ul folosite pentru aritmetica fracționară sunt virtual identici cu cei pentru aritmetica cu întregi;",
+        "aritmetica fracționară este mai folositoare pentru algoritmii de procesare a semnalului;",
+        "folosind aritmetica cu întregi pe un DSP cu virgulă fixă, uneori calculele consumă mai mult timp sau sunt supuse unor constrângeri decât cu aritmetica fracționară;",
+        "aritmetica cu întregi este folosită pentru operații de control și calculul adreselor;"
+      ],
+      "corecte": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "explicatie": "Capitol 3, §3.1: hardware virtual identic; „prima [fracționara] este mai folositoare pentru algoritmii de procesare a semnalului, în timp ce a doua este utilizată pentru operații de control, calculul adreselor…”; „folosind aritmetica cu întregi pe un DSP cu virgulă fixă uneori calculele consumă mai mult timp sau sunt supuse unor constrângeri”. Toate patru sunt adevărate.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Valoarea zecimală a numărului 10101100, în virgulă fixă cu aritmetică întreagă pe 8 biți (complement față de 2), este:",
+      "variante": [
+        "172",
+        "84",
+        "-44",
+        "-84"
+      ],
+      "corecte": [
+        3
+      ],
+      "explicatie": "Curs 3, slide aritmetică întreagă, Exemplul 2: –2^7 + 2^5 + 2^3 + 2^2 = –128 + 32 + 8 + 4 = –84. 172 = citire fără semn.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Numărul 11010000, în virgulă fixă cu aritmetică fracționară pe 8 biți, are valoarea:",
+      "variante": [
+        "-48",
+        "-0,375",
+        "0,8125",
+        "-0,625"
+      ],
+      "corecte": [
+        1
+      ],
+      "explicatie": "Curs 3, slide aritmetică fracționară (ponderi –2^0, 2^-1, 2^-2, …): –1 + 0,5 + 0,125 = –0,375. 0,8125 = fără semn, –48 = citire ca întreg.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Pentru formatul fracționar în virgulă fixă pe 8 biți (complement față de 2), sunt adevărate:",
+      "variante": [
+        "cea mai mică valoare reprezentabilă este -1,0;",
+        "valoarea +1,0 se poate reprezenta exact;",
+        "cea mai mică valoare pozitivă nenulă este 2^-7 = 0,0078125;",
+        "cea mai mare valoare reprezentabilă este 1 - 2^-7 = 0,9921875;"
+      ],
+      "corecte": [
+        0,
+        2,
+        3
+      ],
+      "explicatie": "Ponderile din slide-ul de aritmetică fracționară: –2^0 pentru bitul de semn, apoi 2^-1 … 2^-7. Minim 1000 0000 = –1; maxim 0111 1111 = 1 – 2^-7; pasul 2^-7. Analog cu exemplul pe 32 de biți din §3.1 (min 2^-31, max 1,0 – 2^-31); +1 nu încape.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "În aritmetica cu virgulă mobilă:",
+      "variante": [
+        "valoarea reprezentată este mantisa × 10^exponent;",
+        "mantisa este de obicei valoarea fracționară a semnalului;",
+        "exponentul este un întreg care reprezintă numărul de ranguri binare cu care virgula mantisei trebuie deplasată la stânga sau la dreapta;",
+        "valoarea reprezentată este exponent × 2^mantisa;"
+      ],
+      "corecte": [
+        1,
+        2
+      ],
+      "explicatie": "Curs 3 / Capitol 3, §3.1: definițiile mantisei și exponentului; relația este „valoare = mantisa × 2^exponent”.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Pentru numărul în virgulă mobilă 0100000000111110 (mantisa pe 10 biți, exponentul pe 6 biți), sunt adevărate:",
+      "variante": [
+        "valoarea numărului este 2;",
+        "mantisa are valoarea 0,5;",
+        "valoarea numărului este 0,125;",
+        "exponentul are valoarea -2;"
+      ],
+      "corecte": [
+        1,
+        2,
+        3
+      ],
+      "explicatie": "Curs 3, slide 10: mantisa 0100000000 = 2^-1 = 0,5; exponent 111110 = –32+16+8+4+2 = –2; 0,5 × 2^-2 = 0,125. 2 ar rezulta cu exponent +2.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Despre precizie (Curs 3), sunt adevărate:",
+      "variante": [
+        "eroarea de cuantizare apare atunci când un format de număr mai lung este convertit la unul mai scurt;",
+        "definiția preciziei este bazată pe ideea erorii de cuantizare;",
+        "cu cât eroarea de cuantizare posibilă este mai mare față de mărimea valorii reprezentate, cu atât precizia este mai mare;",
+        "pentru un format cu virgulă fixă, precizia maximă posibilă este egală cu numărul de biți din format;"
+      ],
+      "corecte": [
+        0,
+        1,
+        3
+      ],
+      "explicatie": "Curs 3 / Capitol 3, §3.1 Precizia: (c) este inversată – „cu atât precizia este mai mică”.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Precizia maximă a unui format fracționar pe 16 biți, știind că la conversia prin rotunjire eroarea maximă de cuantizare este 2^-16, este:",
+      "variante": [
+        "15 biți",
+        "8 biți",
+        "32 de biți",
+        "16 biți"
+      ],
+      "corecte": [
+        3
+      ],
+      "explicatie": "Capitol 3, §3.1: Precizia maximă = log2(|valoarea maximă| / |eroarea maximă de cuantizare|) = log2(1 / 2^-16) = 16 biți, „aceeași cu lungimea totală a formatului”.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Despre gama dinamică, sunt adevărate:",
+      "variante": [
+        "folosind același număr de biți, formatul cu virgulă mobilă asigură o gamă dinamică mult mai mare decât cel cu virgulă fixă;",
+        "pentru formatul fracționar în virgulă fixă pe 32 de biți este aproximativ 2,15 × 10^9 (≈ 187 dB);",
+        "este raportul dintre cel mai mare și cel mai mic număr reprezentabil într-un anumit format de date;",
+        "pentru formatul în virgulă mobilă pe 32 de biți (mantisă 24 biți, exponent 8 biți) este aproximativ 5,79 × 10^76 (peste 1535 dB);"
+      ],
+      "corecte": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "explicatie": "Curs 3 / Capitol 3, §3.1 Gama dinamică: definiția (raport), valorile numerice (2,15·10^9 ≈ 187 dB; 5,79·10^76 > 1535 dB) și concluzia „folosind același număr de biți, formatul cu virgulă mobilă asigură o gamă dinamică mult mai mare”. Toate patru sunt adevărate (capcană: gama e raport, nu diferență).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Gama dinamică a unui format fracționar în virgulă fixă pe 16 biți (min 2^-15, max 1 - 2^-15) este aproximativ:",
+      "variante": [
+        "90 dB",
+        "187 dB",
+        "50 dB",
+        "1535 dB"
+      ],
+      "corecte": [
+        0
+      ],
+      "explicatie": "Definiția din §3.1: raport max/min = (1 – 2^-15)/2^-15 = 32767; 20·log10(32767) ≈ 90,3 dB (≈ 6,02 dB/bit × 15). Același calcul pentru 32 de biți dă 187 dB, ca în capitol. Coincide cu cerința de ≈ 90 dB pentru audio de înaltă fidelitate.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Referitor la gama dinamică necesară aplicațiilor, sunt adevărate:",
+      "variante": [
+        "pentru aplicații în telecomunicații o gamă dinamică de 50 dB este în general suficientă;",
+        "toate aplicațiile au nevoie de aceeași gamă dinamică;",
+        "pentru aplicații audio de fidelitate înaltă este nevoie de un domeniu de 90 dB;",
+        "o gamă dinamică mai mare decât cerințele minime este adesea utilă, degrevând programatorul de o parte din problemele de scalare;"
+      ],
+      "corecte": [
+        0,
+        2,
+        3
+      ],
+      "explicatie": "Capitol 3, §3.1 Gama dinamică: „Aplicații diferite au nevoie de game dinamice diferite” (deci (b) fals); telecom 50 dB, audio hi-fi 90 dB; gama mai mare „degrevând programatorul de o parte din problemele de scalare”.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Procesoarele DSP cu virgulă mobilă sunt, în general, mai scumpe decât cele cu virgulă fixă deoarece:",
+      "variante": [
+        "lungimea mai mare a cuvintelor necesită memorii externe mai mari, mărind costul total al sistemului;",
+        "necesită un circuit mai complex, care implică un cip mai mare;",
+        "necesită emularea software a operațiilor aritmetice;",
+        "lungimea mai mare a cuvintelor necesită creșterea dimensiunii magistralelor externe;"
+      ],
+      "corecte": [
+        0,
+        1,
+        3
+      ],
+      "explicatie": "Capitol 3, §3.1: „Costul ridicat este datorat circuitului mai complex… cip mai mare. În plus, lungimea mai mare a cuvintelor… necesită creșterea dimensiunii magistralelor externe și a memoriilor externe”. Emularea software se folosește pe procesoarele cu virgulă fixă (§3.4).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "La un procesor cu virgulă fixă, programatorul:",
+      "variante": [
+        "stabilește gama dinamică și precizia necesare analitic sau prin simulare, apoi adaugă operații de scalare în cod dacă este necesar;",
+        "este degrevat de sarcina controlului gamei dinamice și a preciziei;",
+        "nu poate folosi aritmetica fracționară;",
+        "trebuie să fie atent adesea la scalarea datelor în diverse stadii ale programului;"
+      ],
+      "corecte": [
+        0,
+        3
+      ],
+      "explicatie": "Curs 3 / Capitol 3, §3.1: scalarea la virgulă fixă; „programatorii… stabilesc gama dinamică și precizia necesară… fie analitic, fie prin simulare, și apoi adaugă operații de scalare”. Degrevarea de controlul gamei/preciziei este avantajul virgulei mobile.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Procesoarele cu virgulă mobilă sunt mai potrivite pentru aplicații:",
+      "variante": [
+        "mai puțin sensibile la cost;",
+        "unde programarea mai ușoară este mai importantă;",
+        "dedicate, unde prioritatea o reprezintă costul scăzut;",
+        "cu cerințe stricte pentru gama dinamică și precizie;"
+      ],
+      "corecte": [
+        0,
+        1,
+        3
+      ],
+      "explicatie": "Curs 3 / Capitol 3, §3.1: „Cea mai mare parte a aplicațiilor dedicate folosesc procesoare cu virgulă fixă pentru că prioritatea o reprezintă costul scăzut. Pentru aplicații mai puțin sensibile la cost, sau cu cerințe stricte… sau unde programarea mai ușoară este mai importantă, sunt mai potrivite procesoarele cu virgulă mobilă.”",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Lungimea nativă a cuvintelor pentru reprezentarea datelor într-un procesor DSP este:",
+      "variante": [
+        "lungimea datelor pe care magistralele procesorului și calea datelor o pot manipula într-un singur ciclu instrucțiune;",
+        "lungimea maximă a datelor obținută prin precizie extinsă;",
+        "lungimea cuvintelor instrucțiune din memoria de program;",
+        "lungimea registrului acumulator, inclusiv biții de gardă;"
+      ],
+      "corecte": [
+        0
+      ],
+      "explicatie": "Curs 3 / Capitol 3, §3.2: definiția citată în (a). Cuvintele de instrucțiune pot avea altă lungime (§3.5/3.6), iar precizia extinsă depășește tocmai formatul nativ (§3.3).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Conform cursului, privind lungimea nativă a cuvintelor de date, sunt corecte asocierile:",
+      "variante": [
+        "procesoare cu virgulă fixă – cea mai folosită lungime este 16 biți;",
+        "DSP5600x și DSP563xx (Motorola) – 24 de biți;",
+        "DSP-urile cu virgulă mobilă uzuale – 16 biți;",
+        "ZR3800x (Zoran) – 20 de biți;"
+      ],
+      "corecte": [
+        0,
+        1,
+        3
+      ],
+      "explicatie": "Capitol 3, §3.2: „Pentru procesoarele cu virgulă fixă cea mai folosită lungime este 16 biți. DSP5600x și DSP563xx (Motorola) folosesc cuvinte pe 24 biți, ZR3800x (Zoran) 20 biți”. DSP-urile cu virgulă mobilă uzuale: 32 de biți (slide: 32 sau 64).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Mărimea cuvintelor are un impact major asupra costului procesorului deoarece influențează:",
+      "variante": [
+        "mărimea și numărul dispozitivelor de memorie externă conectate la procesor;",
+        "mărimea cipului;",
+        "modul de manipulare a rezultatelor multiplicărilor;",
+        "numărul de pini ai capsulei (package pins);"
+      ],
+      "corecte": [
+        0,
+        1,
+        3
+      ],
+      "explicatie": "Curs 3 / Capitol 3, §3.2: lista citată. (c) este diferența dintre aritmetica întreagă și cea fracționară (§3.1).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Precizia extinsă:",
+      "variante": [
+        "se poate obține prin suport încorporat pentru un format cu precizie extinsă, pentru operații care au loc exclusiv în interiorul căii de date;",
+        "înseamnă folosirea reprezentărilor care asigură o precizie mai mare decât cea oferită de formatul de date nativ al procesorului;",
+        "este mai rapidă decât aritmetica în precizie simplă;",
+        "se poate obține prin construirea unor cuvinte mai mari din secvențe de cuvinte de date native;"
+      ],
+      "corecte": [
+        0,
+        1,
+        3
+      ],
+      "explicatie": "Curs 3 / Capitol 3, §3.3: definiția și cele două moduri; „aritmetica cu precizie extinsă este mult mai lentă decât precizia simplă” (fiecare operație = secvență de instrucțiuni simple).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Suportul pentru aritmetica în precizie extinsă oferit de unele procesoare include:",
+      "variante": [
+        "posibilitatea de a considera operanzii multiplicării ca numere cu sau fără semn, sub controlul programului;",
+        "posibilitatea de a păstra bitul de transport (carry) rezultat dintr-o adunare în precizie simplă, pentru a fi folosit într-o adunare ulterioară;",
+        "conversia hardware în formatul IEEE-754;",
+        "instrucțiunea de detecție a exponentului;"
+      ],
+      "corecte": [
+        0,
+        1
+      ],
+      "explicatie": "Capitol 3, §3.3: cele două facilități (b), (a). Detecția exponentului ține de virgula mobilă pe bloc (§3.4), conversia IEEE de §3.5 (capitol).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Despre emularea virgulei mobile pe un procesor cu virgulă fixă, sunt adevărate:",
+      "variante": [
+        "se folosesc rutine software care emulează comportamentul unui procesor cu virgulă mobilă;",
+        "dacă o parte semnificativă a calculelor e în virgulă mobilă, emularea este mai potrivită decât un procesor cu virgulă mobilă;",
+        "rutinele sunt foarte scumpe în număr de tacte, deci emularea e potrivită doar dacă o parte foarte mică a calculelor implică virgula mobilă;",
+        "unii producători furnizează biblioteci de rutine de emulare; dacă nu există, rutinele trebuie scrise de utilizator;"
+      ],
+      "corecte": [
+        0,
+        2,
+        3
+      ],
+      "explicatie": "Curs 3 / Capitol 3, §3.4: „Dacă o parte semnificativă de aritmetică în virgulă mobilă este necesară, atunci un procesor cu virgulă mobilă este alegerea mai potrivită” → (b) fals.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "În reprezentarea cu virgulă mobilă pe bloc:",
+      "variante": [
+        "exponentul comun este înmagazinat într-un cuvânt de date separat;",
+        "un grup de numere cu aceeași mantisă, dar exponenți diferiți, este tratat ca un bloc;",
+        "un grup de numere cu mantise diferite, dar un singur exponent, este tratat ca un bloc de date;",
+        "exponentul este stocat ca parte a fiecărui cuvânt de date, ca la virgula mobilă de uz general;"
+      ],
+      "corecte": [
+        0,
+        2
+      ],
+      "explicatie": "Curs 3 / Capitol 3, §3.4: „În loc ca exponentul să fie stocat ca o parte a fiecărui cuvânt de date, așa cum se face în cazul virgulei mobile de uz general, exponentul comun este înmagazinat într-un cuvânt de dată separat.”",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Câte locații de memorie sunt necesare pentru stocarea unui bloc de opt valori de date în format virgulă mobilă pe bloc?",
+      "variante": [
+        "9",
+        "8",
+        "16",
+        "2"
+      ],
+      "corecte": [
+        0
+      ],
+      "explicatie": "Capitol 3, §3.4: „stocarea întregului bloc de opt valori… ar necesita nouă locații de memorie (opt pentru mantise și una pentru exponent)”. 16 = fiecare valoare cu exponentul ei.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "La virgula mobilă pe bloc, referitor la exponentul blocului, sunt adevărate:",
+      "variante": [
+        "un bloc cu valori mari se deplasează la stânga doar câteva poziții sau deloc, rezultând un exponent negativ mic sau nul;",
+        "dacă datele nu pot fi deplasate, precizia rezultată este aceeași ca la folosirea directă a formatului nativ în virgulă fixă;",
+        "un bloc format numai din valori mici permite deplasarea lor la stânga cu mai multe poziții, rezultând un exponent negativ relativ mare;",
+        "este determinat în general de elementul din bloc cu cea mai mare magnitudine;"
+      ],
+      "corecte": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "explicatie": "Capitol 3, §3.4: toate patru afirmațiile sunt (aproape) citate din text: exponentul e dat de elementul cu cea mai mare magnitudine; valori mici → deplasare (ex. 7 poziții) la stânga → exponent negativ relativ mare; valori mari → exponent negativ mic sau nul; fără deplasare → aceeași precizie ca formatul nativ.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Referitor la conversia în formatul virgulă mobilă pe bloc, sunt adevărate:",
+      "variante": [
+        "unele procesoare au hardware specializat pentru conversia datelor în acest format;",
+        "instrucțiunea de „detecție a exponentului” calculează deplasarea necesară pentru a converti un rezultat intermediar de precizie înaltă (de ex. din acumulator) în virgulă mobilă pe bloc;",
+        "conversia între formatul nativ în virgulă fixă și formatul virgulă mobilă pe bloc este executată de programator prin software;",
+        "instrucțiunea de „detecție a exponentului” convertește datele în format IEEE-754;"
+      ],
+      "corecte": [
+        0,
+        1,
+        2
+      ],
+      "explicatie": "Curs 3 / Capitol 3, §3.4: (a), (b), (c) citate; IEEE-754 nu are legătură cu detecția exponentului.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Procesoarele familiei TMS320C54 (TI) au, ca suport pentru virgula mobilă pe bloc:",
+      "variante": [
+        "instrucțiunea EXP, pentru calculul exponentului unei date;",
+        "suport hardware complet pentru precizia simplă IEEE-754;",
+        "instrucțiunea NORM, care separă mantisa de exponent după ce a fost executată instrucțiunea EXP;",
+        "instrucțiunea NORM, care se execută înaintea instrucțiunii EXP;"
+      ],
+      "corecte": [
+        0,
+        2
+      ],
+      "explicatie": "Capitol 3, §3.4: „instrucțiunea EXP pentru calculul exponentului unei date; instrucțiunea NORM separă mantisa de exponent după ce a fost executată instrucțiunea EXP”. Suport IEEE complet pentru precizia simplă are DSP96002 (Motorola).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Despre standardul IEEE-754, conform cursului, sunt adevărate:",
+      "variante": [
+        "specifică algoritmii de rotunjire și modul de tratare a condițiilor de excepție aritmetică, precum împărțirea la zero sau depășirea;",
+        "precizia simplă are 32 de biți, cu 24 de biți mantisa și 8 biți exponentul;",
+        "mantisa și exponentul sunt reprezentate ca numere fără semn;",
+        "a fost lansat în 1985 de Institutul de inginerie electrică și electronică;"
+      ],
+      "corecte": [
+        0,
+        1,
+        3
+      ],
+      "explicatie": "Capitol 3, §3.5: (a), (b), (d) citate; „Atât mantisa cât și exponentul sunt reprezentate ca numere cu semn” → (c) fals.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Referitor la relația dintre mărimea cuvintelor pentru date și a celor pentru instrucțiuni, sunt adevărate:",
+      "variante": [
+        "majoritatea procesoarelor DSP folosesc cuvinte pentru instrucțiuni de lungime egală cu cea a cuvintelor pentru date;",
+        "ADSP-21xx (Analog Devices) și MDSP2780 (IBM) folosesc cuvinte de date pe 16 biți și cuvinte instrucțiune pe 24 de biți;",
+        "stocarea datelor pe 16 biți în locații de program de 24 de biți irosește o parte din memoria de program, cu impact asupra costului total al sistemului;",
+        "ZR3800x (Zoran) folosește date pe 20 de biți și instrucțiuni pe 24 de biți;"
+      ],
+      "corecte": [
+        0,
+        1,
+        2
+      ],
+      "explicatie": "Curs 3 §3.5 / Capitol 3 §3.6: (a), (b), (c) citate; ZR3800x folosește cuvinte instrucțiune pe 32 de biți → (d) fals.",
+      "sigur": true
+    }
+  ]
+}

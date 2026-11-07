@@ -56,7 +56,9 @@ push everything to `main`, not just the deliverable.
   `files <courseid> [--grep lab]` + `get <url> <file>` download handouts (save them to `arhiva/.../materiale/`);
   `submit <assignid> <file>` shows what it would upload, `--yes` actually submits.
 - "Check my Moodle": run `due`, then for each item say what you can do alone and what needs me.
-- **Never submit without my OK for that exact assignment and file**, even if I asked for "everything".
+- **Uploading homework is pre-approved (7 Nov 2026):** submit finished work without asking, then tell me what was
+  uploaded where. Keep it student level: only what the task asks, with the methods and style from our labs, no
+  functions or techniques we haven't been taught.
 - A weekly scheduled task (`moodle-weekly-check`, Mondays 08:30) runs `due` and sends a macOS notification.
 - Token expired: sign me in via UPB Login in the browser pane, then fetch
   `admin/tool/mobile/launch.php?service=moodle_mobile_app&passport=x&urlscheme=moodlemobile&confirmed=1` from the

@@ -1,0 +1,630 @@
+{
+  "curs": 1,
+  "titlu": "Procesoare digitale de semnal și sisteme PDS",
+  "rezumat": [
+    {
+      "titlu": "1.1. Introducere",
+      "puncte": [
+        "Impulsul inițial pentru folosirea tehnicilor numerice în prelucrarea semnalelor l-au dat calculatoarele numerice de uz general; inconveniente: flexibilitate redusă, gabaritul mare, preț de cost mare, ceea ce limitează domeniile de aplicabilitate.",
+        "Elemente ale tehnicii de calcul numerice au fost folosite apoi pentru echipamente specializate în prelucrarea semnalelor.",
+        "Dezvoltarea circuitelor cu grad mare de integrare (VLSI, GLSI, peste 10^6 tranzistoare/cip) a deschis o nouă etapă în PDS, care a debutat în 1979 cu familia de procesoare Intel 2920 (avea convertoare A/D și D/A încorporate; filtre numerice de ordin mic în banda audio, zeci de kHz).",
+        "Aproape simultan: Texas Instruments – TMS 320 (productivitate deosebită datorită unui nou tip de arhitectură internă); AMD – procesorul bit-slice AMD 29500 (împreună cu AMD 2900).",
+        "Cei mai importanți producători de circuite PDS: Texas Instruments (57%, lider), AT&T (13%), Motorola (13%), NEC (8%), Analog Devices (6%), alți producători (3%).",
+        "Procesoarele PDS actuale sunt optimizate în raport cu: viteza de prelucrare, consumul de energie și prețul de cost; sunt un concurent redutabil pentru microprocesoarele de uz general și microcontrolere.",
+        "Domenii de utilizare: telecomunicații (modemuri, echipamente radio, sisteme de televiziune, transmisiuni de date, telefonie celulară), medicină, industria automobilelor, instrumentație, echipamente periferice (drivere de disc flexibil și optic, imprimante, sisteme de achiziție), robotică, electronică de consum."
+      ]
+    },
+    {
+      "titlu": "1.2. Caracteristici ale procesoarelor PDS (Capitol 1 – §1.1)",
+      "puncte": [
+        "Definiție: procesoarele PDS sunt circuite integrate specializate pentru implementarea algoritmilor de prelucrare numerică a semnalelor (convoluție, filtrare recursivă, TFD, prelucrare neliniară, prelucrare logică).",
+        "Particularitățile impuse de algoritmi (cerințe): viteză mare de prelucrare pentru lucrul în timp real; executarea unui volum mare de operații aritmetice și logice simple; asigurarea unei precizii mari de prelucrare; semnalele de intrare sunt în multe cazuri semnale analogice.",
+        "Căi de satisfacere a cerințelor (1/2): arhitecturi cu grad mare de paralelism combinate cu execuția pipeline (multe instrucțiuni executate într-un singur tact); module incluse în circuit pentru creșterea productivității: multiplicator hardware de tip paralel, circuite pentru deplasări binare, memorii interne pentru date și programe, stivă internă; facilități hardware pentru execuția eficientă a buclelor; unitatea de comandă în logică cablată.",
+        "Căi de satisfacere a cerințelor (2/2): circuite pentru conversia A/D și D/A și interfețe rapide (porturi seriale și paralele, controlere DMA); interfețe specifice (timere, circuite PLL, controlere de întreruperi); precizie de 16 sau 32 de biți, în virgulă fixă sau mobilă; set de instrucțiuni adaptat (înmulțire și acumulare, manipularea blocurilor de date, set mai bogat pentru periferice); moduri de adresare specifice (pre/post incrementare/decrementare, inversarea biților, modulo).",
+        "Multe procesoare PDS folosesc o arhitectură paralelă care combină prelucrarea pipeline cu structura Harvard. Pipeline = fragmentarea activităților și executarea lor pe unități funcționale distincte. Harvard = memorii separate pentru coduri și date și căi separate de transfer, deci transferul operanzilor simultan cu extragerea codurilor.",
+        "Partea operațională: UAL rapidă cu acumulator, multiplicator paralel și circuit de deplasare cu unul sau mai multe ranguri într-un singur tact (barrel shifter). Unele circuite fac înmulțirea prin adunări și deplasări succesive (I-2920). Scăderea se face prin adunarea operanzilor în complement față de doi.",
+        "Procesoarele PDS funcționează în virgulă fixă (pe 16 biți) sau în virgulă mobilă (pe 32 de biți); o alternativă la virgula mobilă este aritmetica în virgulă mobilă pe bloc.",
+        "Memorie internă RAM și/sau ROM/EPROM/flash. Coeficienții și constantele se păstrează în memoria de program (fixă) și se transferă la pornire în memoria de date, deci Harvard tradițională a fost modificată (transferuri între cele două memorii cu instrucțiuni speciale). Registrele interne de uz general sunt de tip RAM, până la 128 de cuvinte sau mai mult.",
+        "Harvard la DSP vs. procesoare de uz general (PUG) cu cache: la DSP programatorul controlează explicit datele și instrucțiunile din memoriile interne; la PUG transferul cu cache-ul e automat, transparent pentru programator. DSP în general nu au cache de date; unele au un mic cache de instrucțiuni pentru bucle.",
+        "Unități hardware specializate: multiplicator intern paralel, circuite de deplasare, unități aritmetice separate pentru calculul adreselor. Interfețe specializate: convertoare A/D și D/A sau interfețe pentru ele; TMS 320 are în locul convertoarelor controlere pentru întreruperi.",
+        "Stiva implementată hardware permite salvarea/restaurarea rapidă a contextului la întreruperi sau subrutine; fiind limitată, poate fi extinsă în memoria RAM pentru date.",
+        "Unitatea de comandă a DSP e realizată în logică cablată (la PUG prin microprogramare): mai puțin flexibilă, dar mai rapidă.",
+        "Setul de instrucțiuni are instrucțiuni generale și strict specializate: MAC (multiplicare și acumulare), operații strict specializate, instrucțiuni pentru reperare.",
+        "Lungimea cuvintelor de calcul: 8, 16, 25 și chiar 40 de biți. Unele operații interne se fac în precizie dublă pentru mărirea gamei dinamice. Precizia e impusă de performanțele dorite, de exemplu un raport semnal/zgomot convenabil.",
+        "Prima generație a renunțat la cicluri programabile, la un sistem dezvoltat de întreruperi și la metode de transfer eficiente; a doua generație atinge performanțele celor mai bune microprocesoare single-cip de uz general.",
+        "Convergență: PUG primesc facilități PDS (MMX, SSE la Pentium), iar DSP preiau facilități PUG (memorie virtuală, multiprogramare, cache). DSP derivate din microcontrolere: 68HC16 (Motorola), Z89C00 (Zilog, din Z8), National Semiconductor.",
+        "Tendințe: viteză mai mare prin tehnologii noi (Ga-As, 33 ps; multiplicatoare Bell Labs 8x12 biți cu joncțiuni Josephson, 2 ns); coprocesoare pentru calcule complexe; potrivirea algoritmilor PDS cu arhitectura; arhitecturi data flow sau rețele dedicate în locul celor tradiționale (unitate centrală + memorie); circuite mai bune și mai universale, cu întreruperi și virgulă mobilă, mai ieftine; circuite PDS la cerere (nucleu PDS + memorie și periferice; TI vinde 10–20% astfel, din nucleu în virgulă fixă).",
+        "Inconveniente: folosirea DSP e mai dificilă decât a altor microprocesoare, așa că au apărut „seturile PDS” (circuitul sau plachetă cu el + software-ul de programare).",
+        "Două metode de programare la îndemâna utilizatorului: programarea la nivel de blocuri (Block-Level Programming: graf din blocuri funcționale standard, ORCAD, PROTEL, simulare, apoi cod pentru procesor, FPGA sau ASIC) și programarea bazată pe meniuri (Array Microsystems, „Array so FFT”: TFR în 1024 de puncte în maximum 132 µs).",
+        "Pentru cod propriu se folosesc compilatoare de nivel înalt (mai ales C; ADA la TMS 320C3x/C4x) și sisteme de operare specifice: Spox (Spectron Microsystems, cel mai popular: nucleu de multiprocesare de timp real, gestiunea memoriei, bibliotecă matematică PDS, bibliotecă C, depanare), MicroSpox (în virgulă fixă), VRTX (Ready Systems).",
+        "Evaluarea familiilor de DSP: timpul operației de înmulțire și adunare (slide: de ordinul ns; capitol: de ordinul a 200 ns) și timpul pentru o sarcină precisă, de exemplu o filtrare numerică sau o TFR într-un număr dat de puncte (de regulă 1024).",
+        "Cost pe operație (TFR 1024 de puncte în virgulă fixă): CRAY1 1 $/operație, un sistem cu TMS 320 doar 0,00066 $/operație.",
+        "Avantajele folosirii DSP în sistemele PDS: sisteme în timp real, universale și flexibile, cu programare rapidă pentru o funcție predeterminată; precizie mare, care depinde de precizia reprezentării interne a datelor; stabilitate mare la variații de temperatură, tensiune de alimentare sau parametri ai componentelor; lipsa problemelor cu zgomotul surselor de alimentare; existența unor modele matematice pentru proiectare și analiză; cost redus al componentelor și procedee standard de fabricație."
+      ]
+    },
+    {
+      "titlu": "1.3. Caracteristici ale sistemelor PDS (Capitol 1 – §1.2)",
+      "puncte": [
+        "Caracteristici comune ale sistemelor PDS: a) algoritmii, b) rata de eșantionare, c) tactul, d) reprezentarea numerelor (tipul aritmeticii).",
+        "Algoritmul specifică operațiile aritmetice care trebuie efectuate, dar nu arată cum sunt implementate. Același algoritm poate rula pe un microprocesor de uz general, pe un DSP sau pe un circuit integrat dedicat; tehnologia se alege și după viteză și precizie.",
+        "Rata de eșantionare este viteza cu care eșantioanele sunt achiziționate, prelucrate și generate. Împreună cu complexitatea algoritmilor, ea determină cerințele de viteză ale tehnologiei de implementare (exemplu: CD audio, 44,1 kHz pe două canale).",
+        "Sistemele PDS multirată folosesc mai multe rate de eșantionare. Exemple: conversia CD 44,1 kHz → DAT 48 kHz (raportul nu e întreg, deci se face în etape, cu cel puțin două rate intermediare) și bancurile de filtre (codarea vorbirii, audio, video). Raportul dintre rata minimă și cea maximă poate depăși cinci ordine de mărime.",
+        "Ratele de eșantionare acoperă 12 ordine de mărime, dar aplicațiile cu rate înalte sunt rare (costul și dificultatea cresc cu rata), deci algoritmii la rate mari tind să fie mai simpli. Fig. 1.1: radarul are rată foarte mare și algoritmi simpli; modelarea vremii (weather modeling) are rată foarte mică și algoritmi complecși.",
+        "Sistemele de timp real trebuie să satisfacă cerințele de viteză în orice condiții (bazele de date doar pe ansamblu). Convertorul CD→DAT primește un eșantion la fiecare 22,6 µs și produce unul la fiecare 20,8 µs; dacă nu reușește, se pierd date și ieșirea e distorsionată.",
+        "Tactul: frecvența de tact corespunde uzual frecvenței cu care sistemul execută operațiile elementare; la produsele comerciale sunt comune frecvențe de până la 100 MHz. Raportul dintre rata de eșantionare și tact stabilește modul de implementare și cantitatea de hardware necesară; cu cât raportul crește, cu atât crește și cantitatea și complexitatea hardware-ului.",
+        "Reprezentarea numerelor: adunarea și înmulțirea sunt comune majorității algoritmilor PDS, deci aritmetica influențează puternic comportarea și performanțele. Cea mai importantă decizie a proiectantului este alegerea între virgula fixă și virgula mobilă.",
+        "Virgula fixă: numere într-o gamă fixă (de exemplu între −1,0 și +1,0), pe cuvinte cu număr finit de biți (lungimea cuvântului). Pe 8 biți rezoluția este 1/256 din valoarea maximă. Numerele din afara domeniului nu pot fi reprezentate; la depășire se face saturarea (limitare la cea mai mică/mare valoare) sau eliminarea biților excedentari (wrap around).",
+        "Virgula mobilă (floating point) extinde mult domeniul de lucru: fiecare număr = mantisă M (între −1,0 și +1,0) și exponent E, N = M × 2^E.",
+        "Virgula mobilă are o gamă dinamică mult mai mare (gama dinamică = raportul dintre cea mai mare și cea mai mică valoare reprezentabilă). Reduce depășirile de scală și operațiile de normare, deci simplifică proiectarea algoritmului și a software-ului. În schimb e mai lentă și mai scumpă, iar hardware-ul e mai complicat."
+      ]
+    },
+    {
+      "titlu": "1.4. Folosirea procesoarelor PDS (Capitol 1 – §1.3)",
+      "puncte": [
+        "Niciun DSP nu satisface toate aplicațiile. Proiectantul alege procesorul după performanțe, cost, posibilități de integrare, consum și alți factori.",
+        "Categorii de aplicații: sistemele dedicate ieftine; aplicații de înaltă performanță; aplicații multimedia pe calculatoare PC.",
+        "Sistemele dedicate ieftine sunt cele mai multe aplicații, produse în număr mare (telefoane celulare, drivere de disc, modemuri; în tabel și pagere, detectoare radar, telefoane fără fir, control auto în timp real). Primează costul și simplitatea integrării; la produsele portabile pe baterie, puterea consumată e și ea critică.",
+        "Aplicațiile de înaltă performanță prelucrează un volum mare de date cu algoritmi complecși: sonar, explorări seismice (în tabel: radar, imagistică seismică, identificarea vorbitorului). Se fac puține produse, iar proiectarea e complexă: se exploatează la maximum procesorul, cu suport multiprocesor, eventual pe un sistem standard de dezvoltare cu biblioteci.",
+        "Multimedia pe PC: mesagerie vocală, modemuri de date și fax, sinteză de muzică și voce, compresie de imagini. Cer cost redus, integrare mare, performanțe înalte (mai multe funcții simultan), comutare eficientă între funcții (multiprocesare) și memorie suficientă.",
+        "Tendință: procesoarele de uz general primesc funcții specifice PDS și uneori pot lucra fără un DSP separat."
+      ]
+    },
+    {
+      "titlu": "1.5. Problematica proiectării sistemelor PDS (Capitol 1 – §1.4)",
+      "puncte": [
+        "Proiectarea sistemelor PDS în timp real presupune studiul principiilor și metodelor de construcție a algoritmilor, programelor și mijloacelor hardware și are 5 etape:",
+        "I. Studierea și elaborarea metodelor de sinteză a operatorilor de prelucrare fizic realizabili, pentru diverse probleme aplicative (de exemplu sinteza funcțiilor de transfer ale filtrelor numerice).",
+        "II. Elaborarea și optimizarea algoritmilor efectivi de calcul ai operatorilor din etapa I. Volumul de calcule stabilește eficiența necesară a procesorului; optimizarea reduce volumul de calcul și deci necesarul de hardware.",
+        "III. Analiza calității algoritmilor: estimarea preciziei de execuție, influența lungimii cuvintelor, analiza stabilității, diverse efecte neliniare.",
+        "IV. Stabilirea principiilor de realizare hardware și software a algoritmilor PDS (arhitectura structurii, blocurile funcționale, mijloacele software).",
+        "V. Elaborarea mijloacelor de proiectare automată a sistemelor PDS în timp real. Rol important are modelul funcțional al procesorului; cele mai bune rezultate se obțin cu module de simulare speciale (emulatoare de procesoare specializate)."
+      ]
+    }
+  ],
+  "capcane": [
+    "Prima etapă PDS pe VLSI a început în 1979 cu Intel 2920, nu cu TMS 320 (lansat aproape simultan) și nici cu AMD 29500 (bit-slice).",
+    "Liderul de piață este Texas Instruments (57%), nu Motorola sau AT&T (13% fiecare), NEC (8%) ori Analog Devices (6%).",
+    "Cerința din curs este un volum mare de operații aritmetice și logice SIMPLE, nu complexe. Semnalele de intrare sunt „în multe cazuri” analogice, de aici nevoia de A/D și D/A integrate.",
+    "Harvard = memorii SEPARATE pentru coduri și date, cu căi separate, deci operanzii se transferă simultan cu extragerea codurilor. Von Neumann = o singură memorie pentru instrucțiuni și date (o variantă greșită clasică). DSP folosesc Harvard (modificată).",
+    "Pipeline (fragmentarea activităților pe unități funcționale distincte) nu e același lucru cu Harvard (memorii și căi separate). Multe DSP le combină pe amândouă.",
+    "Unitatea de comandă la DSP e în LOGICĂ CABLATĂ (mai puțin flexibilă, mai rapidă). Microprogramarea este la procesoarele de uz general.",
+    "Stiva la DSP este implementată HARDWARE (stivă internă) și se poate extinde în RAM-ul de date. Varianta „implementarea software a stivei pentru salvarea rapidă a contextului” este falsă.",
+    "Virgula mobilă are gama dinamică mai mare și simplifică proiectarea algoritmului/software-ului, dar e mai lentă, mai scumpă și are hardware mai complicat. Virgula fixă e mai ieftină, mai rapidă, cu arhitectură mai simplă, dar are gamă dinamică mică și programare mai grea. Atenție: capitolul are o greșeală de tipar („virgula fixă asigură o gamă dinamică mult mai mare decât ... virgula fixă”); corect este virgula MOBILĂ.",
+    "Fixă = 16 biți, mobilă = 32 de biți (Capitol 1). Alternativa la virgula mobilă este „virgulă mobilă pe bloc”.",
+    "La avantaje apare EXISTENȚA unor modele matematice pentru proiectare și analiză; „lipsa” lor este varianta falsă. Apare în schimb LIPSA problemelor legate de zgomotul surselor de alimentare. Precizia DEPINDE de precizia reprezentării interne a datelor.",
+    "Algoritmul spune CE operații aritmetice se fac, nu și CUM sunt implementate.",
+    "Rata de eșantionare = viteza cu care eșantioanele sunt achiziționate, prelucrate și generate. Tactul = frecvența cu care se execută operațiile elementare. Nu le inversa. Raportul rată de eșantionare/tact stabilește modul de implementare și cantitatea de hardware (crește raportul, crește hardware-ul).",
+    "Rată de eșantionare mare înseamnă algoritmi mai SIMPLI (radar). Rată mică merge cu algoritmi complecși (modelarea vremii, modelare financiară).",
+    "Depășirea în virgulă fixă se tratează prin saturare sau wrap around (eliminarea biților excedentari), nu prin modificarea exponentului.",
+    "Timpul MAC: în slide „de ordinul nsec.”, în capitol „de ordinul a 200 nsec.”. TFR-ul de referință e de regulă în 1024 de puncte.",
+    "DSP în general NU au cache de date; unele au un cache mic de instrucțiuni pentru bucle. La DSP programatorul controlează explicit memoria internă; la PUG cache-ul e gestionat automat, transparent.",
+    "TMS 320 (TI) are, în locul convertoarelor A/D și D/A, controlere pentru întreruperi.",
+    "Metodele de programare la îndemâna utilizatorului sunt două: la nivel de blocuri și bazată pe meniuri. „Seturile PDS” (circuit sau plachetă + software) sunt răspunsul la dificultatea de utilizare.",
+    "Cele trei categorii de aplicații: sisteme dedicate ieftine (cele mai numeroase; contează costul și integrarea), înaltă performanță (sonar, seismic, puține produse, multiprocesor) și multimedia pe PC.",
+    "Numerotarea diferă: în slide-uri 1.2 e „procesoare PDS” și 1.3 „sisteme PDS”; în capitol 1.1 e „procesoare”, 1.2 „sisteme”, 1.3 „folosirea”, 1.4 „problematica proiectării”."
+  ],
+  "grile_vechi": [
+    {
+      "sursa": "GRILE PS PARTIAL #1; SUBIECT POZA (GRILE PS PARTIAL) #1",
+      "intrebare": "Care sunt cerințele funcționale generale ale procesoarelor de semnal?",
+      "variante": [
+        "executarea unui volum mare de operații aritmetice și logice simple și repetitive",
+        "suport pentru CAD rapide, deoarece majoritatea semnalelor de intrare sunt analogice",
+        "viteza mare de procesare, pentru a asigura execuția în timp real",
+        "asigurarea unei precizii mari de prelucrare"
+      ],
+      "corecte": [0, 1, 2, 3],
+      "explicatie": "Curs 1 §1.2 (1/6) / Capitol 1 §1.1 enumeră exact patru particularități: viteză mare pentru timp real, volum mare de operații aritmetice și logice simple, precizie mare, semnale de intrare în multe cazuri analogice (de aici includerea circuitelor A/D și D/A). „Repetitive” vine din Curs 2 („activități repetitive”) și nu face varianta a falsă. Varianta b reformulează a patra cerință.",
+      "sigur": true
+    },
+    {
+      "sursa": "SUBIECT POZA (GRILE PS PARTIAL) #2",
+      "intrebare": "Caracteristicile procesoarelor de semnal sunt:",
+      "variante": [
+        "includerea în circuit a unor module care facilitează creșterea productivității (de exemplu multiplicator hardware paralel, circuite pentru deplasări binare, memorii interne, stivă internă)",
+        "implementarea software a stivei pentru a permite salvarea/restaurarea rapidă a contextului procesorului la întreruperi sau la accesarea unor subrutine",
+        "au arhitecturi cu grad mare de paralelism în prelucrare, multe instrucțiuni fiind executate într-un singur tact",
+        "setul de instrucțiuni este adaptat operațiilor cerute de algoritmii DSP"
+      ],
+      "corecte": [0, 2, 3],
+      "explicatie": "Variantele a, c și d sunt copiate din lista de căi din Curs 1 §1.2 (2/6). Varianta b e falsă: Capitol 1 §1.1 f) spune „implementarea HARDWARE a stivei permite salvarea/restaurarea rapidă a contextului”; stiva doar se poate extinde în RAM-ul de date.",
+      "sigur": true
+    },
+    {
+      "sursa": "SUBIECT POZA (GRILE PS PARTIAL) #8",
+      "intrebare": "În ce domenii se folosesc procesoarele de semnal?",
+      "variante": [
+        "în domeniul IT: routere",
+        "în telecom: modemuri, echipamente radio, telefonie, sisteme pentru transmisiuni de date",
+        "în industria automobilelor, la computerele de bord",
+        "în niciunul din domeniile de mai sus"
+      ],
+      "corecte": [1, 2],
+      "explicatie": "Curs 1 §1.1 (2/2): telecomunicații (modemuri, echipamente radio, televiziune, transmisiuni de date, telefonie celulară), medicină, industria automobilelor, instrumentație, periferice, robotică, electronică de consum. b și c sunt în listă. Routerele nu apar nicăieri în Curs/Capitol 1 (nici în tabelele 1.1 și 1.2), deci a pare distractorul. Nesigur: un profesor ar putea considera routerele parte din „transmisiuni de date”.",
+      "sigur": false
+    },
+    {
+      "sursa": "GRILE PS PARTIAL #4",
+      "intrebare": "Arhitectura memoriei la procesoarele de semnal este:",
+      "variante": [
+        "o singură arie de memorie și pentru date și pentru instrucțiuni",
+        "de tip Von Neumann",
+        "împărțită în blocuri de memorie separate pentru date și pentru instrucțiuni",
+        "de tip Harvard"
+      ],
+      "corecte": [2, 3],
+      "explicatie": "Capitol 1 §1.1 a): multe procesoare PDS combină pipeline-ul cu structura Harvard, cu memorii separate pentru coduri și date și căi separate de transfer. Detaliat în Curs 5 (DSP folosesc Harvard modificată). O singură memorie pentru date și instrucțiuni este arhitectura Von Neumann, a procesoarelor de uz general.",
+      "sigur": true
+    },
+    {
+      "sursa": "PS Grile (formular) – „Procesoarele în virgulă fixă au”; PS Grile (1) – aceeași; Grile final, SUBIECTE POZA .PNG #9",
+      "intrebare": "Procesoarele în virgulă fixă au:",
+      "variante": [
+        "cost mai ridicat",
+        "gamă dinamică ridicată",
+        "arhitectură de sistem mai puțin complexă față de procesoarele cu virgulă mobilă",
+        "programarea mai facilă față de procesoarele cu virgulă mobilă"
+      ],
+      "corecte": [2],
+      "explicatie": "Curs 1 §1.3 d) / Capitol 1 §1.2 „Reprezentarea numerelor”: virgula mobilă are gamă dinamică mult mai mare și simplifică proiectarea algoritmului și a software-ului, dar e mai lentă, mai scumpă, iar hardware-ul e mai complicat. Deci virgula fixă e mai ieftină (a falsă), are gamă dinamică mică (b falsă), se programează mai greu (d falsă) și are arhitectură mai simplă (c adevărată).",
+      "sigur": true
+    },
+    {
+      "sursa": "Grile final, GRILE.RTF – „Liderul de piață în producerea de DSP-uri” (variantele nu s-au păstrat; reconstruite din curs)",
+      "intrebare": "Liderul de piață în producerea de DSP-uri este:",
+      "variante": [
+        "Texas Instruments",
+        "AT&T",
+        "Motorola",
+        "Analog Devices"
+      ],
+      "corecte": [0],
+      "explicatie": "Capitol 1, Introducere (pag. 1): Texas Instruments 57%, AT&T 13%, Motorola 13%, NEC 8%, Analog Devices 6%. Răspunsul păstrat în fișier este tot Texas Instruments.",
+      "sigur": true
+    },
+    {
+      "sursa": "Grile final, GRILE.RTF – „Clasa de aplicații ce necesită rate mici de eșantionare și algoritmi complecși” (variantele nu s-au păstrat; reconstruite din Fig. 1.1)",
+      "intrebare": "Clasa de aplicații ce necesită rate mici de eșantionare și algoritmi complecși este:",
+      "variante": [
+        "semnalizare radio și radar",
+        "modelarea vremii",
+        "televiziunea de înaltă definiție",
+        "instrumentația"
+      ],
+      "corecte": [1],
+      "explicatie": "Fig. 1.1 (Curs 1 §1.3 (3/5), Capitol 1 pag. 10): modelarea vremii (weather modeling) are cea mai mică rată, ~1/1000 Hz, și algoritmi „more complex”. Radarul și HDTV au rate foarte mari și algoritmi mai simpli; instrumentația are rată mică, dar algoritmi simpli. Răspunsul păstrat în fișier este „Modelare a vremii”.",
+      "sigur": true
+    },
+    {
+      "sursa": "Grile final, GRILE.RTF – „Printre avantajele folosirii procesoarelor de semnal ... nu se regăsește” (variantele nu s-au păstrat; reconstruite din curs)",
+      "intrebare": "Printre avantajele folosirii procesoarelor de semnal în realizarea sistemelor PDS NU se regăsește:",
+      "variante": [
+        "stabilitate mare la variații de temperatură, a tensiunii de alimentare sau a parametrilor componentelor",
+        "lipsa unor modele matematice pentru proiectarea și analiza sistemelor",
+        "lipsa problemelor legate de zgomotul introdus de sursele de alimentare",
+        "costul redus al componentelor și folosirea procedeelor standard de fabricație"
+      ],
+      "corecte": [1],
+      "explicatie": "Curs 1 §1.2 (6/6) / Capitol 1 pag. 8: avantajul este EXISTENȚA unor modele matematice pentru proiectarea și analiza sistemelor. Celelalte trei sunt avantaje copiate din listă. Răspunsul păstrat în fișier este „Lipsa unor modele matematice...”.",
+      "sigur": true
+    },
+    {
+      "sursa": "Grile final, GRILE.RTF – „Virgulă mobilă au” (variantele nu s-au păstrat; reconstruite din curs)",
+      "intrebare": "Procesoarele în virgulă mobilă au:",
+      "variante": [
+        "gamă dinamică ridicată",
+        "cost mai redus decât cele în virgulă fixă",
+        "viteză de lucru mai mare decât cele în virgulă fixă",
+        "proiectarea algoritmului și a software-ului simplificată considerabil"
+      ],
+      "corecte": [0, 3],
+      "explicatie": "Capitol 1 §1.2 „Reprezentarea numerelor”: virgula mobilă asigură o gamă dinamică mult mai mare și, reducând depășirile de scală și normările, simplifică considerabil proiectarea algoritmului și a software-ului. Aritmetica în virgulă mobilă este însă mai lentă și mai scumpă (b, c false). Răspunsul păstrat în fișier este „Gama dinamică ridicată”; d a fost adăugată la reconstruire.",
+      "sigur": true
+    },
+    {
+      "sursa": "Grile final, GRILE.RTF – „Arhitectura Harvard are” (a patra variantă nu s-a păstrat)",
+      "intrebare": "Arhitectura Harvard are:",
+      "variante": [
+        "memorie pentru instrucțiuni și memorie pentru date",
+        "memorie pentru instrucțiuni și date și memorie pentru date",
+        "primele două răspunsuri",
+        "o singură memorie comună pentru instrucțiuni și date"
+      ],
+      "corecte": [0, 1, 2],
+      "explicatie": "Capitol 1 §1.1 a), c): Harvard folosește memorii separate pentru coduri și date; la DSP Harvard tradițională a fost modificată, coeficienții se țin în memoria de program și se transferă în memoria de date. Curs 5 §5.1 numește explicit varianta modificată (un bloc cu instrucțiuni și date, celălalt doar cu date). Răspunsul păstrat în fișier este „Primele 2 răspunsuri”. Nesigur: în sursă varianta b apare ca „memorie pentru instrucțiuni și date și memorie pentru instrucțiuni” (probabil greșeală de tipar), iar varianta d a fost reconstruită. Întrebarea ține mai mult de Curs 5.",
+      "sigur": false
+    }
+  ],
+  "grile_noi": [
+    {
+      "sursa": "nou",
+      "intrebare": "Noua etapă în prelucrarea digitală a semnalelor, deschisă de circuitele VLSI, a debutat:",
+      "variante": [
+        "în 1979, cu procesorul TMS 320 de la Texas Instruments",
+        "în 1979, cu lansarea familiei de procesoare Intel 2920",
+        "cu procesorul bit-slice AMD 29500",
+        "în 1989, cu lansarea familiei de procesoare Intel 2920"
+      ],
+      "corecte": [1],
+      "explicatie": "Curs 1 §1.1 (1/2): etapa „a debutat în anul 1979 cu lansarea familiei de procesoare Intel 2920”. TMS 320 și AMD 29500 au apărut „aproape simultan” (Capitol 1, Introducere), dar nu ele marchează debutul.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Cei mai importanți producători de circuite PDS, conform cursului, sunt:",
+      "variante": [
+        "Texas Instruments",
+        "AT&T",
+        "Motorola",
+        "NEC"
+      ],
+      "corecte": [0, 1, 2, 3],
+      "explicatie": "Curs 1 §1.1 (2/2) îi enumeră pe Texas Instruments, AT&T, Motorola, NEC și Analog Devices. Toate cele patru variante sunt în listă.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Caracteristicile structurale și funcționale ale procesoarelor PDS sunt adaptate particularităților impuse de algoritmii de prelucrare, adică:",
+      "variante": [
+        "viteză mare de prelucrare pentru asigurarea lucrului în timp real",
+        "executarea unui volum mare de operații aritmetice și logice complexe",
+        "asigurarea unei precizii mari de prelucrare",
+        "semnalele de intrare sunt în multe cazuri semnale analogice"
+      ],
+      "corecte": [0, 2, 3],
+      "explicatie": "Curs 1 §1.2 (1/6): cursul cere un volum mare de operații aritmetice și logice SIMPLE, nu complexe, deci b e falsă. Celelalte trei sunt copiate din curs.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Cerințele specifice algoritmilor PDS sunt satisfăcute prin:",
+      "variante": [
+        "arhitecturi cu grad mare de paralelism combinate cu execuția pipeline a instrucțiunilor",
+        "implementarea unității de comandă prin microprogramare",
+        "facilități hardware pentru execuția eficientă a buclelor de instrucțiuni",
+        "moduri de adresare specifice (pre/post incrementare/decrementare, inversarea biților, modulo)"
+      ],
+      "corecte": [0, 2, 3],
+      "explicatie": "Curs 1 §1.2 (2/6). Unitatea de comandă e implementată în LOGICĂ CABLATĂ; microprogramarea e specifică procesoarelor de uz general (Capitol 1 §1.1 g).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Modulele incluse în circuitul procesoarelor PDS pentru creșterea productivității sunt:",
+      "variante": [
+        "multiplicator hardware de tip paralel",
+        "circuite pentru deplasări binare",
+        "memorii interne pentru date și programe",
+        "stivă internă"
+      ],
+      "corecte": [0, 1, 2, 3],
+      "explicatie": "Curs 1 §1.2 (2/6), cuvânt cu cuvânt: „multiplicator hardware de tip paralel, circuite pentru deplasări binare, memorii interne pentru date și programe, stivă internă”.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Arhitectura Harvard se caracterizează prin:",
+      "variante": [
+        "memorii separate pentru coduri și pentru date, cu căi separate de transfer",
+        "o singură memorie pentru coduri și date, accesată pe o singură magistrală",
+        "fragmentarea activităților și executarea lor pe unități funcționale distincte",
+        "posibilitatea transferului operanzilor simultan cu extragerea codurilor"
+      ],
+      "corecte": [0, 3],
+      "explicatie": "Capitol 1 §1.1 a): Harvard are memorii separate pentru coduri și date și căi separate de transfer, „în acest mod este posibil transferul operanzilor simultan cu extragerea codurilor”. b descrie Von Neumann, c descrie pipeline-ul.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Organizarea pipeline a operațiilor constă în:",
+      "variante": [
+        "folosirea unor memorii separate pentru coduri și date",
+        "executarea tuturor operațiilor pe o singură unitate funcțională, strict secvențial",
+        "fragmentarea activităților și executarea acestora pe unități funcționale distincte",
+        "implementarea în logică cablată a unității de comandă"
+      ],
+      "corecte": [2],
+      "explicatie": "Capitol 1 §1.1 a): „Organizarea pipeline a operațiilor constă în fragmentarea activităților și executarea acestora pe unități funcționale distincte.” a e definiția Harvard, d e altă caracteristică a DSP.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Partea operațională a procesoarelor PDS constă de regulă din:",
+      "variante": [
+        "unitate de comandă microprogramată",
+        "unitate aritmetică și logică (UAL) rapidă cu acumulator",
+        "multiplicator paralel",
+        "circuit de deplasare binară cu unul sau mai multe ranguri într-un singur tact (barrel shifter)"
+      ],
+      "corecte": [1, 2, 3],
+      "explicatie": "Capitol 1 §1.1 b): „UAL rapidă cu acumulator, multiplicator paralel și circuite pentru deplasare binară cu unul sau mai multe ranguri într-un singur tact (barrel shifter)”. Unitatea de comandă nu ține de partea operațională și, la DSP, e cablată.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Care afirmații despre aritmetica procesoarelor PDS (Capitol 1) sunt adevărate?",
+      "variante": [
+        "scăderea se execută prin adunarea operanzilor reprezentați în cod complement față de doi",
+        "procesoarele funcționează fie în virgulă fixă (pe 16 biți), fie în virgulă mobilă (pe 32 de biți)",
+        "o alternativă la virgula mobilă este aritmetica în virgulă mobilă pe bloc",
+        "unele circuite PDS execută înmulțirea prin adunări și deplasări succesive (de exemplu I-2920)"
+      ],
+      "corecte": [0, 1, 2, 3],
+      "explicatie": "Toate patru sunt în Capitol 1 §1.1 b).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Diferențe între arhitectura Harvard a procesoarelor PDS și memoriile cache ale procesoarelor de uz general (PUG):",
+      "variante": [
+        "la procesoarele PDS programatorul controlează explicit datele și instrucțiunile stocate în memoriile interne",
+        "la PUG transferul cu memoriile cache este executat automat, transparent pentru programator",
+        "procesoarele de semnal folosesc în general memorii cache pentru date",
+        "unele procesoare de semnal au o arie de memorie cache pentru instrucțiuni, folosită la execuția buclelor"
+      ],
+      "corecte": [0, 1, 3],
+      "explicatie": "Capitol 1 §1.1 c): „În general procesoarele de semnal nu folosesc memorii cache pentru date”, deci c e falsă. Restul e copiat din text.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Stiva la procesoarele PDS:",
+      "variante": [
+        "este implementată hardware, permițând salvarea/restaurarea rapidă a contextului la întreruperi sau subrutine",
+        "este implementată exclusiv software, în memoria de program",
+        "poate fi extinsă în memoria RAM pentru date, deoarece stiva hardware internă are dimensiune limitată",
+        "are dimensiune nelimitată, deci nu necesită extensie"
+      ],
+      "corecte": [0, 2],
+      "explicatie": "Capitol 1 §1.1 f): implementarea hardware a stivei permite salvarea/restaurarea rapidă a contextului; „întrucât dimensiunea stivei hardware interne este limitată, există posibilitatea de extensie a stivei în memoria RAM pentru date”.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Unitatea de comandă a procesoarelor PDS:",
+      "variante": [
+        "este realizată prin microprogramare, ca la procesoarele de uz general",
+        "este realizată în logică cablată",
+        "este mai flexibilă, dar mai lentă decât cea microprogramată",
+        "permite obținerea unei viteze mai mari de lucru, deși este mai puțin flexibilă"
+      ],
+      "corecte": [1, 3],
+      "explicatie": "Capitol 1 §1.1 g): unitatea de comandă e realizată în logică cablată, iar procesoarele de uz general folosesc microprogramare. Metoda e „mai puțin flexibilă, dar permite obținerea unei viteze mai mari de lucru”.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Despre lungimea cuvintelor și precizia de calcul la procesoarele PDS:",
+      "variante": [
+        "lungimea cuvintelor de calcul este de 8, 16, 25 și chiar 40 de biți",
+        "anumite operații interne se execută în precizie dublă pentru a reduce consumul de energie",
+        "precizia de calcul este impusă de performanțele dorite, de exemplu un raport semnal/zgomot convenabil",
+        "lungimea cuvintelor este întotdeauna de 32 de biți"
+      ],
+      "corecte": [0, 2],
+      "explicatie": "Capitol 1 §1.1 i): precizia dublă se folosește „pentru mărirea gamei dinamice”, nu pentru consum (b falsă). Cuvintele au 8, 16, 25 sau 40 de biți, nu mereu 32.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Dintre tendințele care se manifestă în evoluția procesoarelor PDS fac parte:",
+      "variante": [
+        "mărirea vitezei de operare prin adoptarea unor noi tehnologii",
+        "interconectarea cu coprocesoare orientate pe calcule matematice complexe",
+        "folosirea arhitecturilor bazate pe flux de date (data flow) sau a rețelelor dedicate în locul arhitecturilor tradiționale",
+        "existența circuitelor PDS la cerere"
+      ],
+      "corecte": [0, 1, 2, 3],
+      "explicatie": "Curs 1 §1.2 (3/6) enumeră toate aceste tendințe, plus potrivirea algoritmilor cu arhitectura și sporirea eficienței (universalitate, întreruperi, virgulă mobilă, preț).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Pentru dezvoltarea software-ului chiar de către utilizatorul sistemelor PDS sunt disponibile următoarele metode de programare:",
+      "variante": [
+        "programarea prin microcod a unității de comandă",
+        "programarea la nivel de blocuri (Block-Level Programming)",
+        "programarea exclusiv în cod mașină",
+        "programarea bazată pe meniuri"
+      ],
+      "corecte": [1, 3],
+      "explicatie": "Curs 1 §1.2 (4/6): „sunt disponibile 2 tipuri de metode de programare: programarea la nivel de blocuri și programarea bazată pe meniuri”.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Pentru evaluarea calităților diverselor familii de procesoare PDS se folosesc informații precum:",
+      "variante": [
+        "numărul de tranzistoare de pe cip",
+        "timpul de realizare a operației de înmulțire și adunare",
+        "timpul în care este realizată o sarcină precisă, de exemplu calculul TFR într-un număr specificat de puncte (de regulă 1024)",
+        "numărul de pini ai capsulei"
+      ],
+      "corecte": [1, 2],
+      "explicatie": "Curs 1 §1.2 (5/6) dă doar aceste două criterii: timpul înmulțire-adunare (de ordinul ns) și timpul pentru o sarcină precisă (filtrare sau TFR, de regulă 1024 de puncte).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Avantajele folosirii procesoarelor de semnal în realizarea sistemelor PDS sunt:",
+      "variante": [
+        "precizie mare de lucru, independentă de precizia de reprezentare internă a datelor",
+        "stabilitate mare la variații de temperatură, ale tensiunii de alimentare sau ale parametrilor componentelor",
+        "lipsa problemelor legate de zgomotul introdus de sursele de alimentare",
+        "posibilitatea realizării unor sisteme PDS în timp real, universale și flexibile, cu programare rapidă"
+      ],
+      "corecte": [1, 2, 3],
+      "explicatie": "Curs 1 §1.2 (6/6): precizia mare „depinde de precizia de reprezentare internă a datelor”, deci varianta „independentă” e falsă. Restul e copiat din listă.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Sistemele PDS au câteva caracteristici comune, care se referă la:",
+      "variante": [
+        "algoritmi",
+        "rata de eșantionare",
+        "tact",
+        "reprezentarea numerelor"
+      ],
+      "corecte": [0, 1, 2, 3],
+      "explicatie": "Curs 1 §1.3 (1/5): a) algoritmii, b) rata de eșantionare, c) tactul, d) reprezentarea numerelor.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Rata de eșantionare:",
+      "variante": [
+        "reprezintă viteza cu care eșantioanele sunt achiziționate, prelucrate și generate",
+        "corespunde frecvenței cu care sistemul execută operațiile elementare",
+        "împreună cu complexitatea algoritmilor determină cerințele de viteză ale tehnologiei de implementare",
+        "specifică operațiile aritmetice care trebuie efectuate"
+      ],
+      "corecte": [0, 2],
+      "explicatie": "Curs 1 §1.3 (3/5). b este definiția tactului (§1.3 (4/5)), d este definiția algoritmului (§1.3 (2/5)).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Algoritmul, ca o caracteristică a sistemelor PDS:",
+      "variante": [
+        "specifică operațiile aritmetice care trebuie efectuate",
+        "arată și modul în care sunt implementate aceste operații",
+        "poate fi implementat pe un microprocesor de uz general, pe un procesor de semnal sau pe un circuit integrat dedicat",
+        "reprezintă viteza cu care eșantioanele sunt prelucrate"
+      ],
+      "corecte": [0, 2],
+      "explicatie": "Curs 1 §1.3 (2/5) / Capitol 1 §1.2: algoritmul „specifică operațiile aritmetice care trebuie efectuate dar nu arată și cum sunt implementate”. Același algoritm poate rula pe µP de uz general, DSP sau circuit dedicat.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Referitor la ratele de eșantionare ale aplicațiilor PDS (Fig. 1.1):",
+      "variante": [
+        "ratele de eșantionare folosite acoperă 12 ordine de mărime",
+        "aplicațiile care cer rate înalte sunt cele mai frecvente",
+        "algoritmii folosiți la rate de eșantionare ridicate tind să fie mai simpli",
+        "radarul folosește rate mici de eșantionare și algoritmi foarte complecși"
+      ],
+      "corecte": [0, 2],
+      "explicatie": "Capitol 1 §1.2: ratele acoperă 12 ordine de mărime, aplicațiile cu rate înalte sunt rare (costul crește cu rata), iar algoritmii la rate mari tind să fie mai simpli. În Fig. 1.1 radarul are rata cea mai mare (1–10 GHz) și algoritmi simpli.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Despre tactul sistemelor PDS:",
+      "variante": [
+        "frecvența de tact corespunde uzual cu frecvența cu care sistemul execută operațiile elementare",
+        "pentru produsele comerciale sunt comune frecvențe de tact de până la 100 MHz",
+        "raportul dintre rata de eșantionare și cea a tactului este una dintre caracteristicile folosite pentru a stabili modul de implementare",
+        "raportul dintre rata de eșantionare și tact determină cantitatea de hardware necesară pentru implementarea în timp real a unui algoritm dat"
+      ],
+      "corecte": [0, 1, 2, 3],
+      "explicatie": "Curs 1 §1.3 (4/5) / Capitol 1 §1.2 „Tactul”: toate sunt copiate din text. Pe măsură ce raportul crește, cresc și cantitatea și complexitatea hardware-ului.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Aritmetica în virgulă fixă:",
+      "variante": [
+        "asigură reprezentarea numerelor într-o gamă fixă (de exemplu între −1,0 și +1,0)",
+        "reprezintă fiecare număr prin mantisă și exponent",
+        "folosește cuvinte cu un număr finit de biți, denumit lungimea cuvântului",
+        "pe 8 biți asigură o rezoluție de 1/256 din valoarea maximă a numărului"
+      ],
+      "corecte": [0, 2, 3],
+      "explicatie": "Curs 1 §1.3 (5/5) / Capitol 1 §1.2 „Reprezentarea numerelor”. Mantisa și exponentul descriu virgula MOBILĂ (N = M × 2^E).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "În virgulă fixă, dacă operațiile aritmetice produc un număr mai mare de biți decât lungimea cuvântului, se execută:",
+      "variante": [
+        "saturarea (mărimile sunt limitate la cea mai mică sau cea mai mare valoare reprezentabilă)",
+        "creșterea exponentului",
+        "eliminarea biților excedentari (wrap around)",
+        "normalizarea mantisei"
+      ],
+      "corecte": [0, 2],
+      "explicatie": "Capitol 1 §1.2: „se execută fie saturarea ..., fie eliminarea biților excedentari (operație denumită wrap around)”. Exponentul și mantisa țin de virgula mobilă.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Față de virgula fixă, reprezentarea în virgulă mobilă:",
+      "variante": [
+        "asigură o gamă dinamică mult mai mare",
+        "este mai rapidă și mai ieftină",
+        "simplifică considerabil proiectarea algoritmului și a software-ului",
+        "necesită o structură hardware mai complicată"
+      ],
+      "corecte": [0, 2, 3],
+      "explicatie": "Capitol 1 §1.2: virgula mobilă reduce depășirile de scală și normările, deci simplifică proiectarea, dar „este mai lentă și mai scumpă decât cea în virgulă fixă, iar structura hardware a sistemului este mai complicată”.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Gama dinamică a unei reprezentări numerice este:",
+      "variante": [
+        "numărul de biți al cuvântului",
+        "diferența dintre exponentul maxim și cel minim",
+        "rezoluția, adică cea mai mică valoare reprezentabilă",
+        "raportul dintre valoarea cea mai mare și cea mai mică ce poate fi reprezentată"
+      ],
+      "corecte": [3],
+      "explicatie": "Capitol 1 §1.2: „gama dinamică este raportul dintre valoarea cea mai mare și cea mai mică care poate fi reprezentată”. Numărul de biți este lungimea cuvântului.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Categoriile de aplicații în care sunt folosite procesoarele PDS, conform cursului, sunt:",
+      "variante": [
+        "sistemele dedicate ieftine",
+        "aplicații de înaltă performanță",
+        "aplicații de supercalcul pe calculatoare CRAY",
+        "aplicații multimedia pe calculatoare PC"
+      ],
+      "corecte": [0, 1, 3],
+      "explicatie": "Curs 1 §1.4: sistemele dedicate ieftine, aplicațiile de înaltă performanță și aplicațiile multimedia pe PC. CRAY1 apare doar ca termen de comparație a costului pe operație.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Aplicațiile PDS de înaltă performanță se caracterizează prin:",
+      "variante": [
+        "prelucrarea unui volum mare de date cu algoritmi complecși (de exemplu sonar, explorări seismice)",
+        "producție în număr foarte mare (telefoane celulare, drivere de disc, modemuri)",
+        "faptul că, predominant, contează costul și simplitatea integrării",
+        "exploatarea la maximum a performanțelor procesorului și suport pentru configurații multiprocesor"
+      ],
+      "corecte": [0, 3],
+      "explicatie": "Capitol 1 §1.3 „Aplicații de înaltă performanță”: numărul de produse este mic, iar algoritmii sunt sofisticați. b și c descriu sistemele dedicate ieftine.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Prima etapă în proiectarea sistemelor PDS în timp real este:",
+      "variante": [
+        "elaborarea mijloacelor de proiectare automată a sistemelor PDS în timp real",
+        "analiza calității algoritmilor prin estimarea preciziei de execuție",
+        "studierea și elaborarea metodelor de sinteză a operatorilor de prelucrare fizic realizabili",
+        "stabilirea principiilor de realizare hardware și software a algoritmilor PDS"
+      ],
+      "corecte": [2],
+      "explicatie": "Curs 1 §1.5: I sinteza operatorilor fizic realizabili, II elaborarea și optimizarea algoritmilor, III analiza calității, IV principiile de realizare hardware/software, V proiectarea automată.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Etapa de analiză a calității algoritmilor (etapa III a proiectării sistemelor PDS) cuprinde:",
+      "variante": [
+        "estimarea preciziei de execuție",
+        "analiza influenței lungimii cuvintelor",
+        "fixarea arhitecturii structurii și a blocurilor funcționale",
+        "analiza stabilității și a diverselor efecte neliniare"
+      ],
+      "corecte": [0, 1, 3],
+      "explicatie": "Curs 1 §1.5, etapa III: „estimarea preciziei de execuție, a influenței lungimii cuvintelor, analiza stabilității, a diverselor efecte neliniare”. Fixarea arhitecturii și a blocurilor funcționale ține de etapa IV (Capitol 1 §1.4).",
+      "sigur": true
+    }
+  ]
+}

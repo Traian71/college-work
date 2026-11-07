@@ -1,0 +1,742 @@
+{
+  "curs": 2,
+  "titlu": "Procesoare DSP. Încapsulări. Alternative.",
+  "rezumat": [
+    {
+      "titlu": "2.1 Procesoare PDS – caracteristicile comune (Tabelul 2.2)",
+      "puncte": [
+        "Multe procesoare PDS au unele caracteristici comune pentru a putea executa activități repetitive și cu un volum mare de calcule. Cele mai importante 5 caracteristici: (1) operația rapidă de multiplicare și acumulare; (2) arhitectura multiacces a memoriei; (3) moduri de adresare specializate; (4) controlul specializat al funcționării; (5) periferice și interfețe I/O.",
+        "Utilizarea lor (Tabelul 2.2): MAC – majoritatea algoritmilor PDS (filtrare, transformate) folosesc intensiv multiplicări; multiacces – operațiile PDS intensive în date cer citirea unei instrucțiuni și a mai multor date în fiecare ciclu instrucțiune; adresare specializată – manipularea eficientă a tablourilor de date și a bufferelor FIFO din memorie; control specializat – controlul eficient al buclelor pentru algoritmii iterativi și tratarea rapidă a întreruperilor pentru operațiile I/O frecvente; periferice pe cip (ex. convertoare A/D) – sisteme mici, cu cost redus, iar interfețele I/O adaptate perifericelor comune permit conectarea simplă la dispozitivele I/O din afara cipului.",
+        "Tabelul 2.1 (familii comerciale): Analog Devices ADSP-21xx (virgulă fixă, 16 biți) și ADSP-210xx (virgulă mobilă, 32 biți); AT&T DSP16xx (fixă, 16) și DSP32xx (mobilă, 32); Motorola DSP5600x/DSP563xx (fixă, 24), DSP561xx (fixă, 16), DSP96002 (mobilă, 32); NEC µPD7701x (fixă, 16); Texas Instruments TMS320C1x/C2x/C2xx/C5x/C54x (fixă, 16), TMS320C3x/C4x (mobilă, 32), TMS320C8x (fixă, 8/16); Zoran ZR3800x (fixă, 20)."
+      ]
+    },
+    {
+      "titlu": "Operația rapidă de multiplicare și acumulare (MAC)",
+      "puncte": [
+        "Una dintre caracteristicile cele mai reprezentative ale procesoarelor PDS este posibilitatea de a executa operația de multiplicare-acumulare (MAC) într-un singur ciclu instrucțiune.",
+        "MAC este utilă în algoritmii care necesită calculul produsului a doi vectori (de exemplu filtrarea digitală, corelația, calculul transformatei Fourier).",
+        "Pentru aceasta procesoarele PDS includ un multiplicator și un acumulator integrate în unitatea aritmetică de prelucrare, denumită calea de date (detaliată în Cap. 4). Calea de date permite efectuarea operațiilor de multiplicare și acumulare fără a produce depășire de scală aritmetică (overflow): procesoarele PDS permit stocarea unui număr de biți suplimentari în registrele de acumulare, pentru a le adapta la dimensiunea rezultatului."
+      ]
+    },
+    {
+      "titlu": "Arhitectura multiacces a memoriei",
+      "puncte": [
+        "Posibilitatea de a executa câteva cicluri de acces la memorie într-un singur ciclu instrucțiune.",
+        "Permite procesorului să extragă simultan o instrucțiune și operanzii pentru instrucțiune sau să stocheze rezultatul instrucțiunii anterioare în memorie. Este necesară o lărgime de bandă mare între memorie și procesor pentru o performanță bună (algoritmi cu operații repetitive executate intensiv cu date).",
+        "La multe procesoare PDS accesarea multiplă într-un singur ciclu este restricționată: în mod curent toate locațiile accesate sunt localizate în cip, iar accesarea multiplă poate fi executată doar cu anumite instrucțiuni.",
+        "Pentru accesarea simultană a mai multor locații procesoarele PDS posedă: magistrale interne multiple, memorii interne multicip și, în unele situații, mai multe bancuri de memorie independente (arhitectura memoriei – Cap. 5)."
+      ]
+    },
+    {
+      "titlu": "Moduri de adresare specializate",
+      "puncte": [
+        "Pentru a executa operațiile cu viteză maximă și pentru a permite specificarea operanzilor multipli cu ajutorul unor cuvinte instrucțiune scurte, procesoarele PDS conțin unități dedicate pentru adresare. Odată configurați registrele pentru adresare, unitatea de generare a adresei lucrează în background, calculând adresele operanzilor în paralel cu executarea operațiilor aritmetice.",
+        "Cel mai comun mod adaptat aplicațiilor PDS este adresarea indirectă cu post-incrementare, folosită la operații repetitive pe șiruri de date stocate la adrese succesive în memorie.",
+        "Moduri speciale: adresarea circulară (modulo) – simplifică accesarea bufferelor de date; adresarea cu inversarea biților (la unele procesoare) – utilizată în calculul Transformatei Fourier Rapide (TFR). Detalii în Cap. 6."
+      ]
+    },
+    {
+      "titlu": "Controlul specializat al funcționării",
+      "puncte": [
+        "Pentru că mulți algoritmi PDS implică calcule repetitive, unele procesoare PDS oferă un suport eficient pentru executarea buclelor. Deseori există o instrucțiune de buclare sau o instrucțiune „repeat” care permite implementarea ciclurilor for-next fără mărirea ciclului instrucțiune prin actualizarea și testarea contorului de buclă sau prin saltul înapoi la începutul buclei.",
+        "Alte facilități de comandă pentru îmbunătățirea performanțelor: comutarea rapidă a contextului și latența redusă, executarea întreruperilor cu încărcare minimă, executarea rapidă a operațiilor de intrare-ieșire."
+      ]
+    },
+    {
+      "titlu": "Periferice și interfețe I/O",
+      "puncte": [
+        "Pentru cost redus și performanțe I/O înalte, multe procesoare PDS încorporează una sau mai multe interfețe I/O seriale și/sau paralele, precum și mecanisme speciale pentru I/O, cum ar fi accesul direct la memorie (DMA). Interfețele cu perifericele sunt proiectate deseori pentru interfațarea directă cu perifericele I/O comune, cum ar fi convertoarele A/D și D/A.",
+        "Odată cu creșterea densității de integrare și a flexibilității, producătorii au început să includă în procesor nu numai interfețe noi, ci și dispozitive periferice complete (ex.: circuitele pentru telefoanele celulare au convertoare A/D și D/A în cip)."
+      ]
+    },
+    {
+      "titlu": "2.2 Variante constructive de procesoare PDS",
+      "puncte": [
+        "Varianta cea mai comună de microprocesor PDS este procesorul single-cip.",
+        "Proliferarea aplicațiilor PDS, creșterea nivelului de integrare pentru toate produsele electronice și dezvoltarea unor noi tehnici de încapsulare au făcut ca procesoarele PDS să fie disponibile în multe variante constructive.",
+        "Cele 6 variante constructive: module multicip (MCM), cipuri multiprocesor, seturi de circuite, nuclee PDS, procesoare PDS personalizate, multiprocesoarele."
+      ]
+    },
+    {
+      "titlu": "Module multicip (MCM)",
+      "puncte": [
+        "MCM sunt un fel de „supercipuri”: în loc de a încapsula un singur circuit integrat într-o capsulă din plastic sau ceramică (ca la procesoarele convenționale), un MCM conține mai multe cipuri încapsulate împreună.",
+        "Primul avantaj: densitate mare de încapsulare (mai multe circuite pe unitatea de suprafață a plăcii de circuit imprimat), ceea ce duce la creșterea vitezei de operare și la scăderea consumului. Exemplu: Texas Instruments – MCM cu două procesoare TMS320C40 și 128 kcuvinte de 32 de biți de memorie SRAM."
+      ]
+    },
+    {
+      "titlu": "Cipuri multiprocesor",
+      "puncte": [
+        "Proiectanții încorporează mai multe procesoare într-un singur circuit integrat, pentru mai multe facilități și performanțe într-un procesor single-cip.",
+        "Exemple: Motorola și Zilog – un microprocesor și un microcontroler într-un singur cip (combinație foarte întâlnită); Siemens – circuitul TriCore, care conține un procesor de uz general, un procesor PDS și un microcontroler. Ca și MCM, cipurile multiprocesor asigură creșterea performanțelor și reduc consumul față de sistemele realizate cu componente separate; totuși oferta este limitată la câteva dispozitive."
+      ]
+    },
+    {
+      "titlu": "Seturi de circuite",
+      "puncte": [
+        "Un procesor PDS este „împărțit” în două sau mai multe capsule separate (ex.: Butterfly PDS – generatorul de adrese LH9320 și procesorul LH9124, vândut și de Sharp Microelectronics).",
+        "Divizarea funcțională este justificată când procesorul este foarte complex și numărul de pini de intrare/ieșire este foarte mare și nu poate fi asigurat de o singură capsulă.",
+        "Avantaje: se pot folosi capsule mai ieftine, deci se reduce prețul de cost; crește flexibilitatea – proiectantul combină circuitele individuale în configurația cea mai potrivită aplicației. La setul Butterfly se pot folosi mai multe generatoare de adrese cu un singur procesor; rezultă un procesor cu opt magistrale externe de 24 de biți, mult mai mult decât oferă capsula unui procesor single-cip."
+      ]
+    },
+    {
+      "titlu": "Nuclee PDS",
+      "puncte": [
+        "Abordare pentru producția de masă: împerecherea într-un singur cip a unui procesor PDS programabil cu un circuit definit de utilizator. Combină beneficiile procesoarelor PDS (programabilitatea, existența instrumentelor de dezvoltare și a bibliotecilor de software) cu avantajele circuitelor realizate la cerere (costuri reduse de producție, gabarit redus, putere consumată redusă).",
+        "Două variante: un ASIC (application-specific integrated circuit) având la bază un nucleu PDS și un procesor PDS realizat la cerere.",
+        "Definiție: un nucleu PDS este un procesor PDS destinat folosirii ca bloc de construcție la realizarea unui circuit mai complex, în loc de a fi încapsulat de sine stătător într-un cip. Un ASIC bazat pe nucleu PDS permite integrarea într-un singur circuit integrat a unui PDS programabil, a logicii de interfață, a perifericelor, a memoriei și a altor componente cerute de client (Fig. 2.1, 2.2).",
+        "Firmele definesc diferit ce include un nucleu: Texas Instruments – procesor, memorie și periferice; Clarkspur Design și PDS Group – memorie, dar nu și periferice; SGS-Thomson – numai procesorul.",
+        "Două categorii de furnizori: (1) furnizorii care asigură și producerea circuitului ASIC cu nucleul PDS (Texas Instruments, SGS-Thomson); (2) furnizorii care dau licența pentru nucleu, iar clientul își alege singur fabricantul (PDS Group, Clarkspur Design, Infinite Solutions, Tensleep Design, TCSI, 3Soft).",
+        "TI TEC320C52 (volume mici): procesorul de 16 biți TMS320C52 + o arie de 15.000 de porți; „nucleele PDS completate cu arie de porți” ieftinesc costul de proiectare și de producție și scurtează ciclul de fabricație. SGS-Thomson oferă nucleul de 16 biți D950-CORE ca macrocelulă în biblioteca ASIC. La nucleele sub licență clientul primește descrierea completă a nucleului, îl poate produce unde vrea și îl poate modifica; deseori sunt disponibile descrieri VHDL sau Verilog HDL."
+      ]
+    },
+    {
+      "titlu": "Procesoare PDS personalizate",
+      "puncte": [
+        "În unele situații nucleul PDS însuși trebuie modificat sau extins (alternativă la adăugarea de circuite externe în jurul nucleului), ex.: o unitate pentru corecția erorilor de codare sau pentru manipularea biților adăugată la calea de date; aceste procesoare se numesc „customizabile” sau personalizate. Furnizorii folosesc termenul de nucleu diferit: de la posibilitatea de a adăuga periferice și memorie până la posibilitatea de a modifica chiar unitatea de execuție a procesorului.",
+        "Limitările nucleelor PDS: (1) la nucleele produse chiar de furnizor cumpărătorul nu are acces la proiectul intern, deci toate modificările le face furnizorul, soluție deseori costisitoare; (2) la nucleele cu licență proiectul intern e disponibil clientului, dar e nevoie de experiență pentru modificări; (3) modificarea arhitecturii nucleului impune și modificarea instrumentelor de dezvoltare software (asamblor, linker, simulator etc.).",
+        "Cele mai bine plasate firme: AT&T Microelectronics (nucleul DSP1600, proiectat pentru atașarea facilă a unor noi unități de execuție la calea de date) și Philips (nucleul EPICS, cu versiuni de diferite lungimi ale cuvintelor)."
+      ]
+    },
+    {
+      "titlu": "Multiprocesoarele",
+      "puncte": [
+        "Oricât de performante devin procesoarele PDS, nevoile unei clase largi de aplicații nu pot fi satisfăcute de un singur procesor; unele aplicații se realizează cel mai bine cu procesoare dedicate. Dacă programabilitatea este importantă, o soluție bună sunt sistemele multiprocesor cu procesoare comerciale (aproape orice procesor comercial poate fi utilizat în configurații multiprocesor).",
+        "Procesoare speciale pentru multiprocesor: TMS320C4x (Texas Instruments), DSP96002 (Motorola), ADSP-2106x (Analog Devices); au facilități suplimentare – magistrale externe multiple, logică de arbitraj a magistralei, porturi multiple dedicate pentru comunicații interprocesor – care simplifică proiectarea hardware și îmbunătățesc performanțele."
+      ]
+    },
+    {
+      "titlu": "2.3 Alternative pentru procesoarele PDS",
+      "puncte": [
+        "Cele 3 alternative: microprocesoarele de uz general; calculatoarele personale și stațiile de lucru; hardware-ul personalizat (realizat la cererea clientului)."
+      ]
+    },
+    {
+      "titlu": "Microprocesoarele de uz general",
+      "puncte": [
+        "Devenind mai rapide, pot realiza și funcțiuni de prelucrare a semnalelor, deși sunt mai lente și mai puțin eficiente decât procesoarele PDS pentru aplicații PDS.",
+        "Motivul 1: multe produse electronice (de la telefoane la controlere pentru automobile) folosesc deja microprocesoare pentru control, interfața cu utilizatorul și comunicare; adăugarea aplicației PDS pe microprocesorul existent este avantajoasă din punct de vedere al costului.",
+        "Motivul 2: instrumentele software de dezvoltare existente pentru microprocesoarele de uz general sunt în general mai sofisticate și mai puternice decât cele pentru PDS – important pentru aplicațiile la care performanțele nu sunt foarte stricte.",
+        "Tendință: procesoarele de uz general primesc caracteristici PDS – PowerPC 601, MIPS R10000, Sun UltraSPARC, HP PA-7100LC execută MAC în virgulă mobilă într-un singur ciclu instrucțiune; Intel a realizat un Pentium cu facilități pentru operații PDS. Nu este încă clar dacă procesoarele hibride sau perechea uz general + PDS separat vor deveni abordarea comună; se așteaptă ca aplicațiile cu o cantitate semnificativă de operații PDS să fie realizate cu procesoare PDS specializate."
+      ]
+    },
+    {
+      "titlu": "Calculatoare personale și stații de lucru",
+      "puncte": [
+        "Unele aplicații PDS pot fi implementate direct pe calculatoare sau stații de lucru fără procesoare PDS (au calitățile și limitările procesoarelor de uz general). Prelucrările PDS executate numai software sunt viabile acolo unde cerințele nu sunt stricte și unde există deja un PC sau o stație de lucru; ex.: aplicații științifice sau inginerești de analiză sau sinteză fără restricții de timp real.",
+        "Intel NSP (native signal processing): folosirea procesorului gazdă din PC pentru aplicații multimedia de bază (compresia/decompresia audio, sinteza muzicii și a sunetelor); avantaj – reducerea costului prin eliminarea unor componente hardware complexe.",
+        "Tendință: producătorii de PC-uri și stații adaugă facilități PDS – procesoare PDS pe plăcile de bază sau periferice ca convertoare A/D și D/A ori interfețe pentru linia telefonică."
+      ]
+    },
+    {
+      "titlu": "Hardware personalizat (la cerere / custom)",
+      "puncte": [
+        "Două rațiuni pentru care hardware-ul la cerere e uneori mai bun decât un procesor PDS: performanțele și prețul de producție. Practic pentru orice aplicație se poate proiecta hardware la cerere cu performanțe mai bune decât un PDS comercial; în aplicațiile care cer o frecvență de eșantionare mare, hardware-ul la cerere este unica opțiune.",
+        "Pentru produse de masă este mai puțin costisitor: plasează în hardware numai funcțiunile necesare aplicației, în timp ce la un procesor PDS se plătește de fiecare dată pentru toate funcțiunile, chiar dacă unele sunt foarte puțin folosite. Dificultăți: cele mai evidente sunt costurile proiectării, în special pentru cipurile realizate la cerere.",
+        "Forme: de la o mică placă de circuit imprimat cu câteva componente până la un sistem complex cu circuite integrate la cerere; abordare comună – plăci care includ dispozitive logice standard, unități aritmetice cu funcții fixe sau configurabile, arii de porți FPGA și FASIC (circuite pentru funcții specifice). FASIC = circuit proiectat pentru a realiza o funcție specifică, probabil pentru o singură aplicație (ex.: filtru digital configurabil; circuite modem-faximil, care nu pot fi folosite în alt scop).",
+        "Multe circuite oferite pentru aplicații PDS sunt procesoare PDS standard cu programe la cerere stocate în ROM (ex.: modemurile Phylon pe procesoare Analog Devices și TI; Rockwell – arhitecturi proprii).",
+        "Proiectarea circuitului propriu asigură maximum de flexibilitate, fiind adaptat nevoilor aplicației până la nivelul fiecărei porți logice."
+      ]
+    }
+  ],
+  "capcane": [
+    "MAC se execută într-un SINGUR ciclu instrucțiune; o variantă care spune că procesoarele PDS „nu permit multiplicare-acumulare în același ciclu” e falsă.",
+    "Multiacces = MAI MULTE accesări la memorie într-un singur ciclu instrucțiune, nu o singură accesare în mai multe cicluri.",
+    "Accesarea multiplă e restricționată: locațiile sunt de regulă în cip și doar anumite instrucțiuni o pot face; nu e valabilă pentru orice instrucțiune sau pentru memoria externă.",
+    "Biții suplimentari pentru evitarea overflow-ului la MAC sunt în registrele de ACUMULARE (calea de date), nu în unitatea de adresare.",
+    "Cel mai comun mod de adresare specializat este adresarea indirectă cu post-incrementare; circulară (modulo) = buffere de date; inversarea biților = TFR. Nu le încurca.",
+    "Unitatea de generare a adreselor lucrează în background, în paralel cu operațiile aritmetice, după ce registrele de adresare au fost configurate.",
+    "Instrucțiunea de buclare/„repeat” implementează for-next FĂRĂ mărirea ciclului instrucțiune (nu cu cicluri în plus pentru testarea contorului).",
+    "Varianta constructivă cea mai comună este procesorul single-cip, nu MCM-ul sau nucleul PDS.",
+    "MCM = mai multe CIPURI într-o singură capsulă; cipuri multiprocesor = mai multe PROCESOARE într-un singur circuit integrat; seturi de circuite = UN procesor împărțit în mai multe capsule.",
+    "Microprocesor + microcontroler într-un cip (Motorola, Zilog) și TriCore (Siemens: uz general + PDS + microcontroler) sunt exemple de cipuri multiprocesor, nu de MCM.",
+    "Avantajul MCM este densitatea mare de încapsulare → viteză mai mare și consum mai mic; seturile de circuite reduc prețul prin capsule mai ieftine și dau mai mulți pini, nu mai puțini.",
+    "La nuclee PDS: programabilitatea, instrumentele de dezvoltare și bibliotecile sunt beneficiile procesoarelor PDS; costul redus de producție, gabaritul redus și puterea redusă sunt avantajele circuitelor la cerere.",
+    "Nucleu produs de furnizor → clientul NU are acces la proiectul intern (modificări costisitoare, făcute de furnizor); nucleu cu licență → are acces, dar îi trebuie experiență. TI și SGS-Thomson produc ei ASIC-ul; PDS Group, Clarkspur, 3Soft etc. dau licență.",
+    "Microprocesoarele de uz general sunt mai LENTE și mai puțin eficiente pentru PDS; avantajele lor sunt costul (procesorul există deja în produs) și instrumentele software mai sofisticate.",
+    "Prelucrarea numai software pe PC/stație de lucru e viabilă doar pentru cerințe nestricte, fără timp real; la frecvențe de eșantionare mari singura opțiune e hardware-ul la cerere.",
+    "Rațiunile hardware-ului la cerere sunt performanțele și prețul de producție (la produse de masă); dezavantajul cel mai evident este costul proiectării, nu prețul de producție.",
+    "Modulele multicip, nucleele și multiprocesoarele sunt VARIANTE CONSTRUCTIVE (2.2); microprocesoarele de uz general, PC-urile/stațiile și hardware-ul personalizat sunt ALTERNATIVE (2.3)."
+  ],
+  "grile_vechi": [
+    {
+      "sursa": "GRILE PS PARTIAL #9",
+      "intrebare": "Caracteristicile procesoarelor de semnal sunt:",
+      "variante": [
+        "arhitectura multiacces a memoriei, care presupune multiple accesări la memorie într-un singur ciclu instrucțiune",
+        "operație rapidă de multiplicare și acumulare (MAC) într-un singur ciclu instrucțiune",
+        "moduri de adresare specializate",
+        "arhitectura multiacces a memoriei, care presupune o singură accesare la memorie în mai multe cicluri instrucțiune"
+      ],
+      "corecte": [
+        0,
+        1,
+        2
+      ],
+      "explicatie": "Curs 2, §2.1 (Tabelul 2.2): caracteristicile comune sunt MAC rapidă, arhitectura multiacces, moduri de adresare specializate, control specializat, periferice și interfețe I/O. MAC se face „într-un singur ciclu instrucțiune”, iar multiaccesul înseamnă „a executa câteva cicluri de acces la memorie într-un singur ciclu instrucțiune”. Varianta d inversează definiția multiaccesului, deci e falsă.",
+      "sigur": true
+    },
+    {
+      "sursa": "GRILE PS PARTIAL #3 (subiect comun cu Curs 4 – calea de date)",
+      "intrebare": "Care din afirmațiile următoare sunt adevărate:",
+      "variante": [
+        "deoarece multiplicarea este operația principală în PDS, procesoarele digitale de semnal realizează multiplicarea într-un singur ciclu mașină",
+        "există procesoare cu două căi de date: una în virgulă fixă și una în virgulă mobilă",
+        "calea de date la procesoarele în virgulă fixă este identică cu cea a procesoarelor în virgulă mobilă",
+        "procesoarele digitale de semnal nu permit operații de multiplicare-acumulare în același ciclu mașină"
+      ],
+      "corecte": [
+        0,
+        1
+      ],
+      "explicatie": "Curs 2, §2.1 (MAC): procesoarele PDS execută multiplicarea-acumularea într-un singur ciclu instrucțiune, cu multiplicator și acumulator integrate în calea de date, deci d e falsă, iar a e adevărată (și Curs 4: multiplicatorul înmulțește doi operanzi de mărime nativă într-un singur ciclu instrucțiune). Capitol 4 spune că unele procesoare în virgulă mobilă au două căi de date, una pentru virgulă mobilă și una pentru virgulă fixă, deci b e adevărată; tot Cap. 4 spune că la virgulă mobilă calea de date e semnificativ diferită de cea în virgulă fixă, deci c e falsă.",
+      "sigur": true
+    },
+    {
+      "sursa": "Grile final – GRILE.RTF (variantele nu sunt în fișier, doar răspunsul; trimitere „pag5-curs2”)",
+      "intrebare": "Varianta constructivă care combină într-un singur cip elemente de procesare diferite (de ex. un microprocesor și un microcontroler) se numește:",
+      "variante": [
+        "module multicip",
+        "cipuri multiprocesor",
+        "seturi de circuite",
+        "nuclee PDS"
+      ],
+      "corecte": [
+        1
+      ],
+      "explicatie": "Curs 2, §2.2 – Cipuri multiprocesor: proiectanții încorporează mai multe procesoare într-un singur circuit integrat; Motorola și Zilog oferă un microprocesor și un microcontroler într-un singur cip, iar TriCore (Siemens) are un procesor de uz general, un PDS și un microcontroler. MCM-ul are mai multe cipuri într-o capsulă, iar setul de circuite împarte un procesor în mai multe capsule. Fișierul dă doar răspunsul (cipuri multiprocesor), variantele a, c, d sunt refăcute din lista variantelor constructive.",
+      "sigur": true
+    },
+    {
+      "sursa": "Grile final – GRILE.RTF (variantele nu sunt în fișier, doar răspunsul „(d)”; trimitere „pag1-curs2”)",
+      "intrebare": "Operația de multiplicare-acumulare este utilă în algoritmi precum:",
+      "variante": [
+        "algoritmii de căutare și sortare a datelor",
+        "algoritmii de control al interfeței cu utilizatorul",
+        "algoritmii de tratare a întreruperilor",
+        "algoritmii care necesită calculul produsului a doi vectori"
+      ],
+      "corecte": [
+        3
+      ],
+      "explicatie": "Curs 2, §2.1 – Operația rapidă de multiplicare și acumulare: „este utilă în algoritmii care necesită calculul produsului a doi vectori (de exemplu, filtrarea digitală, corelația, calculul transformatei Fourier)”. Fișierul dă răspunsul d; variantele a–c sunt refăcute ca distractori. Atenție: dacă la test apar filtrarea digitală, corelația sau transformata Fourier ca variante, și ele sunt corecte.",
+      "sigur": true
+    },
+    {
+      "sursa": "Grile final – GRILE.RTF (inițial Adevărat/Fals, răspuns „True”; refăcută cu 4 variante)",
+      "intrebare": "Procesoarele de semnal pot executa mai multe operații de citire sau de scriere din/în memorie într-un ciclu mașină:",
+      "variante": [
+        "adevărat, pentru orice instrucțiune și orice locație de memorie, inclusiv memoria externă",
+        "adevărat, dar de regulă accesarea multiplă e restricționată: locațiile accesate sunt în cip și doar anumite instrucțiuni o permit",
+        "fals, un procesor PDS face o singură accesare la memorie în mai multe cicluri instrucțiune",
+        "fals, accesările multiple într-un ciclu sunt posibile doar la microprocesoarele de uz general"
+      ],
+      "corecte": [
+        1
+      ],
+      "explicatie": "Curs 2, §2.1 – Arhitectura multiacces a memoriei: procesoarele PDS pot executa câteva cicluri de acces la memorie într-un singur ciclu instrucțiune (răspunsul original: Adevărat). „La multe procesoare PDS, accesarea multiplă a memoriei într-un singur ciclu este restricționată”: locațiile sunt în cip și doar anumite instrucțiuni o pot face, deci a e prea generală. Subiectul se leagă și de Curs 5 (memorii cu acces multiplu).",
+      "sigur": true
+    }
+  ],
+  "grile_noi": [
+    {
+      "sursa": "nou",
+      "intrebare": "Care sunt cele mai importante caracteristici comune ale procesoarelor PDS?",
+      "variante": [
+        "operația rapidă de multiplicare și acumulare",
+        "arhitectura multiacces a memoriei",
+        "controlul specializat al funcționării",
+        "periferice și interfețe I/O"
+      ],
+      "corecte": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "explicatie": "Curs 2, §2.1 (2/7), Tabelul 2.2: cele cinci caracteristici sunt MAC rapidă, arhitectura multiacces a memoriei, moduri de adresare specializate, controlul specializat al funcționării, periferice și interfețe I/O. Toate cele patru variante sunt în listă.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Referitor la operația de multiplicare-acumulare (MAC) a procesoarelor PDS, sunt adevărate afirmațiile:",
+      "variante": [
+        "se execută într-un singur ciclu instrucțiune",
+        "se realizează cu un multiplicator și un acumulator integrate în unitatea de generare a adreselor",
+        "este utilă în filtrarea digitală, corelație și calculul transformatei Fourier",
+        "produce inevitabil depășire de scală la acumularea unui număr mare de produse"
+      ],
+      "corecte": [
+        0,
+        2
+      ],
+      "explicatie": "Curs 2, §2.1 (3/7): MAC într-un singur ciclu instrucțiune, utilă la produsul a doi vectori (filtrare, corelație, transformata Fourier). Multiplicatorul și acumulatorul sunt integrate în calea de date, nu în unitatea de adresare, iar biții suplimentari din acumulatoare permit MAC fără overflow.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Pentru a efectua operații de multiplicare și acumulare fără depășire de scală aritmetică (overflow), procesoarele PDS:",
+      "variante": [
+        "execută operația MAC în mai multe cicluri instrucțiune",
+        "permit stocarea unor biți suplimentari în registrele de acumulare",
+        "folosesc adresarea cu inversarea biților",
+        "adaptează registrele de acumulare la dimensiunea rezultatului"
+      ],
+      "corecte": [
+        1,
+        3
+      ],
+      "explicatie": "Curs 2, §2.1 (3/7): „Procesoarele PDS permit stocarea unui număr de biți suplimentari în registrii de acumulare pentru a le adapta la dimensiunea rezultatului.” Inversarea biților ține de adresare (TFR), iar MAC rămâne într-un singur ciclu.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Arhitectura multiacces a memoriei permite procesorului PDS:",
+      "variante": [
+        "să extragă simultan o instrucțiune și operanzii pentru instrucțiune",
+        "să efectueze o singură accesare la memorie la fiecare ciclu instrucțiune",
+        "să stocheze rezultatul instrucțiunii anterioare în memorie în același ciclu",
+        "să acceseze multiplu memoria externă cu orice instrucțiune"
+      ],
+      "corecte": [
+        0,
+        2
+      ],
+      "explicatie": "Curs 2, §2.1 (4/7): multiaccesul permite „să extragă simultan o instrucțiune și operanzii pentru instrucțiune sau să stocheze rezultatul instrucțiunii anterioare în memorie”. Accesarea multiplă e restricționată la locații din cip și la anumite instrucțiuni, deci d e falsă.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Pentru a putea accesa simultan mai multe locații de memorie, procesoarele PDS posedă:",
+      "variante": [
+        "magistrale interne multiple",
+        "un singur set de magistrale comun pentru date și instrucțiuni",
+        "memorii interne multicip",
+        "în unele situații, mai multe bancuri de memorie independente"
+      ],
+      "corecte": [
+        0,
+        2,
+        3
+      ],
+      "explicatie": "Curs 2, §2.1 (4/7): „procesoarele PDS posedă magistrale interne multiple, memorii interne multicip și, în unele situații, mai multe bancuri de memorie independente”. Un singur set de magistrale comun e tocmai ce limitează accesul multiplu.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Unitățile dedicate pentru adresare ale procesoarelor PDS:",
+      "variante": [
+        "permit specificarea operanzilor multipli cu ajutorul unor cuvinte instrucțiune scurte",
+        "calculează adresele în background, în paralel cu executarea operațiilor aritmetice",
+        "lucrează după ce registrele pentru adresare au fost configurate",
+        "conțin multiplicatorul folosit în operația MAC"
+      ],
+      "corecte": [
+        0,
+        1,
+        2
+      ],
+      "explicatie": "Curs 2, §2.1 (5/7): unitățile dedicate există pentru viteza maximă și pentru specificarea operanzilor multipli cu cuvinte instrucțiune scurte; „odată ce registrii pentru adresare au fost configurați, unitatea de generare a adresei lucrează în background”. Multiplicatorul e în calea de date.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Cel mai comun mod de adresare adaptat aplicațiilor PDS, folosit la operații repetitive pe șiruri de date stocate la adrese succesive, este:",
+      "variante": [
+        "adresarea circulară (modulo)",
+        "adresarea cu inversarea biților",
+        "adresarea indirectă cu post-incrementare",
+        "adresarea imediată"
+      ],
+      "corecte": [
+        2
+      ],
+      "explicatie": "Curs 2, §2.1 (5/7): „Cel mai comun dintre acestea este adresarea indirectă cu post-incrementare, care este folosită atunci când sunt executate operații repetitive pe șiruri de date stocate la adrese succesive în memorie.” Circulara și inversarea biților sunt moduri speciale.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Care asocieri între modul de adresare și utilizarea lui sunt corecte?",
+      "variante": [
+        "adresarea circulară (modulo) – simplifică accesarea bufferelor de date",
+        "adresarea cu inversarea biților – calculul Transformatei Fourier Rapide",
+        "adresarea cu inversarea biților – accesarea bufferelor circulare FIFO",
+        "adresarea indirectă cu post-incrementare – șiruri de date la adrese succesive"
+      ],
+      "corecte": [
+        0,
+        1,
+        3
+      ],
+      "explicatie": "Curs 2, §2.1 (5/7): circulara (modulo) simplifică accesarea bufferelor de date, inversarea biților se folosește în TFR, post-incrementarea la șiruri de date stocate la adrese succesive. Bufferele circulare țin de adresarea modulo, nu de inversarea biților.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Facilitățile de control specializat al funcționării oferite de unele procesoare PDS sunt:",
+      "variante": [
+        "instrucțiune de buclare sau instrucțiune „repeat” pentru cicluri for-next",
+        "comutarea rapidă a contextului și latența redusă",
+        "executarea întreruperilor cu încărcare minimă",
+        "mărirea ciclului instrucțiune pentru actualizarea și testarea contorului de buclă"
+      ],
+      "corecte": [
+        0,
+        1,
+        2
+      ],
+      "explicatie": "Curs 2, §2.1 (6/7): instrucțiunea de buclare/„repeat” implementează ciclurile for-next „fără mărirea ciclului instrucțiune” prin actualizarea și testarea contorului; alte facilități: comutarea rapidă a contextului și latența redusă, întreruperi cu încărcare minimă, operații I/O rapide. Varianta d e opusul.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "În privința perifericelor și interfețelor I/O, multe procesoare PDS:",
+      "variante": [
+        "încorporează una sau mai multe interfețe I/O seriale și/sau paralele",
+        "au mecanisme speciale pentru I/O, cum ar fi accesul direct la memorie (DMA)",
+        "au interfețe proiectate pentru interfațarea directă cu convertoarele A/D și D/A",
+        "nu includ niciodată periferice complete în cip, pentru a reduce costul"
+      ],
+      "corecte": [
+        0,
+        1,
+        2
+      ],
+      "explicatie": "Curs 2, §2.1 (7/7): pentru cost redus și performanțe I/O înalte au interfețe seriale/paralele și DMA, iar interfețele sunt proiectate pentru A/D și D/A. Producătorii au început să includă și periferice complete (ex. circuitele pentru telefoane celulare au A/D și D/A în cip), deci d e falsă.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Varianta cea mai comună de microprocesor PDS este:",
+      "variante": [
+        "modulul multicip (MCM)",
+        "procesorul single-cip",
+        "setul de circuite",
+        "ASIC-ul cu nucleu PDS"
+      ],
+      "corecte": [
+        1
+      ],
+      "explicatie": "Curs 2, §2.2 (1/7): „Varianta cea mai comună de microprocesor PDS este procesorul single-cip.”",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Faptul că procesoarele PDS sunt disponibile în prezent în multe variante constructive se datorează:",
+      "variante": [
+        "proliferării aplicațiilor PDS",
+        "creșterii nivelului de integrare pentru toate produsele electronice",
+        "dezvoltării unor noi tehnici de încapsulare",
+        "scăderii performanțelor procesoarelor single-cip"
+      ],
+      "corecte": [
+        0,
+        1,
+        2
+      ],
+      "explicatie": "Curs 2, §2.2 (1/7): „Odată cu proliferarea aplicațiilor PDS, creșterea nivelului de integrare pentru toate produsele electronice și dezvoltarea unor noi tehnici de încapsulare” procesoarele PDS au devenit disponibile în multe variante constructive.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Care dintre următoarele sunt variante constructive de procesoare PDS?",
+      "variante": [
+        "cipurile multiprocesor",
+        "microprocesoarele de uz general",
+        "hardware-ul personalizat",
+        "multiprocesoarele"
+      ],
+      "corecte": [
+        0,
+        3
+      ],
+      "explicatie": "Curs 2, §2.2 (1/7): variantele constructive sunt module multicip, cipuri multiprocesor, seturi de circuite, nuclee PDS, procesoare PDS personalizate, multiprocesoarele. Microprocesoarele de uz general și hardware-ul personalizat sunt alternative pentru procesoarele PDS (§2.3).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Modulele multicip (MCM):",
+      "variante": [
+        "sunt un fel de „supercipuri” care conțin mai multe cipuri încapsulate împreună",
+        "încapsulează un singur circuit integrat într-o capsulă din plastic sau ceramică",
+        "au o densitate mare de încapsulare (mai multe circuite pe unitatea de suprafață a plăcii)",
+        "duc la creșterea vitezei de operare și la scăderea consumului"
+      ],
+      "corecte": [
+        0,
+        2,
+        3
+      ],
+      "explicatie": "Curs 2, §2.2 (2/7): MCM sunt „supercipuri”; în loc de a încapsula un singur CI (ca procesoarele convenționale) conțin mai multe cipuri împreună; avantajul e densitatea mare de încapsulare, care duce la creșterea vitezei și scăderea consumului. Varianta b descrie procesoarele convenționale.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Circuitul TriCore produs de Siemens conține:",
+      "variante": [
+        "un procesor de uz general",
+        "un procesor PDS",
+        "un microcontroler",
+        "128 kcuvinte de memorie SRAM de 32 de biți"
+      ],
+      "corecte": [
+        0,
+        1,
+        2
+      ],
+      "explicatie": "Curs 2, §2.2 (3/7), Cipuri multiprocesor: „Firma Siemens a produs circuitul Tricore care conține un procesor de uz general, un procesor PDS și un microcontroler.” Cele 128 kcuvinte SRAM sunt din exemplul de MCM Texas Instruments (două TMS320C40).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Despre cipurile multiprocesor sunt adevărate afirmațiile:",
+      "variante": [
+        "încorporează mai multe procesoare într-un singur circuit integrat",
+        "împart un procesor PDS în două sau mai multe capsule separate",
+        "asigură creșterea performanțelor și reduc consumul față de sistemele cu componente separate",
+        "oferta lor este foarte largă, cuprinzând sute de dispozitive"
+      ],
+      "corecte": [
+        0,
+        2
+      ],
+      "explicatie": "Curs 2, §2.2 (3/7) și Capitol 2: proiectanții caută să încorporeze mai multe procesoare într-un singur CI; ca și MCM, cresc performanțele și reduc consumul; „totuși oferta de cipuri multiprocesor este limitată la câteva dispozitive”. Varianta b descrie seturile de circuite.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Referitor la seturile de circuite, sunt adevărate afirmațiile:",
+      "variante": [
+        "un procesor PDS este „împărțit” în două sau mai multe capsule separate",
+        "divizarea este justificată când procesorul e foarte complex și numărul de pini I/O nu poate fi asigurat de o singură capsulă",
+        "se pot folosi capsule mai ieftine, deci se reduce prețul de cost",
+        "crește flexibilitatea, proiectantul putând combina circuitele în configurația cea mai potrivită aplicației"
+      ],
+      "corecte": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "explicatie": "Curs 2, §2.2 (4/7): toate cele patru afirmații sunt preluate din curs (exemplu: setul Butterfly PDS cu generator de adrese și procesor).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Abordarea cu nuclee PDS combină beneficiile procesoarelor PDS cu avantajele circuitelor realizate la cerere. Care sunt beneficiile care provin de la procesoarele PDS?",
+      "variante": [
+        "programabilitatea",
+        "costurile reduse de producție",
+        "existența unor instrumente pentru dezvoltare și a bibliotecilor de software",
+        "gabaritul redus și puterea consumată redusă"
+      ],
+      "corecte": [
+        0,
+        2
+      ],
+      "explicatie": "Curs 2, §2.2 (5/7): beneficiile procesoarelor PDS sunt „programabilitatea, existența unor instrumente pentru dezvoltare și a bibliotecilor de software”; costurile reduse de producție, gabaritul redus și puterea consumată redusă sunt avantajele circuitelor realizate la cerere.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Un nucleu PDS:",
+      "variante": [
+        "este un procesor PDS destinat folosirii ca bloc de construcție la realizarea unui circuit mai complex",
+        "este întotdeauna încapsulat de sine stătător într-un cip",
+        "permite, într-un ASIC, integrarea unui PDS programabil, a logicii de interfață, a perifericelor și a memoriei într-un singur circuit integrat",
+        "include, la toate firmele, procesorul, memoria și perifericele"
+      ],
+      "corecte": [
+        0,
+        2
+      ],
+      "explicatie": "Curs 2, §2.2 (5/7, Nuclee PDS 2/2): nucleul e un bloc de construcție, „în loc de a fi încapsulat de sine stătător într-un cip”; ASIC-ul bazat pe nucleu integrează PDS programabil, logică de interfață, periferice, memorie. Capitol 2: firmele definesc diferit nucleul (TI: procesor + memorie + periferice; Clarkspur/PDS Group: fără periferice; SGS-Thomson: numai procesorul).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Care sunt limitările nucleelor PDS?",
+      "variante": [
+        "la nucleele produse chiar de furnizor, cumpărătorul nu are acces la proiectul intern, iar modificările făcute de furnizor sunt deseori costisitoare",
+        "la nucleele cu licență clientul nu primește proiectul intern al circuitului",
+        "la nucleele cu licență este nevoie de experiență pentru a executa modificările",
+        "modificarea arhitecturii nucleului impune și modificarea instrumentelor pentru dezvoltarea software-ului (asamblor, linker, simulator)"
+      ],
+      "corecte": [
+        0,
+        2,
+        3
+      ],
+      "explicatie": "Curs 2, §2.2 (6/7), Procesoare PDS personalizate: cele trei limitări sunt a, c și d. La nucleele cu licență „proiectul intern al circuitului este disponibil la client”, deci b e falsă.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Referitor la furnizorii de nuclee PDS, sunt adevărate afirmațiile:",
+      "variante": [
+        "furnizorii din prima categorie asigură și producerea circuitului ASIC care conține nucleul PDS",
+        "furnizorii din a doua categorie dau licența pentru nucleu, iar clientul își alege singur fabricantul de cip",
+        "Texas Instruments și SGS-Thomson oferă nuclee numai sub licență",
+        "la nucleele sub licență clientul primește descrierea completă și poate modifica nucleul"
+      ],
+      "corecte": [
+        0,
+        1,
+        3
+      ],
+      "explicatie": "Capitol 2, §2.2 – Nuclee PDS: cele două categorii de furnizori sunt a și b; „Firmele Texas Instruments și SGS-Thomson sunt furnizori din prima categorie” (produc ei ASIC-ul), deci c e falsă; la licență clientul primește descrierea completă și poate modifica nucleul (adesea în VHDL/Verilog).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Procesoarele PDS personalizate („customizabile”):",
+      "variante": [
+        "presupun modificarea sau extinderea nucleului PDS însuși",
+        "sunt o alternativă la adăugarea de circuite externe în jurul nucleului",
+        "pot primi, de exemplu, o unitate pentru corecția erorilor de codare sau pentru manipularea biților la calea de date",
+        "sunt procesoare de uz general cu programe stocate în ROM"
+      ],
+      "corecte": [
+        0,
+        1,
+        2
+      ],
+      "explicatie": "Curs 2, §2.2 (6/7) și Capitol 2: „este nevoie ca însuși nucleul PDS să fie modificat sau extins (o alternativă la adăugarea în jurul nucleului de circuite externe)”, ex. o unitate pentru corecția erorilor de codare sau manipularea biților. Programele în ROM țin de hardware-ul la cerere (§2.3), pe procesoare PDS standard.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Procesoarele create special pentru sisteme multiprocesor (ex. TMS320C4x, DSP96002) au facilități suplimentare precum:",
+      "variante": [
+        "magistrale externe multiple",
+        "logică de arbitraj a magistralei",
+        "porturi multiple dedicate pentru comunicații interprocesor",
+        "un singur port serial partajat"
+      ],
+      "corecte": [
+        0,
+        1,
+        2
+      ],
+      "explicatie": "Curs 2, §2.2 (7/7): „Aceste procesoare au facilități suplimentare (cum sunt magistrale externe multiple, logica de arbitraj a magistralei, porturi multiple dedicate pentru comunicații interprocesor) care simplifică proiectarea hardware și îmbunătățesc performanțele.”",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Despre multiprocesoare sunt adevărate afirmațiile:",
+      "variante": [
+        "nevoile unei clase largi de aplicații nu pot fi satisfăcute de un singur procesor PDS",
+        "în configurații multiprocesor pot fi folosite doar procesoare concepute special pentru acest scop",
+        "dacă programabilitatea este importantă, o soluție bună sunt sistemele multiprocesor cu procesoare comerciale",
+        "aproape orice procesor comercial poate fi utilizat în configurații multiprocesor"
+      ],
+      "corecte": [
+        0,
+        2,
+        3
+      ],
+      "explicatie": "Curs 2, §2.2 (7/7): „nevoile pentru o largă clasă de aplicații nu pot fi satisfăcute de un singur procesor”; dacă programabilitatea e importantă – multiprocesor cu procesoare comerciale; „aproape orice procesor comercial poate fi utilizat în configurații multiprocesor”. Procesoarele speciale există, dar nu sunt obligatorii.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Alternativele pentru procesoarele PDS prezentate în curs sunt:",
+      "variante": [
+        "microprocesoarele de uz general",
+        "modulele multicip",
+        "calculatoarele personale și stațiile de lucru",
+        "hardware-ul personalizat"
+      ],
+      "corecte": [
+        0,
+        2,
+        3
+      ],
+      "explicatie": "Curs 2, §2.3 (1/3–3/3): alternativele sunt microprocesoarele de uz general, calculatoarele personale și stațiile de lucru, hardware-ul personalizat. Modulele multicip sunt o variantă constructivă (§2.2).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Motivele pentru care microprocesoarele de uz general sunt folosite totuși în aplicații PDS sunt:",
+      "variante": [
+        "sunt mai rapide și mai eficiente decât procesoarele PDS pentru aplicații PDS",
+        "multe produse conțin deja un microprocesor pentru control, interfața cu utilizatorul și comunicare, deci adăugarea aplicației PDS e avantajoasă ca și cost",
+        "instrumentele software pentru dezvoltare sunt în general mai sofisticate și mai puternice decât cele pentru procesoarele PDS",
+        "au periferice dedicate pentru interfațarea directă cu convertoarele A/D și D/A"
+      ],
+      "corecte": [
+        1,
+        2
+      ],
+      "explicatie": "Curs 2, §2.3 (1/3): procesoarele de uz general sunt „mai lente și mai puțin eficiente decât procesoarele PDS”, dar există două motive: costul (microprocesorul există deja în produs) și instrumentele software mai sofisticate și mai puternice (pentru aplicații cu performanțe nu foarte stricte).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Prelucrările PDS executate numai software pe calculatoare personale sau stații de lucru sunt viabile:",
+      "variante": [
+        "acolo unde cerințele pentru prelucrări nu sunt stricte",
+        "acolo unde este deja disponibil un calculator personal sau o stație de lucru",
+        "pentru aplicații științifice sau inginerești de analiză sau sinteză fără restricții de timp real",
+        "pentru aplicații care cer o frecvență de eșantionare foarte mare"
+      ],
+      "corecte": [
+        0,
+        1,
+        2
+      ],
+      "explicatie": "Curs 2, §2.3 (2/3): produsele cu prelucrări numai soft sunt viabile unde cerințele nu sunt stricte și unde există deja PC/stație; multe aplicații științifice sau inginerești fără restricții de timp real pot fi executate așa. La frecvențe de eșantionare mari unica opțiune e hardware-ul la cerere (Capitol 2).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Rațiunile importante pentru care hardware-ul dezvoltat la cererea clientului este uneori o alegere mai bună decât un procesor PDS sunt:",
+      "variante": [
+        "performanțele",
+        "costurile reduse de proiectare",
+        "prețul de producție",
+        "instrumentele software de dezvoltare mai sofisticate"
+      ],
+      "corecte": [
+        0,
+        2
+      ],
+      "explicatie": "Curs 2, §2.3 (3/3): „Există două rațiuni importante ... performanțele și prețul de producție.” Costurile proiectării sunt tocmai dificultatea cea mai evidentă a hardware-ului la cerere; instrumentele sofisticate sunt avantajul microprocesoarelor de uz general.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Pentru produse de masă, hardware-ul realizat la cerere este mai puțin costisitor decât un procesor PDS deoarece:",
+      "variante": [
+        "plasează în hardware numai acele funcțiuni care sunt necesare aplicației",
+        "costurile de proiectare sunt neglijabile",
+        "la un procesor PDS se plătește de fiecare dată pentru toate funcțiunile, chiar dacă unele sunt foarte puțin folosite",
+        "folosește numai componente logice standard"
+      ],
+      "corecte": [
+        0,
+        2
+      ],
+      "explicatie": "Curs 2, §2.3 (3/3): „o implementare la cererea clientului plasează în hardware numai acele funcțiuni care sunt necesare aplicației, în timp ce pentru un procesor PDS se plătește de fiecare dată pentru toate funcțiunile”. Costurile proiectării sunt principala dificultate, nu sunt neglijabile.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Plăcile de circuit imprimat proiectate la cerere pentru aplicații PDS pot include:",
+      "variante": [
+        "dispozitive logice standard",
+        "unități aritmetice cu funcții fixe sau configurabile",
+        "arii de porți FPGA",
+        "circuite integrate pentru funcții specifice (FASIC)"
+      ],
+      "corecte": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "explicatie": "Capitol 2, §2.3 – Hardware custom: plăcile „pot include dispozitive logice standard, unități aritmetice cu funcții fixe sau configurabile, arii de porți FPGA și circuite integrate pentru funcții sau specifice aplicațiilor (FASIC)”. Lista completă apare doar în Capitol 2.",
+      "sigur": true
+    }
+  ]
+}

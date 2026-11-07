@@ -1,0 +1,525 @@
+{
+  "curs": 6,
+  "titlu": "Adresarea datelor",
+  "rezumat": [
+    {
+      "titlu": "Noțiuni generale și AGU",
+      "puncte": [
+        "Prin adresare se înțeleg mijloacele prin care sunt specificate locațiile operanzilor (operanzi = atât datele de intrare procesate de o instrucțiune, cât și datele de ieșire rezultate).",
+        "Există mai multe tipuri de adresare (denumite moduri de adresare); operanzii pot fi obținuți direct dintr-un registru sau de la o adresă de memorie internă sau externă.",
+        "Modul de adresare a datelor este indicat fie explicit în codul instrucțiunii, fie este implicit. Des întâlnit: o instrucțiune combină două sau mai multe moduri de adresare, folosind moduri diferite pentru operanzi diferiți.",
+        "Multe procesoare au doar un subset al modurilor de adresare; un mod poate fi folosit doar cu un subset al setului de instrucțiuni, în cazuri extreme doar pentru o singură instrucțiune.",
+        "Arhitectură load-store: instrucțiuni speciale pentru transferul datelor cu memoria; restul instrucțiunilor pot accesa date doar din registre.",
+        "Majoritatea DSP-urilor au una sau mai multe unități de generare a adresei (AGU – Address Generating Units), dedicate calculului adreselor. Analog Devices: AGU; AT&T: „unitate de control aritmetică”.",
+        "Un AGU poate efectua una sau mai multe operații complexe de calcul al adreselor pe ciclu de tact fără a utiliza calea de date principală → calculul adreselor are loc în paralel cu operațiile aritmetice, mărind performanța.",
+        "Diferențele între AGU-uri: modurile de adresare oferite și capabilitățile și flexibilitatea fiecărui mod.",
+        "Cele 11 moduri din curs: 6.1 implicită; 6.2 imediată; 6.3 directă la registru; 6.4 directă la memorie; 6.5 indirectă cu registru; 6.6 indirectă cu registru cu pre- și post-incrementare/decrementare; 6.7 indirectă cu registru cu indexare; 6.8 indirectă cu registru cu aritmetică a adreselor modulo; 6.9 indirectă cu registru cu inversarea biților; 6.10 moduri de adresare scurte; 6.11 directă la memorie paginată."
+      ]
+    },
+    {
+      "titlu": "6.1 Adresarea implicită",
+      "puncte": [
+        "Adresele operanzilor sunt indicate în mod implicit de către instrucțiune; nu se poate schimba localizarea operanzilor, care în majoritatea cazurilor se află în registre.",
+        "Exemplu AT&T (DSP16xx): toate instrucțiunile de înmulțire folosesc operanzii din registrele de intrare ale multiplicatorului X și Y și depun rezultatul în registrul produs P. Sintaxa „P = X * Y” ar fi putut fi scrisă simplu „*”, deoarece programatorul nu poate specifica alte registre; sintaxa explicită doar facilitează înțelegerea codului."
+      ]
+    },
+    {
+      "titlu": "6.2 Adresarea imediată",
+      "puncte": [
+        "Operandul (valoarea propriu-zisă) este inclus în cuvântul instrucțiune sau într-un cuvânt separat.",
+        "Exemplu Analog Devices (ADSP-21xx): „AX0 = 1234” încarcă constanta 1234 în AX0. Constanta e specificată prin adresare imediată, iar registrul destinație AX0 prin adresare directă la registru.",
+        "Datele de lungime mică (de obicei jumătate din lungimea instrucțiunii sau mai mici) se codează în cuvântul instrucțiune → instrucțiune de un singur cuvânt. Datele mai mari se pun într-un cuvânt separat → procesorul citește două cuvinte din memoria de program, încetinind execuția."
+      ]
+    },
+    {
+      "titlu": "6.3 Adresarea directă la registru",
+      "puncte": [
+        "Datele se află într-un registru; programatorul specifică registrul ca parte a instrucțiunii.",
+        "Exemplu Texas Instruments (TMS320C3x): „SUBF R1, R2” scade valoarea din R1 din cea din R2 și pune rezultatul în R2; ar fi putut folosi oricare două din cele opt registre de pe cip.",
+        "Diferența față de implicită: la directă la registru programatorul poate specifica registrele; la implicită ele sunt specificate de instrucțiune și nu pot fi schimbate.",
+        "Mod foarte important la procesoarele la care operanzii instrucțiunilor aritmetice provin din registre și nu din memorie."
+      ]
+    },
+    {
+      "titlu": "6.4 Adresarea directă la memorie",
+      "puncte": [
+        "Denumită și adresare absolută: datele se află în memorie la o adresă codată în cuvântul instrucțiunii.",
+        "Exemplu ADSP-21xx (Analog Devices): „AX0 = DM(1000)” încarcă în AX0 datele de la locația 1000.",
+        "Ca la imediată: adresele cu format mic încap în cuvântul instrucțiune (un singur cuvânt); adresele mari necesită un cuvânt separat → două citiri din memoria de program, execuție mai lentă."
+      ]
+    },
+    {
+      "titlu": "6.5 Adresarea indirectă cu registru",
+      "puncte": [
+        "Datele adresate se află în memorie la o adresă indicată de un registru. Unele procesoare au registre de adrese dedicate, altele registre de uz general pentru date și adrese.",
+        "Este cel mai folosit mod de adresare de pe majoritatea DSP-urilor, din două motive: e foarte potrivit pentru tablouri de date și e eficient ca set de instrucțiuni (adresare puternică și flexibilă cu puțini biți din cuvântul instrucțiune).",
+        "Exemplu AT&T (DSP32xx): „A0 = A0 + *R5” adună valoarea de la locația de memorie indicată de R5 la A0, rezultatul în A0; R5 = registru de adresă. „*...” = conținutul locației de memorie indicate de registru (ca în C); alte procesoare folosesc „(Rn)”.",
+        "Exemplu din slide: R2 conține adresa 0x0100; la MOVE, valoarea de la locația 0x0100 (aici 7) este copiată în acumulatorul A."
+      ]
+    },
+    {
+      "titlu": "6.6 Indirectă cu registru cu pre- și post-incrementare/decrementare",
+      "puncte": [
+        "Accelerează accesul la date din locații cu adrese consecutive: păstrează adresarea indirectă cu registru și adaugă modificarea registrului de adrese, înainte de acces (pre-modificare) sau după acces (post-modificare); modificarea poate fi incrementare sau decrementare.",
+        "Cea mai comună modificare: post-incrementare cu unu (după ce registrul a fost folosit) – mecanism simplu de parcurgere a unui tablou. DSP32xx: „A0 = A0 + *R5++” (R5 trece la locația următoare); „A0 = A0 + *R5--” (R5 trece la locația anterioară după adunare).",
+        "Valori diferite de 1: „A0 = A0 + *R5++R17” – după acces R5 este incrementat cu valoarea din R17; R17 poate fi negativ → același format poate decrementa. Registrul cu valoarea de incrementare (R17) = registru pentru offset; Analog Devices îl numește „registru modificator”.",
+        "Pre-decrementare Motorola DSP5600x: „MOVE X:-(R0), A1” decrementează R0 înainte de a-l folosi la adresarea memoriei, valoarea mutându-se în A1. Pre-incrementarea necesită de obicei un ciclu instrucțiune în plus pentru actualizarea registrului înaintea accesului."
+      ]
+    },
+    {
+      "titlu": "6.7 Indirectă cu registru cu indexare",
+      "puncte": [
+        "Valorile din doi registri de adresă (sau dintr-un registru de adresă și o constantă) sunt adunate pentru a obține adresa efectivă.",
+        "Diferența față de premodificare: la indexare valorile stocate în registre NU sunt modificate.",
+        "Exemplu DSP5600x: „MOVE Y1, X:(R5 + N6)” mută Y1 în spațiul X la adresa R5 + N6; R5 și N6 nemodificate; N6 = registru index.",
+        "Unii producători numesc „adresare indexată” adresarea cu pre-/post-incrementare cu o valoare diferită de unu; acolo registrele offset se numesc registre index.",
+        "Index ca valoare imediată (TMS320C3x): „LDI *-AR1(1), R7” – adresa efectivă = AR1 − 1, datele de acolo merg în R7, AR1 nu se modifică.",
+        "Utilizări: același segment de cod pe mai multe seturi de date (registrul index indică începutul setului, se schimbă doar el); în compilatoare la transmiterea argumentelor subrutinelor prin stivă: cu AR1 indicator de vârf de stivă, „LDI *+AR1(2), R0” copiază primul argument în R0."
+      ]
+    },
+    {
+      "titlu": "6.8 Indirectă cu registru cu aritmetică a adreselor modulo",
+      "puncte": [
+        "Cea mai comună aplicație: buffer circular. Buffer de date = porțiune de memorie care stochează date venite din afara chipului sau de la o procesare anterioară până când procesorul le poate prelucra; tehnică FIFO (citire în ordinea sosirii).",
+        "Doi pointeri (în registre sau în memorie): pointerul de scriere (unde se depune următoarea valoare sosită) și pointerul de citire (unde se află următoarea valoare de citit). Testul de sfârșit de buffer și resetarea după fiecare operație consumă mult timp → scădere semnificativă a performanței.",
+        "Adresare modulo / adresare circulară: DSP-ul face automat verificarea după fiecare calcul de adresă și readuce pointerul la începutul bufferului, care pare circular pentru programator.",
+        "Termenul modulo = aritmetică în care numerele sunt limitate la un interval (ca ceasul de 12 ore: 14 modulo 12 = 2). Pointerii se actualizează cu pre- și/sau post-incrementare, iar AGU calculează adresele noi în aritmetică modulo.",
+        "Exemplu FIR din curs: bufferul conține ultimele patru eșantioane (coeficienți w0…w3); la n pointerul P accesează x(n); la n+1 trece pe x(n−3), cel mai vechi eșantion, înlocuit cu x(n+1) → cantitatea de date mutate este minimizată. (Curs 5: adresarea modulo n implementează linia de întârziere fără mutarea datelor și reduce accesările FIR de la 4 la 3 pe ciclu.)",
+        "Control mod 1: lungimea bufferului într-un registru modificator / registru modulo, asociat cu unul sau mai mulți registri adresă. Neavând adresa de start, bufferul începe la granița unui segment de k cuvinte, k = cea mai mică putere a lui 2 ≥ dimensiunea (48 cuvinte → granița de 64; buffer de 256 → adresa 0, 256, 512…). Folosit la TMS320C3x, TMS320C4x, Motorola, Analog Devices, NEC, DSP Group.",
+        "Control mod 2: registre de start și de sfârșit cu adresele de început și sfârșit ale fiecărui buffer circular – DSP16xx (AT&T) și TMS320C5x (TI).",
+        "Număr de buffere circulare active: DSP16xx – 1 (un singur registru de start și unul de sfârșit); TMS320C5x – 2; Motorola DSP561xx – 4; Motorola DSP5600x și toate procesoarele Analog Devices – 8."
+      ]
+    },
+    {
+      "titlu": "6.9 Indirectă cu registru cu inversarea biților",
+      "puncte": [
+        "Folosită numai în împrejurări foarte speciale: algoritmi FFT în baza 2 (radix-2), cu decimare în timp sau în frecvență, care folosesc intrarea sau produc ieșirea în ordine inversată → datele trebuie rearanjate în ordinea firească.",
+        "Ordine inversă a biților: ieșirile unui numărător binar scrise în ordine inversă (bitul cel mai puțin semnificativ primul) se potrivesc cu ordinea ieșirii FFT. Pentru FFT cu 8 puncte: 0, 4, 2, 6, 1, 5, 3, 7.",
+        "Multe procesoare au hardware specializat în AGU. ADSP-210xx (Analog Devices): modul se activează prin setarea unui bit în registrul de control; ieșirii unui registru de adrese i se inversează biții înainte de a ajunge pe magistrala de adrese.",
+        "Alternativă: aritmetica cu transport invers – AGU inversează direcția de propagare a transportului la adunarea incrementului; cu adresa de bază și incrementul date în ordine inversată, rezultatul e cu biții inversați. Folosită la DSP32C și DSP32xx (AT&T)."
+      ]
+    },
+    {
+      "titlu": "6.10 Modurile de adresare scurte",
+      "puncte": [
+        "Neajuns: în general instrucțiunea și adresa ocupă două cuvinte de program → program mai mare, execuție mai lentă. Versiunile scurte pun instrucțiunea și adresa într-un singur cuvânt, cu restricții la nivelul adreselor. Două tipuri: a) scurtă cu date imediate; b) scurtă directă la memorie.",
+        "a) Scurtă cu date imediate: operandul propriu-zis (nu adresa) e codat în instrucțiune. Motorola DSP5600x: „MOVE #1234, A” încarcă constanta în A; în general 2 cuvinte (codul operației + data), dar un singur cuvânt dacă datele au 12 biți sau mai puțin.",
+        "b) Scurtă directă la memorie: Motorola DSP5600x „MOVE $1000, A” încarcă în A datele de la adresa 1000. Forma scurtă codează adrese de până la 6 biți → economisește un cuvânt de memorie și un ciclu instrucțiune.",
+        "Variantă cu offset implicit adăugat la adresa scurtă: DSP5600x o folosește pentru registrele I/O mapate pe ultimele 64 de locații de memorie."
+      ]
+    },
+    {
+      "titlu": "6.11 Adresarea directă la memorie paginată",
+      "puncte": [
+        "Un registru special stochează numărul paginii (secțiunii) de memorie adresate; instrucțiunea adresează direct un cuvânt în pagină prin locația lui relativă. Pentru un cuvânt din afara paginii se actualizează registrul de pagină (sau se folosește alt registru de pagină, dacă există).",
+        "Exemplu TI TMS320C2x/TMS320C5x: adresează 64 K cuvinte de date, dar instrucțiunile cu adresare scurtă directă au doar 7 biți de adresă (un cuvânt din 128 = 2^7) → memoria e împărțită în pagini de 128 cuvinte; pagina se alege încărcând numărul ei în registrul indicator de pagină.",
+        "Tehnica e eficientă doar dacă programul face un număr semnificativ de accesări într-o pagină înainte de a trece la alta."
+      ]
+    }
+  ],
+  "capcane": [
+    "„AX0 = 1234” folosește DOUĂ moduri: imediată pentru constanta 1234 și directă la registru pentru destinația AX0. O instrucțiune poate combina moduri diferite pentru operanzi diferiți.",
+    "Implicită vs directă la registru: ambele lucrează cu registre; diferența e dacă programatorul poate alege registrele (directă la registru, ex. SUBF R1, R2) sau ele sunt fixate de instrucțiune (implicită, ex. P = X * Y, MUL).",
+    "Imediată vs directă la memorie: la imediată în instrucțiune e VALOAREA (AX0 = 1234, MOVE #1234, A); la directă la memorie e ADRESA (AX0 = DM(1000), MOVE $1000, A). La Motorola „#” = dată imediată, „$” = adresă.",
+    "„A6 = A6 + *R6” sau „A0 = A0 + *R5” (fără ++/--) = adresare indirectă cu registru simplă, nu pre/post-incrementare, indexare sau modulo.",
+    "Cel mai folosit mod la majoritatea DSP-urilor este indirectă cu registru (nu directă). Cea mai comună modificare a registrului de adrese este post-incrementarea cu unu.",
+    "La „A0 = A0 + *R7--” sau „*R5++” operatorul ++/-- modifică registrul de adrese (R7, R5), NU acumulatorul. A0 primește A0 + valoarea din memorie de la adresa veche din registru.",
+    "La „*R5++R17” R17 este registru pentru offset (Analog Devices: „registru modificator”) și poate fi negativ, deci aceeași formă poate și decrementa.",
+    "Indexarea NU modifică registrele (MOVE Y1, X:(R5 + N6); LDI *-AR1(1), R7 lasă AR1 neschimbat), deși „*-AR1(1)” arată ca o pre-decrementare. Pre-decrementarea reală modifică registrul: MOVE X:-(R0), A1.",
+    "Termenul „index” e ambiguu: unii producători numesc „adresare indexată” post-incrementarea cu valoare diferită de 1, iar registrele offset „registre index”. Iar „registru modificator” apare de două ori: la Analog Devices = registru offset (6.6), la modulo = registrul cu lungimea bufferului (6.8).",
+    "Pre-incrementarea (Motorola) necesită de obicei un ciclu instrucțiune în plus.",
+    "Registrul modulo conține doar LUNGIMEA bufferului, nu adresa de start, deci bufferul trebuie să înceapă la o graniță de k cuvinte, k = cea mai mică putere a lui 2 ≥ lungimea: 48 → 64 (nu 48, nu 32).",
+    "Registre de start/sfârșit: DSP16xx (AT&T) și TMS320C5x (TI), nu TMS320C3x (acela folosește registru modulo). Număr de buffere: DSP16xx 1, TMS320C5x 2, DSP561xx 4, DSP5600x și Analog Devices 8.",
+    "Bufferul circular FIFO → adresare modulo (circulară); pointerii se actualizează tot prin pre/post-incrementare, dar modul de adresare cerut este cel modulo.",
+    "Inversarea biților servește doar la FFT în baza 2 (DIT/DIF), „numai în împrejurări foarte speciale”; nu are legătură cu bufferele circulare. Transport invers = AT&T DSP32C/DSP32xx; bit în registrul de control = ADSP-210xx.",
+    "Numere de reținut: scurtă imediată ≤ 12 biți (DSP5600x); scurtă directă ≤ 6 biți (DSP5600x); I/O pe ultimele 64 locații; paginată TMS320C2x/C5x: 7 biți, pagini de 128 cuvinte, 64 K cuvinte în total; SUBF R1, R2 (TMS320C3x): oricare două din cele 8 registre."
+  ],
+  "grile_vechi": [
+    {
+      "sursa": "psfinal Q2; PS_Grile (formular, nenumerotată); PS_Grile (1) (formular, nenumerotată); Grile_final – GRILE LINK-URI 6",
+      "intrebare": "Din ce categorie de moduri de adresare face parte instrucțiunea „MUL a”, care are ca rezultat AX = AL * a, unde AX și AL sunt registrele procesorului folosite implicit pentru operația de înmulțire și „a” este o variabilă oarecare pe 8 biți?",
+      "variante": ["adresare directă la memorie", "adresare implicită", "adresare imediată", "adresare directă la registru"],
+      "corecte": [1],
+      "explicatie": "Curs 6 / Capitol 6, 6.1: la adresarea implicită adresele operanzilor sunt indicate implicit de instrucțiune și nu pot fi schimbate (exemplul înmulțirii AT&T: X, Y → P). Enunțul subliniază că AX și AL sunt „folosite implicit” → adresare implicită. Nesigur doar pentru că „a” este o variabilă din memorie, ceea ce ar putea justifica și „directă la memorie” (o instrucțiune poate combina moduri). Răspunsul vizat de enunț este însă implicită; nu bifa imediată (a nu e constantă) și nici directă la registru (registrele nu pot fi alese).",
+      "sigur": false
+    },
+    {
+      "sursa": "psfinal Q3; PS_Grile (formular, apare de 2 ori); PS_Grile (1) (formular, apare de 2 ori); Grile_final Q31",
+      "intrebare": "Din ce categorie de moduri de adresare face parte instrucțiunea „A6 = A6 + *R6”, care are ca efect adunarea valorii stocate la locația de memorie indicată de conținutul registrului R6 la valoarea stocată în registrul acumulator A6?",
+      "variante": ["adresare indirectă cu registru cu adresare modulo", "adresare indirectă cu registru", "adresare indirectă cu registru cu pre- sau post-incrementare", "adresare indirectă cu registru cu indexare"],
+      "corecte": [1],
+      "explicatie": "Curs 6 / Capitol 6, 6.5: exemplul „A0 = A0 + *R5” este dat exact ca adresare indirectă cu registru: „*R5” = conținutul locației indicate de R5. Fără ++/-- nu e pre/post-incrementare (6.6), fără al doilea registru/constantă nu e indexare (6.7), iar modulo (6.8) nu apare în instrucțiune.",
+      "sigur": true
+    },
+    {
+      "sursa": "psfinal Q9; PS_Grile (formular, apare de 2 ori); PS_Grile (1) (formular, apare de 2 ori); Grile_final Q33; Grile_final – GRILE LINK-URI 7",
+      "intrebare": "Modul de adresare care folosește un buffer circular de tip FIFO este:",
+      "variante": ["adresare indirectă cu registru cu adresare modulo", "adresare indirectă cu registru", "adresare indirectă cu registru cu pre- sau post-incrementare", "adresare indirectă cu registru cu indexare"],
+      "corecte": [0],
+      "explicatie": "Curs 6 / Capitol 6, 6.8: „Cea mai comună aplicație a acestui mod de adresare este implementarea unui buffer circular”; bufferele folosesc tehnica FIFO, iar capabilitatea se numește adresare modulo sau adresare circulară. Pointerii se actualizează tot prin pre/post-incrementare, dar modul cerut este cel modulo.",
+      "sigur": true
+    },
+    {
+      "sursa": "PS_Grile (formular, nenumerotată); PS_Grile (1) (formular, nenumerotată); Grile_final Q1",
+      "intrebare": "La procesoarele care nu acceptă operația de inversare a biților implementată în unitatea de generare a adreselor, pentru generarea adreselor cu biții inversați este utilizată:",
+      "variante": ["deplasarea", "comparația", "rotația", "instrucțiuni cu execuție condiționată"],
+      "corecte": [2],
+      "explicatie": "Cursul 6 (6.9) prezintă doar soluțiile hardware din AGU (bit în registrul de control la ADSP-210xx, aritmetica cu transport invers la DSP32C/DSP32xx) și nu spune ce se folosește când AGU nu o are. Răspunsul ține de setul de instrucțiuni (Curs 7): rotația e folosită la generarea adreselor cu biții inversați pe procesoarele fără suport în AGU. Nesigur pentru că textul Cursului 6 nu tranșează.",
+      "sigur": false
+    },
+    {
+      "sursa": "Grile_final – GRILE.RTF (fără variante, doar răspunsul; variantele sunt reconstituite)",
+      "intrebare": "Instrucțiunea MOVE X:+(R0), A este de tip:",
+      "variante": ["adresare indirectă cu registru cu pre-incrementare", "adresare indirectă cu registru cu post-incrementare", "adresare indirectă cu registru cu indexare", "adresare directă la memorie"],
+      "corecte": [0],
+      "explicatie": "Curs 6 / Capitol 6, 6.6: la Motorola DSP5600x, „MOVE X:-(R0), A1” e pre-decrementare (R0 modificat înainte de acces). Prin analogie, „+(R0)” cu semnul înaintea parantezei = pre-incrementare. Răspunsul din fișier e același; variantele au fost reconstituite.",
+      "sigur": true
+    },
+    {
+      "sursa": "Grile_final – GRILE.RTF (fără variante; variantele sunt reconstituite)",
+      "intrebare": "Instrucțiunea AX1 = DM(1000) este de tip:",
+      "variante": ["adresare directă la memorie", "adresare imediată", "adresare indirectă cu registru", "adresare directă la memorie paginată"],
+      "corecte": [0],
+      "explicatie": "Capitol 6, 6.4: „AX0 = DM(1000)” (ADSP-21xx) este exemplul de adresare directă la memorie (absolută): adresa 1000 e codată în instrucțiune. Nu e imediată, pentru că 1000 e adresă, nu valoare. Atenție: dacă apare și varianta „directă la registru”, ea se poate argumenta pentru destinația AX1.",
+      "sigur": true
+    },
+    {
+      "sursa": "Grile_final – GRILE.RTF (fără variante; variantele sunt reconstituite)",
+      "intrebare": "Adresarea indirectă cu registru cu indexare poate avea forma:",
+      "variante": ["MOVE Y1, X:(R5 + N6)", "A0 = A0 + *R5++R17", "MOVE #1234, A", "LDI *+AR1(2), R0"],
+      "corecte": [0, 3],
+      "explicatie": "Capitol 6, 6.7: „MOVE Y1, X:(R5 + N6)” (DSP5600x) este exemplul de indexare cu doi registri, iar „LDI *+AR1(2), R0” (TMS320C3x) este indexare cu valoare index imediată (folosită pentru argumentele din stivă). „*R5++R17” e post-incrementare cu offset (6.6), „MOVE #1234, A” e imediată (6.10). În fișier apare doar prima formă.",
+      "sigur": true
+    },
+    {
+      "sursa": "Grile_final – GRILE.RTF („A = A + R2*++”; enunț și variante reconstituite)",
+      "intrebare": "Dacă R2 = 0x0000, după execuția instrucțiunii A = A + *R2++ registrul R2 devine:",
+      "variante": ["0x0000", "0x0001", "0xFFFF", "0x0002"],
+      "corecte": [1],
+      "explicatie": "Capitol 6, 6.6: la „*R5++” registrul de adrese este incrementat cu unu după ce a fost folosit la accesare (post-incrementare). Nota din fișier: R2 = 0x0000 + 1 = 0x0001. Valoarea inițială a lui R2 vine din figura de laborator, care lipsește.",
+      "sigur": true
+    },
+    {
+      "sursa": "Grile_final – GRILE.RTF („A = A + *R6++R4, A = 5 → A = 8”; enunț și variante reconstituite)",
+      "intrebare": "Dacă inițial A = 5 (memoria și registrele din figura de laborator), cât devine A după A = A + *R6++R4?",
+      "variante": ["5", "8", "valoarea lui R4", "5 + R4"],
+      "corecte": [1],
+      "explicatie": "Capitol 6, 6.6 (*R5++R17): A primește A + conținutul locației de memorie indicate de R6 (adresa de dinainte de modificare), apoi R6 crește cu valoarea din R4. A nu crește cu R4. Răspunsul 8 e cel din fișier și presupune că la adresa din R6 se află 3; figura lipsește, deci nu se poate verifica.",
+      "sigur": false
+    },
+    {
+      "sursa": "Grile_final – GRILE.RTF („AX0 = DM(0X0002) → 1”; enunț și variante reconstituite)",
+      "intrebare": "După execuția instrucțiunii AX0 = DM(0x0002) (memoria din figura de laborator), AX0 conține:",
+      "variante": ["0x0002", "conținutul locației de memorie 0x0002 (în fișier: 1)", "adresa registrului AX0", "0"],
+      "corecte": [1],
+      "explicatie": "Capitol 6, 6.4: „AX0 = DM(1000)” încarcă în AX0 datele de la locația 1000 (adresare directă la memorie), nu valoarea 1000. Valoarea concretă (1) vine din figura care lipsește.",
+      "sigur": false
+    },
+    {
+      "sursa": "Grile_final – GRILE.RTF („AX0 = DM(0X102) → 110 = 6”; enunț și variante reconstituite)",
+      "intrebare": "După execuția instrucțiunii AX0 = DM(0x102) (memoria din figura de laborator), AX0 conține:",
+      "variante": ["0x102", "conținutul locației de memorie 0x102 (în fișier: 110b = 6)", "0x103", "conținutul registrului de adresă R2"],
+      "corecte": [1],
+      "explicatie": "Capitol 6, 6.4: adresare directă la memorie, deci în AX0 ajunge conținutul locației 0x102, nu adresa. Valoarea concretă (6) vine din figura care lipsește.",
+      "sigur": false
+    },
+    {
+      "sursa": "Grile_final – GRILE.RTF („A0 = A0 + R2*++R6”, typo pentru *R2++R6; variante reconstituite)",
+      "intrebare": "Dacă R2 = 0x0103 și R6 = 0x00FB, în urma operației A0 = A0 + *R2++R6 valoarea registrului R2 devine:",
+      "variante": ["0x0103", "0x01FE", "0x0104", "0x00FB"],
+      "corecte": [1],
+      "explicatie": "Capitol 6, 6.6: la „*R5++R17” registrul de adrese R5 este incrementat, după acces, cu valoarea din registrul offset R17. Aici R2 = 0x0103 + 0x00FB = 0x01FE (calculul din fișier). R2 crește cu R6, nu cu 1.",
+      "sigur": true
+    },
+    {
+      "sursa": "Grile_final – GRILE.RTF („A0 = A0 + *R7-- = 5 – 1 = 4”; enunț și variante reconstituite)",
+      "intrebare": "Dacă valoarea inițială a lui A0 este 5, cât devine A0 în urma operației A0 = A0 + *R7-- (memoria din figura de laborator)?",
+      "variante": ["4", "5", "5 + conținutul locației indicate de R7", "6"],
+      "corecte": [2],
+      "explicatie": "Capitol 6, 6.6: „A0 = A0 + *R5--” adună valoarea din locația indicată de R5 la A0, iar apoi DECREMENTEAZĂ R5, nu A0. Nota din fișier (5 – 1 = 4) pare să confunde decrementarea registrului de adrese cu o scădere din A0; 4 ar fi corect doar dacă la adresa din R7 s-ar afla −1. Fără figură, varianta sigură conceptual este „5 + conținutul locației indicate de R7”.",
+      "sigur": false
+    },
+    {
+      "sursa": "Grile_final – GRILE.RTF („Rezultatul operației 16 modul 5 este: 1”; variante reconstituite)",
+      "intrebare": "Rezultatul operației 16 modulo 5 este:",
+      "variante": ["1", "3", "0", "11"],
+      "corecte": [0],
+      "explicatie": "Capitol 6, 6.8: la aritmetica modulo rezultatul care depășește valoarea maximă e ajustat prin scăderea repetată a acesteia până intră în domeniu (14 modulo 12 = 2). 16 − 5 − 5 − 5 = 1.",
+      "sigur": true
+    },
+    {
+      "sursa": "Grile_final – GRILE.RTF („A0 = A0 + *R3++ → R3 = 0x100”; enunț și variante reconstituite)",
+      "intrebare": "Dacă valoarea inițială a lui A0 este 5, cât devine registrul R3 în urma operației A0 = A0 + *R3++ (registrele din figura de laborator)?",
+      "variante": ["valoarea inițială a lui R3 + 1 (în fișier: 0x100)", "valoarea inițială a lui R3 − 1", "6", "neschimbat"],
+      "corecte": [0],
+      "explicatie": "Capitol 6, 6.6: după acces R3 este post-incrementat cu unu și indică locația de memorie următoare; A0 nu influențează R3. Răspunsul 0x100 din fișier presupune R3 = 0x0FF inițial (figura lipsește).",
+      "sigur": false
+    }
+  ],
+  "grile_noi": [
+    {
+      "sursa": "nou",
+      "intrebare": "Care din afirmațiile următoare referitoare la adresarea datelor sunt adevărate?",
+      "variante": ["prin adresare se înțeleg mijloacele prin care sunt specificate locațiile operanzilor", "modul de adresare a datelor este indicat fie explicit în codul instrucțiunii, fie este implicit", "o instrucțiune poate combina două sau mai multe moduri de adresare, folosind moduri diferite pentru operanzi diferiți", "toate procesoarele DSP pun la dispoziție toate modurile de adresare pentru toate instrucțiunile"],
+      "corecte": [0, 1, 2],
+      "explicatie": "Curs 6, slide-ul „Adresarea datelor” / Capitol 6, introducere: a, b, c sunt citate din curs. Varianta d e falsă: multe procesoare au doar un subset al modurilor, uneori disponibile doar pentru un subset de instrucțiuni sau chiar pentru una singură.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Unitățile de generare a adresei (AGU) ale procesoarelor DSP:",
+      "variante": ["sunt dedicate calculului adreselor", "folosesc calea de date principală a procesorului pentru calculul adreselor", "pot efectua una sau mai multe operații complexe de calcul al adreselor pe ciclu de tact, în paralel cu operațiile aritmetice", "sunt denumite de AT&T „unitate de control aritmetică”"],
+      "corecte": [0, 2, 3],
+      "explicatie": "Capitol 6, introducere: AGU sunt dedicate calculului adreselor și lucrează fără a utiliza calea de date principală, deci în paralel cu operațiile aritmetice (b fals). Analog Devices le numește AGU, AT&T „unitate de control aritmetică”.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Ce mod de adresare folosește instrucțiunea de înmulțire „P = X * Y” a procesorului DSP16xx (AT&T), care ar putea fi scrisă simplu „*”?",
+      "variante": ["adresare directă la registru", "adresare implicită", "adresare imediată", "adresare indirectă cu registru"],
+      "corecte": [1],
+      "explicatie": "Curs 6 / Capitol 6, 6.1: toate instrucțiunile de înmulțire AT&T folosesc X și Y și depun rezultatul în P; programatorul nu poate specifica alte registre, deci adresarea e implicită. Nu e directă la registru tocmai pentru că registrele nu pot fi alese.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "În instrucțiunea Analog Devices „AX0 = 1234” sunt folosite următoarele moduri de adresare:",
+      "variante": ["adresarea imediată, pentru constanta 1234", "adresarea directă la registru, pentru registrul destinație AX0", "adresarea directă la memorie, pentru locația 1234", "adresarea implicită, pentru registrul AX0"],
+      "corecte": [0, 1],
+      "explicatie": "Curs 6 / Capitol 6, 6.2: „valoarea constantă este specificată prin adresare imediată, în timp ce registrul destinație, AX0, este specificat folosind adresarea directă la registru”. 1234 este valoare, nu adresă.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Despre instrucțiunea „SUBF R1, R2” a procesorului TMS320C3x (Texas Instruments) sunt adevărate:",
+      "variante": ["folosește adresarea directă la registru", "scade valoarea din R1 din cea din R2 și plasează rezultatul în R2", "ar fi putut folosi oricare două registre din cele opt existente pe cip", "folosește adresarea implicită, deoarece registrele sunt fixate de instrucțiune"],
+      "corecte": [0, 1, 2],
+      "explicatie": "Curs 6 / Capitol 6, 6.3: e exemplul de adresare directă la registru; programatorul specifică registrele și putea folosi oricare două din cele opt. Diferența față de implicită: acolo registrele sunt specificate de instrucțiune și nu pot fi schimbate (d fals).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Instrucțiunea „AX0 = DM(1000)” (ADSP-21xx) folosește pentru sursă:",
+      "variante": ["adresarea directă la memorie", "adresarea absolută", "adresarea imediată (încarcă valoarea 1000 în AX0)", "adresarea indirectă cu registru"],
+      "corecte": [0, 1],
+      "explicatie": "Capitol 6, 6.4: adresarea directă la memorie este „denumită și adresare absolută”; „AX0 = DM(1000)” încarcă în AX0 datele de la locația 1000, nu valoarea 1000. Adresa e codată în instrucțiune, nu într-un registru.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Care afirmații despre adresarea imediată și adresarea directă la memorie sunt adevărate?",
+      "variante": ["datele, respectiv adresele, de format mic pot fi codate în cuvântul instrucțiune, rezultând instrucțiuni de un singur cuvânt", "la format mare procesorul trebuie să citească două cuvinte din memoria de program, încetinind execuția", "la adresarea imediată în instrucțiune este codată adresa operandului", "la adresarea imediată, datele de lungime mică sunt de obicei jumătate din lungimea instrucțiunii sau mai mici"],
+      "corecte": [0, 1, 3],
+      "explicatie": "Capitol 6, 6.2 și 6.4: ambele moduri codează în instrucțiune datele/adresele mici și folosesc un cuvânt separat pentru cele mari (două citiri, execuție mai lentă). La imediată e codat operandul propriu-zis, nu adresa (c fals).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Adresarea indirectă cu registru:",
+      "variante": ["este cel mai folosit mod de adresare de pe majoritatea procesoarelor DSP", "este foarte potrivită utilizării tablourilor de date", "permite o adresare puternică și flexibilă folosind doar puțini biți din cuvântul instrucțiune", "presupune că datele adresate se află chiar în registrul specificat în instrucțiune"],
+      "corecte": [0, 1, 2],
+      "explicatie": "Curs 6 / Capitol 6, 6.5: datele se află în MEMORIE la adresa indicată de registru (d descrie adresarea directă la registru). Este cel mai folosit mod din două motive: tablourile de date și eficiența setului de instrucțiuni.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Instrucțiunea „A0 = A0 + *R5++” a procesorului DSP32xx:",
+      "variante": ["folosește adresarea indirectă cu registru cu post-incrementare", "folosește adresarea indirectă cu registru cu pre-incrementare", "folosește adresarea indirectă cu registru cu indexare", "după adunare R5 indică locația de memorie următoare"],
+      "corecte": [0, 3],
+      "explicatie": "Curs 6 / Capitol 6, 6.6: adună valoarea de la locația indicată de R5 cu A0 și APOI incrementează R5 ca să indice locația următoare. Modificarea după folosire = post-incrementare.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Despre instrucțiunea „A0 = A0 + *R5++R17” (DSP32xx) sunt adevărate:",
+      "variante": ["R17 este registrul pentru offset", "după accesarea memoriei, R5 este incrementat cu valoarea stocată în R17", "aceeași formă poate fi folosită pentru decrementare, deoarece R17 poate fi negativ", "R5 și R17 rămân nemodificate, adresa efectivă fiind R5 + R17"],
+      "corecte": [0, 1, 2],
+      "explicatie": "Capitol 6, 6.6: registrul cu valoarea de incrementare se numește registru pentru offset (Analog Devices: registru modificator); R17 poate fi negativ. Varianta d descrie indexarea (6.7), unde registrele nu se modifică.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Instrucțiunea „MOVE X:-(R0), A1” a procesorului Motorola DSP5600x:",
+      "variante": ["folosește adresarea indirectă cu registru cu pre-decrementare", "decrementează R0 înainte de utilizarea lui la adresarea memoriei", "folosește adresarea indirectă cu registru cu post-decrementare", "folosește adresarea cu indexare, R0 rămânând nemodificat"],
+      "corecte": [0, 1],
+      "explicatie": "Capitol 6, 6.6: este exemplul de pre-decrementare; R0 e decrementat înainte de a indica locația cu valoarea mutată în A1. Pre-modificarea necesită de obicei un ciclu instrucțiune în plus.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Despre instrucțiunea „MOVE Y1, X:(R5 + N6)” (DSP5600x) sunt adevărate:",
+      "variante": ["folosește adresarea indirectă cu registru cu indexare", "registrele R5 și N6 nu sunt modificate", "N6 poartă denumirea de registru index", "valoarea din Y1 este mutată în spațiul de adresare X, la adresa egală cu suma valorilor din R5 și N6"],
+      "corecte": [0, 1, 2, 3],
+      "explicatie": "Capitol 6, 6.7: toate cele patru afirmații reproduc explicația exemplului de indexare din curs.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Instrucțiunea „LDI *-AR1(1), R7” a procesorului TMS320C3x:",
+      "variante": ["folosește adresarea indirectă cu registru cu indexare, cu valoarea index furnizată imediat în instrucțiune", "nu modifică conținutul registrului AR1", "folosește pre-decrementarea, AR1 rămânând decrementat după execuție", "calculează adresa efectivă scăzând unu din valoarea lui AR1"],
+      "corecte": [0, 1, 3],
+      "explicatie": "Capitol 6, 6.7: index ca valoare imediată; adresa efectivă = AR1 − 1, datele de acolo merg în R7, iar „conținutul registrului AR1 nu este modificat”. Deci nu e pre-decrementare (c fals), deși sintaxa seamănă.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Diferența dintre adresarea indirectă cu indexare și adresarea indirectă cu premodificare constă în faptul că:",
+      "variante": ["la indexare valorile stocate în registre nu sunt modificate", "la indexare registrul de adrese este incrementat după acces", "la premodificare registrele nu sunt modificate", "nu există nicio diferență, termenii sunt sinonimi"],
+      "corecte": [0],
+      "explicatie": "Curs 6 / Capitol 6, 6.7, citat: „la indexare valorile stocate în registre nu sunt modificate”. Atenție: unii producători numesc „indexată” post-incrementarea cu valoare diferită de 1, dar asta e doar o chestiune de terminologie.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Adresarea indexată este utilă:",
+      "variante": ["atunci când același segment de cod este folosit cu mai multe seturi de date", "în compilatoare, la transmiterea argumentelor subrutinelor în/din stivă", "la rearanjarea rezultatelor FFT în ordinea firească", "la verificarea automată a depășirii sfârșitului unui buffer circular"],
+      "corecte": [0, 1],
+      "explicatie": "Capitol 6, 6.7: registrul index indică începutul setului de date (se schimbă doar el la trecerea la setul următor); compilatoarele o folosesc pentru argumentele din stivă (LDI *+AR1(2), R0). c ține de inversarea biților (6.9), d de adresarea modulo (6.8).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Care dintre instrucțiunile următoare folosesc o formă de adresare indirectă cu registru (operandul se află în memorie la o adresă dată de un registru)?",
+      "variante": ["A0 = A0 + *R5", "MOVE X:-(R0), A1", "AX0 = 1234", "SUBF R1, R2"],
+      "corecte": [0, 1],
+      "explicatie": "Capitol 6: „A0 = A0 + *R5” e indirectă cu registru (6.5), „MOVE X:-(R0), A1” e indirectă cu pre-decrementare (6.6). „AX0 = 1234” e imediată + directă la registru (6.2), „SUBF R1, R2” e directă la registru (6.3).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Care dintre instrucțiunile următoare NU modifică registrul folosit pentru calculul adresei?",
+      "variante": ["MOVE Y1, X:(R5 + N6)", "LDI *+AR1(2), R0", "A0 = A0 + *R5", "A0 = A0 + *R5--"],
+      "corecte": [0, 1, 2],
+      "explicatie": "Capitol 6: la indexare (6.7) registrele rămân nemodificate (MOVE Y1, X:(R5 + N6); LDI *+AR1(2), R0), iar la indirectă simplă (6.5) R5 doar indică adresa. „*R5--” decrementează R5 după adunare (6.6).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Referitor la adresarea indirectă cu registru cu aritmetică a adreselor modulo, sunt adevărate afirmațiile:",
+      "variante": ["cea mai comună aplicație a acestui mod de adresare este implementarea unui buffer circular", "bufferele folosesc tehnica FIFO, cu un pointer de citire și un pointer de scriere", "elimină necesitatea verificării de către programator a depășirii bufferului de către pointeri și a ajustării acestora", "necesită alocarea dinamică a memoriei pentru buffer la fiecare operație de scriere"],
+      "corecte": [0, 1, 2],
+      "explicatie": "Curs 6 / Capitol 6, 6.8: buffer circular, FIFO, doi pointeri; modulo face automat verificarea și readuce pointerul la început. La sistemele în timp real alocarea dinamică e prea scumpă, de aceea programatorul rezervă dinainte memoria (d fals).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "În exemplul din curs cu bufferul circular care conține ultimele patru eșantioane (coeficienții w0, w1, w2, w3), la momentul n+1:",
+      "variante": ["pointerul este deplasat la adresa ocupată de x(n−3), cel mai vechi eșantion, care este înlocuit cu x(n+1)", "toate eșantioanele sunt mutate cu o poziție în memorie", "pointerul rămâne pe x(n)", "prin ajustarea automată a pointerului, cantitatea de date care trebuie deplasată este minimizată"],
+      "corecte": [0, 3],
+      "explicatie": "Capitol 6, 6.8 (figura cu principiul bufferului circular): la n pointerul P accesează x(n), la n+1 trece pe x(n−3), care e înlocuit cu x(n+1); datele nu sunt mutate (vezi și Curs 5, adresarea modulo n la linia de întârziere FIR).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Când adresarea modulo este controlată printr-un registru modulo (registru modificator), un buffer circular de 48 de cuvinte trebuie de obicei să înceapă la granița unui segment de:",
+      "variante": ["48 de cuvinte", "64 de cuvinte", "32 de cuvinte", "128 de cuvinte"],
+      "corecte": [1],
+      "explicatie": "Capitol 6, 6.8: registrul conține doar lungimea, deci bufferul începe la granița unui segment de k cuvinte, k = cea mai mică putere a lui 2 ≥ dimensiunea; pentru 48 → 64 (exemplul din curs).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Un buffer circular cu lungimea 256, gestionat printr-un registru modulo, poate începe la adresa:",
+      "variante": ["0", "256", "512", "384"],
+      "corecte": [0, 1, 2],
+      "explicatie": "Capitol 6, 6.8: „un buffer circular cu lungimea 256 poate începe la adresa 0, 256, 512 sau orice altă adresă multiplu de 256”. 384 nu e multiplu de 256.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Registrul modulo (registrul modificator) folosit la adresarea circulară:",
+      "variante": ["conține lungimea bufferului circular", "conține atât lungimea, cât și adresa de început a bufferului", "este asociat cu unul sau mai mulți registri adresă, care folosesc automat aritmetica modulo după încărcarea lui", "poate exista într-un singur exemplar sau în mai multe exemplare pe un procesor"],
+      "corecte": [0, 2, 3],
+      "explicatie": "Capitol 6, 6.8: lungimea bufferului e încărcată în registrul modificator/modulo; un procesor poate avea unul sau câteva, fiecare asociat cu unul sau mai mulți registri adresă. Registrul NU conține adresa de start (de aici condiția granița puterii lui 2).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Procesoarele care controlează adresarea modulo prin registre de start și de sfârșit ale bufferului circular sunt:",
+      "variante": ["DSP16xx (AT&T)", "TMS320C5x (Texas Instruments)", "TMS320C3x (Texas Instruments)", "DSP5600x (Motorola)"],
+      "corecte": [0, 1],
+      "explicatie": "Capitol 6, 6.8: „Procesoare care folosesc registri de start/sfârșit sunt DSP16xx (AT&T) și TMS320C5x (TI)”. TMS320C3x și Motorola folosesc registrul modulo (prima metodă).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Numărul de buffere circulare active cu adresare modulo suportate este:",
+      "variante": ["DSP16xx (AT&T) – unul singur", "TMS320C5x (TI) – două", "Motorola DSP561xx – patru", "procesoarele Analog Devices – două"],
+      "corecte": [0, 1, 2],
+      "explicatie": "Capitol 6, 6.8: DSP16xx – un buffer (un singur registru de start și unul de sfârșit), TMS320C5x – două, DSP561xx – patru, DSP5600x și toate procesoarele Analog Devices – opt (d fals).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Adresarea indirectă cu registru cu inversarea biților:",
+      "variante": ["este folosită la algoritmii FFT în baza 2, cu decimare în timp sau în frecvență", "este folosită numai în anumite împrejurări foarte speciale", "la ADSP-210xx (Analog Devices) este activată prin setarea unui bit în registrul de control", "este folosită pentru implementarea bufferelor circulare FIFO"],
+      "corecte": [0, 1, 2],
+      "explicatie": "Capitol 6, 6.9: algoritmii FFT radix-2 (DIT/DIF) folosesc intrarea sau produc ieșirea în ordine inversată; la ADSP-210xx modul se activează printr-un bit în registrul de control, iar ieșirii unui registru de adrese i se inversează biții înainte de magistrala de adrese. Bufferele circulare țin de adresarea modulo (6.8).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Pentru o FFT în baza 2 cu 8 puncte, ordinea cu biții inversați a indicilor 0, 1, 2, …, 7 este:",
+      "variante": ["0, 4, 2, 6, 1, 5, 3, 7", "0, 1, 2, 3, 4, 5, 6, 7", "7, 6, 5, 4, 3, 2, 1, 0", "0, 2, 4, 6, 1, 3, 5, 7"],
+      "corecte": [0],
+      "explicatie": "Curs 6, 6.9 (figura FFT cu opt puncte) / Capitol 6, Fig. 6.3: ieșirea numărătorului binar scrisă cu biții în ordine inversă (LSB primul): 001 → 100 = 4, 010 → 010 = 2, 011 → 110 = 6 etc.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Aritmetica cu transport invers, ca alternativă pentru adresarea cu inversarea biților:",
+      "variante": ["inversează direcția în care se propagă biții de transport când un increment este adăugat valorii dintr-un registru adresă", "dă o adresă cu biții inversați dacă programatorul furnizează adresa de bază și incrementul cu ordinea biților inversată", "este utilizată la DSP32C și DSP32xx (AT&T)", "este activată la ADSP-210xx prin setarea unui bit în registrul de control"],
+      "corecte": [0, 1, 2],
+      "explicatie": "Capitol 6, 6.9: a, b, c reproduc descrierea aritmeticii cu transport invers. Bitul din registrul de control (d) este mecanismul ADSP-210xx, nu transportul invers.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Instrucțiunea „MOVE #1234, A” a procesorului Motorola DSP5600x:",
+      "variante": ["folosește adresarea imediată", "folosește adresarea directă la memorie (încarcă datele de la adresa 1234)", "poate fi codată într-un singur cuvânt de memorie de program dacă datele au 12 biți sau mai puțin", "poate fi codată într-un singur cuvânt doar dacă datele au cel mult 6 biți"],
+      "corecte": [0, 2],
+      "explicatie": "Curs 6 / Capitol 6, 6.10 a): „#” indică date imediate, încărcate în A. În general sunt necesare două cuvinte, dar dacă datele au 12 biți sau mai puțin încap într-un singur cuvânt. 6 biți e limita adresării scurte directe la memorie.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Instrucțiunea „MOVE $1000, A” a procesorului Motorola DSP5600x:",
+      "variante": ["folosește adresarea directă la memorie", "încarcă în registrul A datele aflate la adresa 1000", "încarcă în registrul A constanta 1000", "folosește adresarea indirectă cu registru"],
+      "corecte": [0, 1],
+      "explicatie": "Curs 6 / Capitol 6, 6.10 b): „$” indică o adresă; instrucțiunea încarcă datele de la adresa 1000 în A (directă la memorie). Constanta s-ar scrie cu „#” (adresare imediată).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Despre modurile de adresare scurte sunt adevărate afirmațiile:",
+      "variante": ["includ într-un singur cuvânt atât instrucțiunea cât și adresa, pe seama unor restricții la nivelul adreselor", "la Motorola DSP5600x, adresarea scurtă directă la memorie permite codarea în instrucțiune a adreselor de până la șase biți", "adresarea scurtă directă la memorie economisește un cuvânt de memorie și un ciclu instrucțiune", "DSP5600x folosește un mod de adresare scurtă directă la memorie pentru registrele I/O mapate pe ultimele 64 de locații de memorie"],
+      "corecte": [0, 1, 2, 3],
+      "explicatie": "Curs 6 / Capitol 6, 6.10: toate afirmațiile sunt din curs. Ultima este varianta care adaugă un offset implicit la adresa scurtă.",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "La adresarea directă la memorie paginată a procesoarelor TMS320C2x și TMS320C5x (Texas Instruments):",
+      "variante": ["instrucțiunile folosesc 7 biți de adresă", "memoria este împărțită în pagini de 128 de cuvinte", "instrucțiunile folosesc direct o adresă de 16 biți", "memoria este împărțită în pagini de 64 de cuvinte"],
+      "corecte": [0, 1],
+      "explicatie": "Curs 6 / Capitol 6, 6.11: procesorul adresează 64 K cuvinte, dar instrucțiunile nu folosesc direct adresa de 16 biți; au 7 biți de adresă, suficienți pentru un cuvânt din 128 (2^7), deci pagini de 128 cuvinte. 64 este numărul locațiilor I/O de la DSP5600x (6.10).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Care afirmații despre adresarea directă la memorie paginată sunt adevărate?",
+      "variante": ["un registru special stochează numărul paginii de memorie adresate", "instrucțiunea specifică locația relativă a cuvântului în interiorul paginii", "pentru adresarea unui cuvânt din afara paginii, registrul de pagină trebuie actualizat sau se folosește alt registru de pagină", "tehnica este eficientă indiferent de numărul de accesări făcute într-o pagină"],
+      "corecte": [0, 1, 2],
+      "explicatie": "Curs 6 / Capitol 6, 6.11: a, b, c sunt din definiție. Tehnica este eficientă „doar dacă programatorul poate organiza programul astfel încât să aibă loc un număr semnificativ de accesări în interiorul unei pagini” (d fals).",
+      "sigur": true
+    },
+    {
+      "sursa": "nou",
+      "intrebare": "Cea mai comună modificare efectuată asupra unui registru de adrese este:",
+      "variante": ["adăugarea unui increment cu valoarea unu după ce registrul a fost folosit la accesarea operandului (post-incrementare cu unu)", "pre-decrementarea cu unu", "adunarea unui registru index fără modificarea registrului de adrese", "inversarea biților registrului de adrese"],
+      "corecte": [0],
+      "explicatie": "Curs 6 / Capitol 6, 6.6, citat: „Cea mai comună modificare efectuată asupra unui registru de adrese constă în adăugarea unui increment cu valoarea 1 după ce registrul de adrese este folosit”. Este și modul cel mai comun menționat în Curs 2 (adresarea indirectă cu post-incrementare).",
+      "sigur": true
+    }
+  ]
+}

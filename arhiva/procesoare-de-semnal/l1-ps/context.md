@@ -16,4 +16,12 @@
 - **Lucru:** `sursa/text/` = textul extras din PDF-uri; `sursa/date/cursN.json` = rezumat + grile vechi rezolvate +
   grile noi pe fiecare curs, `sursa/date/grile_scanate.json` = grilele din imagini (făcute de agenți separați,
   câte unul pe curs, apoi verificate).
-- **Status:** în lucru.
+- **Rezultat (7 nov 2026):** pagina de studiu `procesoare-de-semnal/l1-ps/ghid-l1-ps.html`, publicată privat la
+  https://claude.ai/artifact/1baXfSd4w7so9SB5KJfX3T (merge și pe telefon). Taburi: Învață (rezumat + capcane pe
+  curs), Grile (pe curs / doar vechi), Simulare (10 întrebări, ~jumătate vechi), Greșeli (în browser).
+  261 de grile: 78 vechi (din Drive, cu răspunsuri deduse din curs) + noi; 23 marcate „nesigur” cu motivul.
+  Se refac cu `python3 sursa/build_ghid.py` din `sursa/date/*.json` + `sursa/ghid_template.html`.
+- **De știut:** fișierul GRILE.RTF din „Grile final” avea doar răspunsurile, fără variante: variantele acelor
+  întrebări sunt reconstruite din curs. IEEE 754 e predat în curs cu alte cifre decât standardul real (se învață
+  ca în curs). Din grilele scanate, doar 8 din 46 țin de cursurile 1–6 (restul sunt pentru LV2).
+- **Status:** gata de învățat.

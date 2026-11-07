@@ -1,0 +1,835 @@
+{
+  "grile": [
+    {
+      "sursa": "Examen.pdf (Verificare 2, 17.01.2022) întrebarea 1 – bifat a, b, c, d; punctaj 3/3",
+      "curs": 0,
+      "intrebare": "Instrucțiunile de salt pot avea următoarele forme suportate de diverse procesoare de semnal:",
+      "variante": [
+        "întârziat (permite procesorului să execute câteva instrucțiuni aflate după instrucțiunea de salt, înainte ca saltul să fie executat efectiv)",
+        "condiționat (să execute saltul doar dacă este îndeplinită una sau mai multe condiții) și necondiționat (saltul se execută mereu)",
+        "multiciclu (saltul se execută după o întârziere de câteva cicluri)",
+        "saltul întârziat cu anulare (instrucțiunile aflate după instrucțiunea de salt pot anula saltul, dacă anumite condiții nu sunt îndeplinite)"
+      ],
+      "marcat": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "corecte": [],
+      "explicatie": "",
+      "sigur": false,
+      "figura": ""
+    },
+    {
+      "sursa": "v2_D.pdf (Lucrare de verificare 2, varianta D) întrebarea 10 – nemarcat",
+      "curs": 0,
+      "intrebare": "Instrucțiunile de salt pot avea următoarele forme suportate de diverse procesoare de semnal:",
+      "variante": [
+        "salt multiciclu",
+        "salt nestructurat",
+        "salt recondiționat",
+        "salt întârziat"
+      ],
+      "marcat": [],
+      "corecte": [],
+      "explicatie": "",
+      "sigur": false,
+      "figura": ""
+    },
+    {
+      "sursa": "Examen.pdf (Verificare 2, 17.01.2022) întrebarea 2 – bifat b, punctaj 3/3; subiect final 2024 1.pdf + subiect final 2024 2.jpg (Lucrare de verificare 2, varianta B) întrebarea 2 – încercuit „adresare indirectă cu registru” (a în acea variantă)",
+      "curs": 6,
+      "intrebare": "Din ce categorie de moduri de adresare face parte instrucțiunea „A6=A6+*R6”, care are ca efect adunarea valorii stocate la locația de memorie indicată de conținutul registrului R6 la valoarea stocată în registrul acumulator A6:",
+      "variante": [
+        "adresare indirectă cu registru cu adresare modulo",
+        "adresare indirectă cu registru",
+        "adresare indirectă cu registru cu pre sau post incrementare",
+        "adresare indirectă cu registru cu indexare"
+      ],
+      "marcat": [
+        1
+      ],
+      "corecte": [
+        1
+      ],
+      "explicatie": "Curs 6, §6.5 Adresarea indirectă cu registru: exemplul din curs este chiar „A0 = A0 + *R5”, unde operandul „*R5” e specificat prin adresare indirectă cu registru (R5 conține adresa operandului). Nu există ++/-- (§6.6), offset/index (§6.7) sau buffer circular (§6.8).",
+      "sigur": true,
+      "figura": ""
+    },
+    {
+      "sursa": "v2_D.pdf (Lucrare de verificare 2, varianta D) întrebarea 3 – nemarcat",
+      "curs": 6,
+      "intrebare": "Din ce categorie de moduri de adresare face parte instrucțiunea „A6=A6+*R6++”, care are ca efect adunarea valorii stocate la locația de memorie indicată de conținutul registrului R6 la valoarea stocată în registrul acumulator A6:",
+      "variante": [
+        "adresare indirectă cu registru",
+        "adresare indirectă cu registru cu indexare",
+        "adresare indirectă cu registru cu pre sau post incrementare",
+        "adresare indirectă cu registru cu adresare modulo"
+      ],
+      "marcat": [],
+      "corecte": [
+        2
+      ],
+      "explicatie": "Curs 6, §6.6 Adresarea indirectă cu registru cu pre- și post-incrementare/decrementare: exemplul „A0 = A0 + *R5++” adună valoarea de la adresa din R5 și apoi incrementează R5 ca să indice locația următoare. „++” după registru = post-incrementare.",
+      "sigur": true,
+      "figura": ""
+    },
+    {
+      "sursa": "Examen.pdf (Verificare 2, 17.01.2022) întrebarea 3 – bifat c, punctaj 1,5/3, încercuit de mână a și c; subiect final 2024 1.pdf + subiect final 2024 2.jpg (Lucrare de verificare 2, varianta B) întrebarea 5 – încercuit a, c",
+      "curs": 0,
+      "intrebare": "Care din afirmațiile referitoare la setul de instrucțiuni de rotație ale procesoarelor de semnal sunt adevărate:",
+      "variante": [
+        "operațiile de rotație stânga/dreapta se execută cu un singur bit",
+        "operațiile de rotație stânga/dreapta se execută cu minim 2 sau 4 biți",
+        "pot fi considerate operații de deplasare circulară",
+        "nu există astfel de operații la procesoarele de semnal"
+      ],
+      "marcat": [
+        0,
+        2
+      ],
+      "corecte": [],
+      "explicatie": "",
+      "sigur": false,
+      "figura": ""
+    },
+    {
+      "sursa": "v2_D.pdf (Lucrare de verificare 2, varianta D) întrebarea 6 – nemarcat",
+      "curs": 0,
+      "intrebare": "Care din afirmațiile referitoare la setul de instrucțiuni de rotație ale procesoarelor de semnal sunt adevărate:",
+      "variante": [
+        "operațiile de rotație stânga/dreapta se execută cu un singur bit",
+        "operațiile de rotație stânga/dreapta se execută cu minim 2 sau 4 biți",
+        "pot fi considerate operații de deplasare circulară",
+        "operațiile de rotație pot fi logice sau aritmetice"
+      ],
+      "marcat": [],
+      "corecte": [],
+      "explicatie": "",
+      "sigur": false,
+      "figura": ""
+    },
+    {
+      "sursa": "Examen.pdf (Verificare 2, 17.01.2022) întrebarea 4 – bifat c, punctaj 3/3; v2_D.pdf (Lucrare de verificare 2, varianta D) întrebarea 5 – nemarcat (alte ordini ale variantelor)",
+      "curs": 6,
+      "intrebare": "Din ce categorie de moduri de adresare face parte instrucțiunea „MUL a”, care are ca rezultat AX=AL*a, unde AX și AL sunt registrele procesorului folosite implicit pentru operația de înmulțire și „a” este o variabilă oarecare pe 8 biți:",
+      "variante": [
+        "adresare imediată",
+        "adresare directă la memorie",
+        "adresare implicită",
+        "adresare directă la registru"
+      ],
+      "marcat": [
+        2
+      ],
+      "corecte": [
+        2
+      ],
+      "explicatie": "Curs 6, §6.1 Adresarea implicită: adresele operanzilor sunt indicate implicit de instrucțiune și nu pot fi schimbate; exemplul din curs e tot o înmulțire (AT&T, „P = X * Y”, putea fi scris doar „*”). Aici AX și AL sunt impuse de instrucțiunea MUL. Punctajul 3/3 de la Examen.pdf (doar c bifat) confirmă.",
+      "sigur": true,
+      "figura": ""
+    },
+    {
+      "sursa": "Examen.pdf (Verificare 2, 17.01.2022) întrebarea 5 – bifat d, punctaj 3/3 (calcul scris de mână: 5V ± 0,25V → 4,75V…5,25V)",
+      "curs": 0,
+      "intrebare": "Tensiunea de alimentare nominală a unui procesor de semnal este descrisă ca fiind Vcc=5V +/- 5%. Care din următoarele tensiuni se încadrează în plaja dată:",
+      "variante": [
+        "4,65V",
+        "5,40V",
+        "5,28V",
+        "4,85V"
+      ],
+      "marcat": [
+        3
+      ],
+      "corecte": [],
+      "explicatie": "",
+      "sigur": false,
+      "figura": ""
+    },
+    {
+      "sursa": "Examen.pdf (Verificare 2, 17.01.2022) întrebarea 6 – bifat b, punctaj 3/3; subiect final 2024 1.pdf + subiect final 2024 2.jpg (Lucrare de verificare 2, varianta B) întrebarea 4 – încercuit „adresare modulo” (d în acea variantă)",
+      "curs": 6,
+      "intrebare": "Modul de adresare care folosește un buffer circular de tip FIFO este:",
+      "variante": [
+        "adresare indirectă cu registru cu indexare",
+        "adresare indirectă cu registru cu adresare modulo",
+        "adresare indirectă cu registru cu pre sau post incrementare",
+        "adresare indirectă cu registru"
+      ],
+      "marcat": [
+        1
+      ],
+      "corecte": [
+        1
+      ],
+      "explicatie": "Curs 6, §6.8 Adresarea indirectă cu registru cu aritmetică a adreselor modulo: „Cea mai comună aplicație a acestui mod de adresare este implementarea unui buffer circular”; bufferele folosesc tehnica FIFO, iar adresarea modulo (circulară) readuce automat pointerul la începutul bufferului.",
+      "sigur": true,
+      "figura": ""
+    },
+    {
+      "sursa": "Examen.pdf (Verificare 2, 17.01.2022) întrebarea 7 – bifat c, punctaj 3/3; subiect final 2024 1.pdf + subiect final 2024 2.jpg (Lucrare de verificare 2, varianta B) întrebarea 8 – încercuit „buclare hardware” (a în acea variantă); v2_D.pdf (Lucrare de verificare 2, varianta D) întrebarea 8 – nemarcat",
+      "curs": 2,
+      "intrebare": "Care din următoarele facilități sunt specifice procesoarelor de semnal pentru execuția buclelor?",
+      "variante": [
+        "sunt identice cu cele de la procesoarele de uz general",
+        "registre speciale pe post de contor de buclă",
+        "buclare hardware pentru execuția buclelor fără cicluri mașină suplimentare",
+        "instrucțiuni de salt (software)"
+      ],
+      "marcat": [
+        2
+      ],
+      "corecte": [
+        2
+      ],
+      "explicatie": "Curs 2, §2.1 Procesoare PDS (6/7), „Controlul specializat al funcționării”: procesoarele PDS oferă suport eficient pentru bucle, o instrucțiune de buclare sau „repeat” care implementează ciclurile for-next fără mărirea ciclului instrucțiune pentru actualizarea/testarea contorului sau saltul înapoi, adică buclare hardware fără cicluri suplimentare. Registre speciale de contor nu sunt menționate în curs. Punctajul 3/3 cu doar c bifat confirmă.",
+      "sigur": true,
+      "figura": ""
+    },
+    {
+      "sursa": "Examen.pdf (Verificare 2, 17.01.2022) întrebarea 8 – bifat b și d, punctaj 2/3, b tăiat de mână cu nota „PARALELE”; subiect final 2024 1.pdf + subiect final 2024 2.jpg (Lucrare de verificare 2, varianta B) întrebarea 9 – încercuit „lucrează în regim DMA” (c în acea variantă)",
+      "curs": 0,
+      "intrebare": "Porturile gazdă întâlnite la procesoarele de semnal:",
+      "variante": [
+        "sunt porturi seriale unidirecționale nespecializate",
+        "sunt porturi seriale bidirecționale specializate de 8 biți sau de 16 biți",
+        "nu poate fi folosit pentru a controla procesorul digital de semnal (nu poate să-l forțeze să execute instrucțiuni sau rutine de serviciu de întrerupere, să citească sau să scrie registre/memoria, etc)",
+        "lucrează în regim DMA în mod uzual (data prezentă la port este scrisă automat în memoria procesorului de semnal fără a-l opri, cu sau fără întreruperi)"
+      ],
+      "marcat": [
+        1,
+        3
+      ],
+      "corecte": [],
+      "explicatie": "",
+      "sigur": false,
+      "figura": ""
+    },
+    {
+      "sursa": "Examen.pdf (Verificare 2, 17.01.2022) întrebarea 9 – bifat a și d, punctaj 2/3, încercuit de mână a, b, d; subiect final 2024 1.pdf + subiect final 2024 2.jpg (Lucrare de verificare 2, varianta B) întrebarea 7 – încercuit set specializat de registre, stivă software, stivă hardware cu RAM (a, b, c în acea variantă)",
+      "curs": 0,
+      "intrebare": "În cazul procesoarelor de semnal, realizarea stivei poate fi efectuată prin următoarele metode:",
+      "variante": [
+        "stiva hardware cu memorie RAM",
+        "stiva software cu registru de memorare al vârfului stivei",
+        "niciunul din răspunsurile date",
+        "cu set specializat de registre"
+      ],
+      "marcat": [
+        0,
+        1,
+        3
+      ],
+      "corecte": [],
+      "explicatie": "",
+      "sigur": false,
+      "figura": ""
+    },
+    {
+      "sursa": "v2_D.pdf (Lucrare de verificare 2, varianta D) întrebarea 1 – nemarcat",
+      "curs": 0,
+      "intrebare": "În cazul procesoarelor de semnal, realizarea stivei poate fi efectuată prin următoarele metode:",
+      "variante": [
+        "stiva implicită",
+        "stiva software cu registru de memorare al vârfului stivei",
+        "stiva hardware cu memorie RAM",
+        "nu există stivă în cazul DSP-urilor"
+      ],
+      "marcat": [],
+      "corecte": [],
+      "explicatie": "",
+      "sigur": false,
+      "figura": ""
+    },
+    {
+      "sursa": "Examen.pdf (Verificare 2, 17.01.2022) întrebarea 10 – bifat c, punctaj 1/3, încercuit de mână b, c, d",
+      "curs": 0,
+      "intrebare": "În cazul execuției instrucțiunilor în pipeline, hazardul poate fi eliminat prin:",
+      "variante": [
+        "hazardul din pipeline nu poate fi eliminat",
+        "reordonarea instrucțiunilor prin încărcarea lor într-un buffer de instrucțiuni și execuția lor în mod dinamic",
+        "eliminarea dependenței de date prin introducerea de NOP-uri între instrucțiunile care depind de aceleași date",
+        "avansarea datelor (rezultatelor) între instrucțiuni și între etapele pipeline-ului"
+      ],
+      "marcat": [
+        2
+      ],
+      "corecte": [],
+      "explicatie": "",
+      "sigur": false,
+      "figura": ""
+    },
+    {
+      "sursa": "v2_D.pdf (Lucrare de verificare 2, varianta D) întrebarea 2 – nemarcat",
+      "curs": 0,
+      "intrebare": "În cazul execuției instrucțiunilor în pipeline, hazardul poate fi eliminat prin:",
+      "variante": [
+        "eliminarea dependenței de date prin introducerea de NOP-uri între instrucțiunile care depind de aceleași date",
+        "reordonarea instrucțiunilor prin încărcarea lor într-un buffer de instrucțiuni și execuția lor în mod dinamic",
+        "eliminarea tuturor structurilor de date care introduc hazard",
+        "hazardul din pipeline nu poate fi eliminat"
+      ],
+      "marcat": [],
+      "corecte": [],
+      "explicatie": "",
+      "sigur": false,
+      "figura": ""
+    },
+    {
+      "sursa": "subiect final 2024 1.pdf + subiect final 2024 2.jpg (Lucrare de verificare 2, varianta B) întrebarea 1 – încercuit a, b, c; v2_D.pdf (Lucrare de verificare 2, varianta D) întrebarea 4 – nemarcat",
+      "curs": 0,
+      "intrebare": "Un vector de întrerupere:",
+      "variante": [
+        "stabilește legătura între sursa întreruperii și subrutina de tratare asociată",
+        "are, de regulă, o lungime de unul sau două cuvinte și este localizat în zona inferioară de memorie",
+        "este asociat fiecărei surse de întrerupere",
+        "nu există în cazul DSP-urilor"
+      ],
+      "marcat": [
+        0,
+        1,
+        2
+      ],
+      "corecte": [],
+      "explicatie": "",
+      "sigur": false,
+      "figura": ""
+    },
+    {
+      "sursa": "subiect final 2024 1.pdf + subiect final 2024 2.jpg (Lucrare de verificare 2, varianta B) întrebarea 3 – încercuit c",
+      "curs": 0,
+      "intrebare": "În cadrul DSP-urilor cu pipeline există următoarele modele de programare care folosesc limbaj de asamblare:",
+      "variante": [
+        "doar modelul de programare cu timp staționar",
+        "doar modelul de programare cu date staționare",
+        "modelul de programare cu timp staționar și modelul de programare cu date staționare",
+        "nu există astfel de modele de programare"
+      ],
+      "marcat": [
+        2
+      ],
+      "corecte": [],
+      "explicatie": "",
+      "sigur": false,
+      "figura": ""
+    },
+    {
+      "sursa": "v2_D.pdf (Lucrare de verificare 2, varianta D) întrebarea 9 – nemarcat",
+      "curs": 0,
+      "intrebare": "În cadrul DSP-urilor cu pipeline există următoarele modele de programare care folosesc limbaj de asamblare:",
+      "variante": [
+        "modelul de programare cu date staționare",
+        "modelul de programare cu instrucțiuni staționare",
+        "modelul de programare cu timp staționar",
+        "nu există astfel de modele de programare"
+      ],
+      "marcat": [],
+      "corecte": [],
+      "explicatie": "",
+      "sigur": false,
+      "figura": ""
+    },
+    {
+      "sursa": "subiect final 2024 1.pdf + subiect final 2024 2.jpg (Lucrare de verificare 2, varianta B) întrebarea 6 – încercuit c, d",
+      "curs": 0,
+      "intrebare": "Ortogonalitatea setului de instrucțiuni:",
+      "variante": [
+        "nu există în cazul DSP-urilor",
+        "este influențată doar de gradul în care modurile de adresare sunt disponibile în mod uniform pentru diverse operații efectuate de procesor",
+        "nu poate fi măsurată",
+        "este influențată de consistența și gradul în care modurile de adresare sunt disponibile în mod uniform pentru diverse operații efectuate de procesor"
+      ],
+      "marcat": [
+        2,
+        3
+      ],
+      "corecte": [],
+      "explicatie": "",
+      "sigur": false,
+      "figura": ""
+    },
+    {
+      "sursa": "v2_D.pdf (Lucrare de verificare 2, varianta D) întrebarea 7 – nemarcat",
+      "curs": 0,
+      "intrebare": "Ortogonalitatea setului de instrucțiuni:",
+      "variante": [
+        "este influențată doar de gradul în care modurile de adresare sunt disponibile în mod uniform pentru diverse operații efectuate de procesor",
+        "este influențată de consistența și gradul în care modurile de adresare sunt disponibile în mod uniform pentru diverse operații efectuate de procesor",
+        "poate fi măsurată prin metode exhaustiv-stocastice",
+        "nu există în cazul DSP-urilor"
+      ],
+      "marcat": [],
+      "corecte": [],
+      "explicatie": "",
+      "sigur": false,
+      "figura": ""
+    },
+    {
+      "sursa": "subiect final 2024 1.pdf + subiect final 2024 2.jpg (Lucrare de verificare 2, varianta B) întrebarea 10 – încercuit b",
+      "curs": 0,
+      "intrebare": "Pipeline-ul mărește de obicei timpul de răspuns al procesorului la întreruperi:",
+      "variante": [
+        "când execuția saltului nu există",
+        "cu cât execuția saltului este mai întârziată",
+        "cu cât execuția saltului este mai rapidă",
+        "toate variantele sunt corecte"
+      ],
+      "marcat": [
+        1
+      ],
+      "corecte": [],
+      "explicatie": "",
+      "sigur": false,
+      "figura": ""
+    },
+    {
+      "sursa": "grile mai vechi/02.png (Moodle Lucrare 2, Seria A 2020) întrebarea 25 – selectat „Deplasarea”; grile mai vechi/09.png – selectat „Rotația” (alte ordini ale variantelor)",
+      "curs": 0,
+      "intrebare": "La procesoarele care nu acceptă operația de inversare a biților implementată în unitatea de generare a adreselor, pentru generarea adreselor cu biții inversați este utilizată:",
+      "variante": [
+        "Deplasarea",
+        "Comparația",
+        "Rotația",
+        "Instrucțiuni cu execuție condiționată"
+      ],
+      "marcat": [
+        0,
+        2
+      ],
+      "corecte": [],
+      "explicatie": "",
+      "sigur": false,
+      "figura": ""
+    },
+    {
+      "sursa": "grile mai vechi/03.png (Moodle Lucrare 2, Seria A 2020) întrebarea 24 – selectat c",
+      "curs": 0,
+      "intrebare": "În figura de mai jos este reprezentat un pipeline cu:",
+      "variante": [
+        "1 etaj",
+        "3 etaje",
+        "4 etaje",
+        "2 etaje"
+      ],
+      "marcat": [
+        2
+      ],
+      "corecte": [],
+      "explicatie": "",
+      "sigur": false,
+      "figura": "Tabel „Clock (Instruction) Cycle” 1–8 cu rândurile Instruction Fetch, Decode, Data Read/Write, Execute; instrucțiunile I1…I8 avansează câte o etapă pe ciclu (I1 ajunge la Execute în ciclul 4)."
+    },
+    {
+      "sursa": "grile mai vechi/04.png – selectat a",
+      "curs": 0,
+      "intrebare": "Bitul ce indică dacă rezultatul ultimei operații aritmetice a fost nul se numește:",
+      "variante": [
+        "bit de zero",
+        "bit de depășire",
+        "bit de minus",
+        "bit de transport"
+      ],
+      "marcat": [
+        0
+      ],
+      "corecte": [],
+      "explicatie": "",
+      "sigur": false,
+      "figura": ""
+    },
+    {
+      "sursa": "grile mai vechi/05.png (Moodle Lucrare 2, Seria A 2020) întrebarea 23 – selectat a",
+      "curs": 0,
+      "intrebare": "Aplicarea unui factor de prescalare cu valoarea 4:",
+      "variante": [
+        "Micșorează frecvența de patru ori",
+        "Mărește perioada de două ori",
+        "Mărește frecvența de patru ori",
+        "Micșorează perioada de două ori"
+      ],
+      "marcat": [
+        0
+      ],
+      "corecte": [],
+      "explicatie": "",
+      "sigur": false,
+      "figura": ""
+    },
+    {
+      "sursa": "grile mai vechi/06.png (Moodle Lucrare 2, Seria A 2020) întrebarea 22 – selectat Adevărat",
+      "curs": 0,
+      "intrebare": "Atât porturile gazdă cât și porturile de comunicație lucrează în regim DMA.",
+      "variante": [
+        "Adevărat",
+        "Fals"
+      ],
+      "marcat": [
+        0
+      ],
+      "corecte": [],
+      "explicatie": "",
+      "sigur": false,
+      "figura": ""
+    },
+    {
+      "sursa": "grile mai vechi/08.png – selectat Fals",
+      "curs": 0,
+      "intrebare": "În cazul interfețelor seriale asincrone datele sunt însoțite de un semnal de ceas suplimentar.",
+      "variante": [
+        "Adevărat",
+        "Fals"
+      ],
+      "marcat": [
+        1
+      ],
+      "corecte": [],
+      "explicatie": "",
+      "sigur": false,
+      "figura": ""
+    },
+    {
+      "sursa": "grile mai vechi/10.png (Moodle Lucrare 2, Seria A 2020) întrebarea 21 – selectat d",
+      "curs": 0,
+      "intrebare": "Secvența de program afișează un model de programare: A0=A0+P; P=X*Y; Y=*R0++; P=*Pt++",
+      "variante": [
+        "Cu date staționare",
+        "Cu timp staționar",
+        "Cu date staționare și cu timp staționar",
+        "Nicio variantă"
+      ],
+      "marcat": [
+        3
+      ],
+      "corecte": [],
+      "explicatie": "",
+      "sigur": false,
+      "figura": ""
+    },
+    {
+      "sursa": "grile mai vechi/11.png (Moodle Lucrare 2, Seria A 2020) întrebarea 20 – selectat b; grile mai vechi/14.png – selectat „Instruction Fetch” (altă ordine a variantelor)",
+      "curs": 0,
+      "intrebare": "În care etapă se încarcă instrucțiunea MOVE #$1234, R0:",
+      "variante": [
+        "Execute",
+        "Instruction Fetch",
+        "Decode",
+        "Data Read/Write"
+      ],
+      "marcat": [
+        1
+      ],
+      "corecte": [],
+      "explicatie": "",
+      "sigur": false,
+      "figura": ""
+    },
+    {
+      "sursa": "grile mai vechi/12.png – selectat d",
+      "curs": 3,
+      "intrebare": "Procesoarele în virgulă fixă au:",
+      "variante": [
+        "Cost mai ridicat",
+        "Gamă dinamică ridicată",
+        "Arhitectura de sistem mai puțin complexă față de procesoarele cu virgulă mobilă",
+        "Programarea mai facilă față de procesoarele cu virgulă mobilă"
+      ],
+      "marcat": [
+        3
+      ],
+      "corecte": [
+        2
+      ],
+      "explicatie": "Curs 3, §3.1 Virgula fixă și virgula mobilă: procesoarele cu virgulă mobilă sunt „mai scumpe decât cele cu virgulă fixă, dar mai ușor de programat”, costul ridicat fiind „datorat circuitului mai complex necesar procesorului cu virgulă mobilă” (capitol3), iar virgula mobilă oferă „o gamă dinamică mai largă”. Deci virgula fixă are cost mai mic, gamă dinamică mai mică, programare mai grea și arhitectură mai simplă; doar c e adevărată. Varianta d, cea selectată în captură, e greșită.",
+      "sigur": true,
+      "figura": ""
+    },
+    {
+      "sursa": "grile mai vechi/13.png (Moodle Lucrare 2, Seria A 2020) întrebarea 19 – selectat c; grile mai vechi/32.png – selectat „TMS320C2000” (altă ordine a variantelor)",
+      "curs": 0,
+      "intrebare": "Familia de procesoare Texas Instruments similară facilităților microcontrolerelor este:",
+      "variante": [
+        "TMS320C4000",
+        "TMS320C5000",
+        "TMS320C2000",
+        "TMS320C6000"
+      ],
+      "marcat": [
+        2
+      ],
+      "corecte": [],
+      "explicatie": "",
+      "sigur": false,
+      "figura": ""
+    },
+    {
+      "sursa": "grile mai vechi/15.png (Moodle Lucrare 2, Seria A 2020) întrebarea 18 – selectat d",
+      "curs": 0,
+      "intrebare": "Secvența de cod prezintă o buclă pentru: RPT #16; MAC (R0)+, (R4)+, A",
+      "variante": [
+        "FIR implementat în limbaj de asamblare cu cicluri asistate hardware",
+        "FIR implementat în limbaj de asamblare cu cicluri asistate software",
+        "IIR implementat în limbaj de asamblare cu cicluri asistate software",
+        "IIR implementat în limbaj de asamblare cu cicluri asistate hardware"
+      ],
+      "marcat": [
+        3
+      ],
+      "corecte": [],
+      "explicatie": "",
+      "sigur": false,
+      "figura": ""
+    },
+    {
+      "sursa": "grile mai vechi/16.png – selectat d",
+      "curs": 0,
+      "intrebare": "Stiva ce conține starea regiștrilor selectați în timpul apelurilor subrutinelor este:",
+      "variante": [
+        "Stiva Hardware",
+        "Shadow registers",
+        "Nici una",
+        "Stiva Software"
+      ],
+      "marcat": [
+        3
+      ],
+      "corecte": [],
+      "explicatie": "",
+      "sigur": false,
+      "figura": ""
+    },
+    {
+      "sursa": "grile mai vechi/17.png (Moodle Lucrare 2, Seria A 2020) întrebarea 17 – selectat Adevărat",
+      "curs": 0,
+      "intrebare": "La apariția unei întreruperi, aproape toate procesoarele permit terminarea execuției instrucțiunilor aflate în stadiul de încărcare.",
+      "variante": [
+        "Adevărat",
+        "Fals"
+      ],
+      "marcat": [
+        0
+      ],
+      "corecte": [],
+      "explicatie": "",
+      "sigur": false,
+      "figura": ""
+    },
+    {
+      "sursa": "grile mai vechi/18.png – selectat b",
+      "curs": 0,
+      "intrebare": "În figură este reprezentat un semnal de sincronizare de cadre de tip:",
+      "variante": [
+        "„bit length” și cuvinte multiple de date per cadru",
+        "„word length” și un singur cuvânt de date per cadru",
+        "„word length” și cuvinte multiple de date per cadru",
+        "„bit length” și un singur cuvânt de date per cadru"
+      ],
+      "marcat": [
+        1
+      ],
+      "corecte": [],
+      "explicatie": "",
+      "sigur": false,
+      "figura": "Diagramă de timp Clock / Frame Sync / Data: Frame Sync rămâne activ pe durata a 8 biți (0…7) ai unui cuvânt, apoi inactiv (fără date), apoi un nou cadru. Legenda: „FIGURE 10-2. Word-length frame sync… no data are transmitted while the frame sync is inactive”."
+    },
+    {
+      "sursa": "grile mai vechi/19.png (Moodle Lucrare 2, Seria A 2020) întrebarea 16 – selectat d",
+      "curs": 4,
+      "intrebare": "La deplasarea aritmetică la dreapta, numărul 010010 devine:",
+      "variante": [
+        "100101",
+        "100100",
+        "101001",
+        "001001"
+      ],
+      "marcat": [
+        3
+      ],
+      "corecte": [
+        3
+      ],
+      "explicatie": "Curs 4, §4.1 Deplasatorul: deplasatorul scalează cu puteri ale lui 2 (deplasarea la dreapta cu un bit = scalare cu 2^-1), iar capitol4 numește deplasările logice ca fiind „fără extensie de semn”, deci cea aritmetică păstrează/extinde bitul de semn. 010010 → bitul de semn 0 se copiază în stânga, bitul 0 iese: 001001 (18/2 = 9).",
+      "sigur": true,
+      "figura": ""
+    },
+    {
+      "sursa": "grile mai vechi/20.png – selectat „Patru nivele”; grile mai vechi/23.png (Moodle Lucrare 2, Seria A 2020) întrebarea 13 – selectat „Patru nivele” (altă ordine a variantelor)",
+      "curs": 0,
+      "intrebare": "La procesoarele ce pot realiza îmbricarea directă, adâncimea de întrepătrundere poate avea:",
+      "variante": [
+        "Două nivele",
+        "Opt nivele",
+        "Patru nivele",
+        "Un nivel"
+      ],
+      "marcat": [
+        2
+      ],
+      "corecte": [],
+      "explicatie": "",
+      "sigur": false,
+      "figura": ""
+    },
+    {
+      "sursa": "grile mai vechi/21.png – selectat b",
+      "curs": 0,
+      "intrebare": "Presupunând că fiecare etapă din figură necesită pentru a fi executată aproximativ 10ns, în cât timp este executată I3:",
+      "variante": [
+        "40ns",
+        "30ns",
+        "50ns",
+        "40ms"
+      ],
+      "marcat": [
+        1
+      ],
+      "corecte": [],
+      "explicatie": "",
+      "sigur": false,
+      "figura": "Tabel pipeline pe 8 cicluri cu stall: Instruction Fetch I1 I2 I3 I4 I4 I5 I6 I7; Decode – I1 I2 I3 I3 I4 I5 I6; Data Read/Write – – I1 I2 I2 I3 I4 I5 (I2 încadrat în ciclurile 4–5); Execute – – – I1 I2 NOP I3 I4. I3 ocupă ciclurile 3–7."
+    },
+    {
+      "sursa": "grile mai vechi/22.png (Moodle Lucrare 2, Seria A 2020) întrebarea 14 – selectat Adevărat",
+      "curs": 0,
+      "intrebare": "Procesorul TMS320C64x este un DSP cu aritmetică în virgulă fixă.",
+      "variante": [
+        "Adevărat",
+        "Fals"
+      ],
+      "marcat": [
+        0
+      ],
+      "corecte": [],
+      "explicatie": "",
+      "sigur": false,
+      "figura": ""
+    },
+    {
+      "sursa": "grile mai vechi/24.png – selectat c",
+      "curs": 0,
+      "intrebare": "Care este metoda de management a energiei în care ceasul este oprit la majoritatea secțiunilor procesorului:",
+      "variante": [
+        "Controlul frecvenței ceasului",
+        "Perifericele și controlul operațiilor I/O",
+        "Modul adormit",
+        "Dezactivarea pinilor de ieșire de ceas nefolosiți"
+      ],
+      "marcat": [
+        2
+      ],
+      "corecte": [],
+      "explicatie": "",
+      "sigur": false,
+      "figura": ""
+    },
+    {
+      "sursa": "grile mai vechi/25.png (Moodle Lucrare 2, Seria A 2020) întrebarea 12 – selectat c",
+      "curs": 0,
+      "intrebare": "Un echipament ce poate opera la minim 3V, are o tensiune nominală de:",
+      "variante": [
+        "3,6V",
+        "2,7V",
+        "3,3V",
+        "3V"
+      ],
+      "marcat": [
+        2
+      ],
+      "corecte": [],
+      "explicatie": "",
+      "sigur": false,
+      "figura": ""
+    },
+    {
+      "sursa": "grile mai vechi/26.png – selectat a",
+      "curs": 4,
+      "intrebare": "Regiștrii ce se pot utiliza ca operanzi pentru majoritatea operațiilor aritmetice și de multiplicare sunt:",
+      "variante": [
+        "Regiștri acumulatori",
+        "Regiștri pentru adresă",
+        "Registrul de uz general",
+        "Numărătorul de program"
+      ],
+      "marcat": [
+        0
+      ],
+      "corecte": [
+        0
+      ],
+      "explicatie": "Curs 4, §4.1 Regiștrii acumulator: „Regiștrii acumulator rețin rezultate parțiale și finale ale operației de multiplicare-acumulare și ale altor operații aritmetice”; majoritatea DSP-urilor au doi sau mai mulți acumulatori. §4.2 spune că doar unele procesoare în virgulă mobilă folosesc regiștri de uz general pentru asta, deci pentru „majoritatea” răspunsul e acumulatorii. Regiștrii de adresă țin de adresare (Curs 6), iar PC-ul de controlul programului.",
+      "sigur": true,
+      "figura": ""
+    },
+    {
+      "sursa": "grile mai vechi/27.png – selectat Adevărat; grile mai vechi/28.png – duplicat identic, selectat Adevărat",
+      "curs": 0,
+      "intrebare": "Pentru controlul ceasului pot fi folosite și sursele de ceas de viteză mică.",
+      "variante": [
+        "Adevărat",
+        "Fals"
+      ],
+      "marcat": [
+        0
+      ],
+      "corecte": [],
+      "explicatie": "",
+      "sigur": false,
+      "figura": ""
+    },
+    {
+      "sursa": "grile mai vechi/29.png – selectat c",
+      "curs": 0,
+      "intrebare": "Portul dedicat pentru comunicarea cu un microprocesor de uz general este denumit:",
+      "variante": [
+        "Port I/O de bit",
+        "Circuit timer",
+        "Port gazdă",
+        "Port paralel"
+      ],
+      "marcat": [
+        2
+      ],
+      "corecte": [],
+      "explicatie": "",
+      "sigur": false,
+      "figura": ""
+    },
+    {
+      "sursa": "grile mai vechi/30.png – selectat c",
+      "curs": 0,
+      "intrebare": "Consumul de energie în circuitele CMOS:",
+      "variante": [
+        "crește liniar cu tensiunea",
+        "crește liniar cu frecvența de tact",
+        "este invers proporțional cu pătratul tensiunii",
+        "scade cu creșterea tensiunii"
+      ],
+      "marcat": [
+        2
+      ],
+      "corecte": [],
+      "explicatie": "",
+      "sigur": false,
+      "figura": ""
+    },
+    {
+      "sursa": "grile mai vechi/31.png (Moodle Lucrare 2, Seria A 2020) întrebarea 11 – selectat b",
+      "curs": 0,
+      "intrebare": "În logica pozitivă la circuitele de interfață serială:",
+      "variante": [
+        "o tensiune negativă pe linia serială de date reprezintă un „0” logic, iar o tensiune scăzută (aproape 0 V) reprezintă un „1” logic",
+        "o tensiune pozitivă pe linia serială de date reprezintă un „1” logic, iar o tensiune scăzută (aproape 0 V) reprezintă un „0” logic",
+        "o tensiune pozitivă pe linia serială de date reprezintă un „0” logic, iar o tensiune scăzută (aproape 0 V) reprezintă un „1” logic",
+        "o tensiune negativă pe linia serială de date reprezintă un „1” logic, iar o tensiune scăzută (aproape 0 V) reprezintă un „0” logic"
+      ],
+      "marcat": [
+        1
+      ],
+      "corecte": [],
+      "explicatie": "",
+      "sigur": false,
+      "figura": ""
+    }
+  ]
+}
