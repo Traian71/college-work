@@ -55,7 +55,9 @@ for n in range(1, 7):
         for q in json.loads(f.read_text(encoding="utf-8")).get("grile_noi", []):
             adauga(q, n, "nou")
 
-data = {"cursuri": cursuri, "grile": grile}
+formule = D.parents[3] / "procesoare-de-semnal/l1-ps/formule-calcul-l1-ps.md"
+data = {"cursuri": cursuri, "grile": grile,
+        "formule": formule.read_text(encoding="utf-8") if formule.exists() else ""}
 html = (D / "ghid_template.html").read_text(encoding="utf-8")
 html = html.replace("/*__DATA__*/", json.dumps(data, ensure_ascii=False).replace("</", "<\\/"))
 OUT.parent.mkdir(parents=True, exist_ok=True)

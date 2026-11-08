@@ -93,7 +93,19 @@ code, .mono { font-family: var(--mono); font-size: .88em; }
 .progress i { display: block; height: 100%; background: var(--accent); }
 .figure { font-style: italic; color: var(--muted); font-size: 15px; }
 @media (prefers-reduced-motion: no-preference) { .opt { transition: background .15s, border-color .15s; } }
+.md h1 { font-size: 24px; margin: 0 0 8px; }
+.md h2 { margin: 26px 0 8px; padding-top: 14px; border-top: 1px solid var(--line); }
+.md h3 { margin: 16px 0 6px; }
+.md hr { display: none; }
+.md p, .md li { margin: 6px 0; }
+.md ul { padding-left: 20px; }
+.md .tw { overflow-x: auto; margin: 8px 0; }
+.md table { border-collapse: collapse; font-size: 15px; font-variant-numeric: tabular-nums; min-width: 100%; }
+.md th, .md td { border: 1px solid var(--line); padding: 5px 9px; text-align: left; vertical-align: top; }
+.md th { background: var(--accent-soft); }
+.md code { background: var(--accent-soft); padding: 1px 4px; border-radius: 4px; }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
 
 <header>
   <div class="wrap">
@@ -105,6 +117,7 @@ code, .mono { font-family: var(--mono); font-size: .88em; }
 </header>
 <nav><div class="wrap" role="tablist" id="tabs">
   <button role="tab" data-tab="invata">Învață</button>
+  <button role="tab" data-tab="formule">Formule</button>
   <button role="tab" data-tab="grile">Grile</button>
   <button role="tab" data-tab="sim">Simulare</button>
   <button role="tab" data-tab="gresite">Greșeli</button>
@@ -173,6 +186,12 @@ function questionCard(q, n, total, onDone) {
 }
 
 const views = {
+  formule() {
+    const v = $("#view");
+    const html = window.marked ? marked.parse(DATA.formule || "") : `<pre>${esc(DATA.formule)}</pre>`;
+    v.innerHTML = `<section class="sheet md">${html}</section>`;
+    v.querySelectorAll(".md table").forEach(t => { const w = document.createElement("div"); w.className = "tw"; t.replaceWith(w); w.appendChild(t); });
+  },
   invata() {
     const c = DATA.cursuri.find(x => x.curs === state.curs) || DATA.cursuri[0];
     const v = $("#view");
