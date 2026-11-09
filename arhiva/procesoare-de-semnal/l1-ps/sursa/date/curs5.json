@@ -244,8 +244,8 @@
         "constrângerile privitoare la timpii de acces",
         "a, b și c"
       ],
-      "corecte": [0, 1, 2, 3],
-      "explicatie": "Curs 5, 5.5 (slide 14): interfețele diferă prin trei caracteristici principale: numărul de porturi de memorie, flexibilitatea și complexitatea interfeței și constrângerile privitoare la timpii de acces. Sursa dă ca răspuns „a, b și c”; la grila cu mai multe răspunsuri se bifează toate patru.",
+      "corecte": [3],
+      "explicatie": "Curs 5, 5.5 (slide 14): interfețele diferă prin trei caracteristici principale: numărul de porturi de memorie, flexibilitatea și complexitatea interfeței și constrângerile privitoare la timpii de acces. Toate trei sunt adevărate, deci răspunsul este d („a, b și c”).",
       "sigur": true
     },
     {
