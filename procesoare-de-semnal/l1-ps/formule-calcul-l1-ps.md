@@ -232,25 +232,60 @@ Cum lucrezi o grilă „rotunjire convergentă păstrând k biți”:
 
 ---
 
-## 7. Adresare – calcule (Curs 6)
+## 7. Moduri de adresare – câte o instrucțiune pentru fiecare (Curs 6)
 
-- `*R5` = conținutul memoriei de la adresa din R5 (R5 nu se schimbă).
-- `*R5++` = folosește adresa din R5, **apoi** R5 = R5 + 1 (post-incrementare). `*R5--` → apoi R5 − 1.
-- `*R5++R17` = folosește R5, apoi **R5 = R5 + R17** (R17 = registru offset/modificator, poate fi negativ).
-- `-(R0)` (Motorola) = **întâi** R0 = R0 − 1, apoi accesează (pre-decrementare).
-- `X:(R5 + N6)` = adresa efectivă R5 + N6, **R5 și N6 nu se modifică** (indexare). `*-AR1(1)` → adresa AR1 − 1.
-- `AX0 = DM(1000)` = directă la memorie (ia ce e la adresa 1000); `AX0 = 1234` = imediată; `P = X*Y` = implicită;
-  `SUBF R1, R2` = directă la registru.
-- Grila veche cu `A0 = A0 + *R3++`: A0 primește A0 + (valoarea din memorie de la adresa din R3), iar **R3 crește doar
-  cu 1** (în grilă răspunsul era R3 = 0x100, deci pornea de la 0x0FF). Întrebarea „cât devine R3” nu ține de A0.
+Instrucțiunile sunt exact cele din curs/capitol. La grile primești instrucțiunea și alegi modul: uită-te la
+**ce e în jurul registrului** (`*`, `++`, `-( )`, `+ N`, `#`, `$`, `DM( )`).
 
-**Modulo (buffer circular):** adresa nouă = start + (offset + pas) **mod L**. Ex: **16 mod 5 = 1**; 14 mod 12 = 2.
+| Mod de adresare | Instrucțiune | Ce face | Cum îl recunoști |
+|---|---|---|---|
+| **Implicită** | `P = X * Y` (AT&T), `MUL a` | înmulțește X cu Y, rezultatul în P; registrele nu se pot alege | instrucțiunea însăși fixează registrele |
+| **Imediată** | `AX0 = 1234` (Analog Devices), `MOVE #1234, A` (Motorola) | pune **constanta** 1234 în registru | un număr simplu sau cu `#` |
+| **Directă la registru** | `SUBF R1, R2` (Texas Instruments) | R2 = R2 − R1 | doar nume de registre, ales de programator |
+| **Directă la memorie** (absolută) | `AX0 = DM(1000)` (Analog Devices), `MOVE $1000, A` (Motorola) | ia valoarea **de la adresa 1000** | adresa scrisă în instrucțiune: `DM( )` sau `$` |
+| **Indirectă cu registru** | `A0 = A0 + *R5` (AT&T); grila: `A6 = A6 + *R6` | A0 = A0 + valoarea de la adresa din R5; **R5 rămâne la fel** | `*R` fără nimic după |
+| **Indirectă cu post-incrementare** | `A0 = A0 + *R5++` (DSP32xx) | folosește adresa din R5, **apoi** R5 = R5 + 1 | `++` după registru |
+| **Indirectă cu post-decrementare** | `A0 = A0 + *R5--` | folosește R5, **apoi** R5 = R5 − 1 | `--` după registru |
+| **Post-incrementare cu offset** | `A0 = A0 + *R5++R17` (DSP32xx) | folosește R5, apoi **R5 = R5 + R17** (R17 = registru offset) | `++` urmat de alt registru |
+| **Indirectă cu pre-decrementare** | `MOVE X:-(R0), A1` (Motorola DSP5600x) | **întâi** R0 = R0 − 1, apoi citește de la noua adresă în A1 | semnul în fața parantezei: `-(R0)`; `+(R0)` = pre-incrementare |
+| **Indirectă cu indexare** | `MOVE Y1, X:(R5 + N6)` (DSP5600x), `LDI *-AR1(1), R7` (TMS320C3x) | adresa = R5 + N6 (sau AR1 − 1); **R5, N6, AR1 nu se modifică** | sumă în paranteză / `(număr)` după registru |
+| **Modulo (circulară)** | în curs nu e dată o instrucțiune, doar bufferul circular | pointerul trece singur de la capătul bufferului la început | „buffer circular”, „FIFO” |
+| **Inversarea biților** | în curs nu e dată o instrucțiune (ADSP-210xx: se setează un bit în registrul de control) | adresa iese cu biții în ordine inversă | „FFT”, „radix-2” |
+| **Scurtă cu date imediate** | `MOVE #1234, A` cu constanta pe ≤ 12 biți (Motorola) | instrucțiunea + constanta într-un singur cuvânt | `#` + constantă mică |
+| **Scurtă directă la memorie** | `MOVE $1000, A` cu adresa pe ≤ 6 biți (Motorola) | instrucțiunea + adresa într-un singur cuvânt | `$` + adresă mică |
+| **Directă la memorie paginată** | în curs nu e dată o instrucțiune (TMS320C5x) | registrul de pagină ține pagina, instrucțiunea doar adresa în pagină (7 biți = 128 cuvinte) | „registru de pagină” |
+
+**Atenție:** `AX0 = 1234` e imediată (constanta 1234), iar `AX0 = DM(1000)` e directă la memorie (ce e **la** adresa 1000).
+La indexare registrele **nu** se modifică, la pre/post-incrementare **se** modifică.
+
+### Calcule cu adrese (cum apar la grile)
+
+**Post-incrementare:** R2 = 0x0000, instrucțiunea `A = A + *R2++`
+- A se adună cu valoarea de la adresa 0x0000, apoi R2 = 0x0000 + 1 = **0x0001**.
+
+**Post-incrementare cu offset:** R6 = 0x0010, R4 = 3, la adresa 0x0010 e valoarea 3, A = 5. Instrucțiunea `A = A + *R6++R4`
+- A = 5 + 3 = **8** (valoarea din memorie, nu valoarea lui R6!), apoi R6 = 0x0010 + 3 = **0x0013**.
+
+**Pre-decrementare:** R0 = 0x0020, instrucțiunea `MOVE X:-(R0), A1`
+- întâi R0 = 0x001F, apoi A1 = valoarea de la adresa **0x001F**. R0 rămâne 0x001F.
+
+**Indexare:** R5 = 0x0100, N6 = 0x0004, instrucțiunea `MOVE Y1, X:(R5 + N6)`
+- Y1 se scrie la adresa 0x0100 + 0x0004 = **0x0104**; R5 și N6 rămân la fel.
+- `LDI *-AR1(1), R7` cu AR1 = 0x0050: R7 = valoarea de la adresa **0x004F**; AR1 rămâne 0x0050.
+
+**Directă la memorie:** `AX0 = DM(0x0002)`, iar la adresa 2 e valoarea 1 → **AX0 = 1** (nu 2!).
+
+**Modulo:** adresa nouă = start + (offset + pas) **mod L**.
+- Buffer de L = 5 cuvinte la adresele 0x100…0x104, R5 = 0x104, `*R5++` → R5 nu ajunge 0x105, ci **0x100** (revine la început).
+- Ex. din curs: 16 mod 5 = 1; ora 14 mod 12 = ora 2.
 - Bufferul începe la o graniță de **k cuvinte, k = cea mai mică putere a lui 2 ≥ L**: L = 48 → granița 64;
-  L = 256 → adrese 0, 256, 512 …
+  L = 256 → adresele 0, 256, 512 …
 
-**Inversarea biților (FFT radix-2):** scrii indicele în binar pe log₂N biți și îl citești invers.
-- N = 8: 0, 4, 2, 6, 1, 5, 3, 7 (ex: 1 = 001 → 100 = 4; 3 = 011 → 110 = 6).
-- N = 16: 0, 8, 4, 12, 2, 10, 6, 14, 1, 9, 5, 13, 3, 11, 7, 15.
+**Inversarea biților (FFT radix-2):** scrii indicele în binar pe log₂N biți și îl citești de la coadă.
+- N = 8 (3 biți): 1 = 001 → 100 = 4; 3 = 011 → 110 = 6. Ordinea: **0, 4, 2, 6, 1, 5, 3, 7**.
+
+**Paginată (TMS320C5x, pagini de 128 de cuvinte):** registrul de pagină = 3, adresa din instrucțiune = 5
+- adresa reală = 3 · 128 + 5 = **389**.
 
 ---
 

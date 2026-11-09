@@ -30,3 +30,5 @@
   (`procesoare-de-semnal/l1-ps/formule-calcul-l1-ps.md`, și tabul Formule) reduse la formatele din slide-uri
   (8 biți, mobil 10+6 și 5+3/5+5), cu ponderile în ordinea de citire.
 - **Status:** gata de învățat.
+
+- 9 nov seara: grila „a, b și c” corectată (doar d), căsuța „Sari la” + poziția salvată la Grile, secțiunea 7 din formule rescrisă cu câte o instrucțiune din curs pentru fiecare mod de adresare + calcule cu adrese.
