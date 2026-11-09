@@ -7,13 +7,29 @@ Toate exemplele de mai jos sunt verificate numeric.
 
 ## 0. Ce trebuie să știi pe de rost
 
-| 2⁰ | 2¹ | 2² | 2³ | 2⁴ | 2⁵ | 2⁶ | 2⁷ | 2⁸ | 2¹⁰ | 2¹⁵ | 2¹⁶ |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | 2 | 4 | 8 | 16 | 32 | 64 | 128 | 256 | 1024 | 32768 | 65536 |
+Ponderile sunt scrise **în ordinea în care citești biții, de la stânga la dreapta** (primul bit = cel mai mare).
 
-| 2⁻¹ | 2⁻² | 2⁻³ | 2⁻⁴ | 2⁻⁵ | 2⁻⁶ | 2⁻⁷ | 2⁻⁸ |
-|---|---|---|---|---|---|---|---|
-| 0,5 | 0,25 | 0,125 | 0,0625 | 0,03125 | 0,015625 | 0,0078125 | 0,00390625 |
+**Întreg pe 8 biți** (aritmetică întreagă):
+
+| bit | 1 | 0 | 1 | 0 | 0 | 1 | 0 | 0 |
+|---|---|---|---|---|---|---|---|---|
+| pondere | **−2⁷** | 2⁶ | 2⁵ | 2⁴ | 2³ | 2² | 2¹ | 2⁰ |
+| valoare | **−128** | 64 | 32 | 16 | 8 | 4 | 2 | 1 |
+
+→ 10100100 = −128 + 32 + 4 = **−92** (aduni ponderile de sub biții de 1).
+
+**Fracționar pe 8 biți** (virgula e imediat după primul bit):
+
+| bit | 1 | • | 0 | 1 | 1 | 0 | 0 | 0 | 0 |
+|---|---|---|---|---|---|---|---|---|---|
+| pondere | **−2⁰** | | 2⁻¹ | 2⁻² | 2⁻³ | 2⁻⁴ | 2⁻⁵ | 2⁻⁶ | 2⁻⁷ |
+| valoare | **−1** | | 0,5 | 0,25 | 0,125 | 0,0625 | 0,03125 | 0,015625 | 0,0078125 |
+
+→ 10110000 = −1 + 0,25 + 0,125 = **−0,625**.
+
+Pentru alte lungimi pornești de la puterea cea mai mare și cobori: 16 biți întreg = −2¹⁵ (−32768), 2¹⁴ (16384), …, 2⁰;
+exponent pe 3 biți = −4, 2, 1; pe 5 biți = −16, 8, 4, 2, 1; pe 6 biți = −32, 16, 8, 4, 2, 1.
+Alte puteri utile: 2⁸ = 256, 2¹⁰ = 1024, 2¹⁵ = 32768, 2¹⁶ = 65536; 2⁻⁸ = 0,00390625.
 
 **Regula de aur (complement față de 2):** bitul cel mai din stânga (MSB) are pondere **negativă**; restul pozitive.
 Aduni ponderile biților care sunt 1. Atât.
