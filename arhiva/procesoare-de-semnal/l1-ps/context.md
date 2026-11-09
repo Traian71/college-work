@@ -24,4 +24,9 @@
 - **De știut:** fișierul GRILE.RTF din „Grile final” avea doar răspunsurile, fără variante: variantele acelor
   întrebări sunt reconstruite din curs. IEEE 754 e predat în curs cu alte cifre decât standardul real (se învață
   ca în curs). Din grilele scanate, doar 8 din 46 țin de cursurile 1–6 (restul sunt pentru LV2).
+- **9 nov 2026 (cerut):** compactat. Învață arată întâi „Esențial” (`sursa/date/esential.json`, 9–10 idei pe curs),
+  apoi capcanele, iar rezumatul complet e strâns sub un buton. Grile: toate cele 78 vechi + doar 36 noi (6 pe curs,
+  `NOI_ALESE` în `build_ghid.py`), deci 114 în loc de 261. Buton „Golește lista” la Greșeli. Formulele
+  (`procesoare-de-semnal/l1-ps/formule-calcul-l1-ps.md`, și tabul Formule) reduse la formatele din slide-uri
+  (8 biți, mobil 10+6 și 5+3/5+5), cu ponderile în ordinea de citire.
 - **Status:** gata de învățat.

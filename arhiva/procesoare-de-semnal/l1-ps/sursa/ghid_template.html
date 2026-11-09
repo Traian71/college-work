@@ -129,6 +129,7 @@ const DATA = /*__DATA__*/;
 const $ = (s, el = document) => el.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const L = "abcd";
+const md = s => esc(s).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/`(.+?)`/g, "<code>$1</code>");
 const store = {
   get(k, d) { try { const v = localStorage.getItem("psl1:" + k); return v ? JSON.parse(v) : d; } catch { return d; } },
   set(k, v) { try { localStorage.setItem("psl1:" + k, JSON.stringify(v)); } catch {} }
@@ -197,8 +198,10 @@ const views = {
     const v = $("#view");
     v.innerHTML = `<div class="chips">${DATA.cursuri.map(x => `<button class="chip" aria-pressed="${x.curs === c.curs}" data-c="${x.curs}">Curs ${x.curs}</button>`).join("")}</div>
       <h2>Cursul ${c.curs}. ${esc(c.titlu)}</h2>
-      <section class="sheet">${c.rezumat.map(s => `<div class="sec"><h3>${esc(s.titlu)}</h3><ul>${s.puncte.map(p => `<li>${esc(p)}</li>`).join("")}</ul></div>`).join("")}</section>
-      ${c.capcane && c.capcane.length ? `<section class="trap"><h3>Capcane</h3><ul>${c.capcane.map(p => `<li>${esc(p)}</li>`).join("")}</ul></section>` : ""}
+      <section class="sheet"><h3>Esențial</h3><ul>${(c.esential || []).map(p => `<li>${md(p)}</li>`).join("")}</ul></section>
+      ${c.capcane && c.capcane.length ? `<section class="trap"><h3>Capcane</h3><ul>${c.capcane.map(p => `<li>${md(p)}</li>`).join("")}</ul></section>` : ""}
+      <details class="sheet"><summary><b>Rezumatul complet</b> <span class="muted">(dacă vrei detalii)</span></summary>
+        ${c.rezumat.map(s => `<div class="sec"><h3>${esc(s.titlu)}</h3><ul>${s.puncte.map(p => `<li>${esc(p)}</li>`).join("")}</ul></div>`).join("")}</details>
       <div class="row"><button class="btn" id="go-grile">Grile din cursul ${c.curs} (${DATA.grile.filter(q => q.curs === c.curs).length})</button></div>`;
     v.querySelectorAll("[data-c]").forEach(b => b.onclick = () => { state.curs = +b.dataset.c; store.set("curs", state.curs); render(); });
     $("#go-grile").onclick = () => { state.filtru = "c" + c.curs; state.idx = 0; store.set("filtru", state.filtru); go("grile"); };
@@ -254,7 +257,13 @@ const views = {
     const list = DATA.grile.filter(q => ids.has(q.id));
     const v = $("#view");
     v.innerHTML = `<h2>Grilele greșite (${list.length})</h2>
-      <p class="muted">Aici ajung grilele la care ai greșit. Când răspunzi corect, ies din listă. Se păstrează doar în browserul ăsta.</p>`;
+      <p class="muted">Aici ajung grilele la care ai greșit. Când răspunzi corect, ies din listă. Se păstrează doar în browserul ăsta.</p>
+      ${list.length ? `<div class="row"><button class="btn ghost" id="reset">Golește lista</button><span class="muted" id="reset-msg"></span></div>` : ""}`;
+    const r = $("#reset");
+    if (r) r.onclick = () => {
+      if (r.dataset.confirm) { store.set("gresite", []); render(); return; }
+      r.dataset.confirm = "1"; r.textContent = "Sigur? Apasă din nou"; $("#reset-msg").textContent = "Se șterg toate cele " + list.length + ".";
+    };
     if (!list.length) { v.insertAdjacentHTML("beforeend", `<section class="sheet"><p>Nicio grilă greșită momentan. Fă o simulare sau treci prin grile.</p></section>`); return; }
     list.forEach((q, i) => v.appendChild(questionCard(q, i + 1, list.length)));
   }

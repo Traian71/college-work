@@ -49,11 +49,19 @@ if sc.exists():
         if 1 <= q.get("curs", 0) <= 6:
             adauga(q, q["curs"], "vechi")
 
+# din grilele noi pastram doar cateva pe curs, pe subiectele care apar si in grilele vechi (cerut pe 9 nov)
+NOI_ALESE = {1: [3, 4, 5, 11, 16, 24], 2: [0, 1, 3, 8, 12, 24], 3: [2, 3, 6, 9, 20, 21],
+             4: [6, 7, 12, 16, 17, 19], 5: [1, 3, 8, 12, 16, 25], 6: [2, 8, 9, 11, 17, 25]}
 for n in range(1, 7):
     f = D / "date" / f"curs{n}.json"
     if f.exists():
-        for q in json.loads(f.read_text(encoding="utf-8")).get("grile_noi", []):
-            adauga(q, n, "nou")
+        noi = json.loads(f.read_text(encoding="utf-8")).get("grile_noi", [])
+        for i in NOI_ALESE[n]:
+            adauga(noi[i], n, "nou")
+
+esential = {e["curs"]: e for e in json.loads((D / "date" / "esential.json").read_text(encoding="utf-8"))}
+for c in cursuri:
+    c["esential"] = esential.get(c["curs"], {}).get("puncte", [])
 
 formule = D.parents[3] / "procesoare-de-semnal/l1-ps/formule-calcul-l1-ps.md"
 data = {"cursuri": cursuri, "grile": grile,

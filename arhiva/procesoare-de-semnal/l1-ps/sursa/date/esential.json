@@ -1,0 +1,70 @@
+[
+  {"curs": 1, "titlu": "Procesoare digitale de semnal și sisteme PDS", "puncte": [
+    "Lider de piață: **Texas Instruments** (57%), apoi AT&T, Motorola, NEC, Analog Devices. Prima etapă VLSI: 1979, Intel 2920.",
+    "**Cerințe funcționale generale:** viteză mare de prelucrare (timp real); volum mare de operații aritmetice și logice simple și repetitive; precizie mare; suport pentru CAD/CNA rapide (semnalele de intrare sunt analogice).",
+    "**Caracteristici:** paralelism mare + pipeline (multe instrucțiuni într-un tact); module incluse pe cip (multiplicator hardware paralel, circuite de deplasare, memorii interne, **stivă internă hardware**); set de instrucțiuni adaptat algoritmilor PDS; interfețe rapide (seriale, paralele, DMA).",
+    "**Arhitectura Harvard:** memorii separate pentru program și date, cu magistrale separate. Combinată cu pipeline.",
+    "**Unitatea de comandă:** logică cablată (nu microprogramată) → mai rapidă, mai puțin flexibilă. Facilități pentru bucle, stivă, întreruperi.",
+    "**Domenii:** telecomunicații (modemuri, radio, telefonie, transmisiuni de date), medicină, automobile, militar, multimedia. (Routerele nu apar în curs.)",
+    "**Avantaje DSP:** timp real, universale și flexibile (se reprogramează), precizie mare, fiabilitate. Clasa cu **rate mici de eșantionare + algoritmi complecși**: modelarea vremii.",
+    "**Caracteristici comune ale sistemelor PDS:** algoritmii, rata de eșantionare, tactul, reprezentarea numerelor.",
+    "**Virgulă fixă:** mai ieftine, mai simple ca arhitectură. **Virgulă mobilă:** gamă dinamică mare, mai scumpe, programare mai ușoară."
+  ]},
+  {"curs": 2, "titlu": "Procesoare DSP. Încapsulări. Alternative", "puncte": [
+    "**Cele 5 caracteristici comune:** MAC într-un singur ciclu instrucțiune; arhitectura multiacces a memoriei; moduri de adresare specializate; control specializat al funcționării (bucle); periferice și interfețe I/O pe cip.",
+    "**MAC** = multiplicare + acumulare într-un ciclu, utilă la **produsul a doi vectori** (filtrare, corelație, Fourier). Pentru a evita depășirea: acumulator cu **biți de gardă**.",
+    "**Multiacces:** mai multe accesări ale memoriei **într-un singur ciclu instrucțiune** (instrucțiunea + operanzii simultan). Prin magistrale multiple, memorii multiport, bancuri separate. Restricție: de obicei doar memorie pe cip.",
+    "**Adresare specializată:** cea mai comună e **indirectă cu post-incrementare**; speciale: **modulo (circulară)** și **inversarea biților** (FFT).",
+    "**Control specializat:** bucle hardware (instrucțiune de buclă, fără test explicit), întreruperi rapide, comutare rapidă de context.",
+    "**Varianta cea mai comună:** procesorul **single-cip**. **Cele 6 variante constructive:** module multicip (MCM), cipuri multiprocesor, seturi de circuite, nuclee PDS, procesoare personalizate, multiprocesoare.",
+    "**Cipuri multiprocesor** = mai multe procesoare într-un cip (ex. microprocesor + microcontroler: Motorola, Zilog; TriCore Siemens). **Seturi de circuite** = un DSP împărțit în mai multe capsule (Butterfly).",
+    "**Nucleu PDS** = DSP folosit ca bloc de construcție într-un circuit mai mare (ASIC), nu încapsulat separat.",
+    "**Cele 3 alternative:** microprocesoarele de uz general; PC-urile și stațiile de lucru; hardware-ul personalizat (la cerere)."
+  ]},
+  {"curs": 3, "titlu": "Reprezentarea numerelor. Aritmetici", "puncte": [
+    "Virgulă fixă: numere **întregi** (aritmetică întreagă) sau **fracții între −1 și 1** (aritmetică fracționară). Același hardware; **diferența principală = modul de manipulare a rezultatului înmulțirii**. Majoritatea DSP cu virgulă fixă suportă ambele.",
+    "Virgulă mobilă: **valoare = mantisă × 2^exponent**; mantisa e fracționară, exponentul e întreg (amândouă cu semn). Procesoarele cu virgulă mobilă acceptă și date în virgulă fixă (întregi, ex. adrese).",
+    "**Precizia maximă = log₂(valoare maximă / eroarea maximă de cuantizare)**: la virgulă fixă = numărul de biți ai formatului; la virgulă mobilă = numărul de biți ai mantisei.",
+    "**Gama dinamică** = cel mai mare / cel mai mic număr reprezentabil. Fix fracționar 32 biți: ≈ 2,15 × 10⁹ (≈ 187 dB). Mobil 32 biți (24 + 8): ≈ 5,79 × 10⁷⁶ (> 1535 dB). Telecom: 50 dB; audio Hi-Fi: 90 dB.",
+    "**Virgulă mobilă** = mai scumpe, dar programare mai ușoară (fără grija scalării). **Virgulă fixă** = majoritatea aplicațiilor dedicate, pentru că prioritatea e **costul**.",
+    "**Lungimea nativă** = ce pot manipula magistralele și calea de date într-un singur ciclu. Influențează costul (mărimea cipului, nr. de pini, memoria externă).",
+    "**Precizia extinsă:** suport intern în calea de date SAU cuvinte mai mari construite din cuvinte native → **mult mai lentă**.",
+    "**Emularea virgulei mobile:** rutine software (biblioteci) pe un procesor cu virgulă fixă → **crește precizia și gama dinamică**.",
+    "**Virgulă mobilă pe bloc:** un grup de numere cu **mantise diferite și un singur exponent comun**, stocat separat. Instrucțiunea de „detecție a exponentului” ajută la conversie.",
+    "**IEEE-754 (cum e în curs):** simplă precizie 32 biți = 24 mantisă + 8 exponent; dublă 64 biți = 52 + 12."
+  ]},
+  {"curs": 4, "titlu": "Calea de date", "puncte": [
+    "Calea de date (virgulă fixă) = multiplicator, ALU, **acumulatori**, deplasator (shifter), registre de operanzi.",
+    "**Multiplicatorul:** n × n biți → **2n biți** (2n − 1 dacă se interzice cel mai negativ număr). La fracționar se păstrează jumătatea de sus.",
+    "**Acumulatorii** rețin rezultatele parțiale și finale (preiau rezultatul ALU). Majoritatea DSP au doi sau mai mulți.",
+    "**Biți de gardă** = biți suplimentari în acumulator → poți aduna **până la 2ⁿ valori** fără depășire. Biți de gardă = acumulator − produs: DSP16xx 36 − 32 = **4**; ADSP-21xx 40 − 32 = **8**. Biții de gardă dau mai multă flexibilitate decât scalarea produsului, dar nu elimină nevoia scalării.",
+    "**Deplasatorul:** scalare cu puteri ale lui 2. Deplasare aritmetică la dreapta copiază bitul de semn (010010 → 001001); la stânga intră 0.",
+    "**Depășire (overflow):** valoare greșită, departe de cea corectă. Tratare: scalare atentă SAU **aritmetică cu saturare** (înlocuiește cu cel mai mare pozitiv / cel mai mic negativ; circuitul = limitator). 50 + 45 + 20 pe 2 cifre → 15 fără saturare, **99** cu saturare.",
+    "**Trunchiere:** arunci biții de jos → rezultat mereu ≤ original → **bias** (componentă continuă).",
+    "**Rotunjire la cea mai apropiată:** + jumătate de LSB, apoi trunchiere; la egalitate mereu în sus → bias mic. **Rotunjire convergentă:** la egalitate decide LSB-ul păstrat (0 → jos, 1 → sus) → fără bias.",
+    "**Virgulă mobilă:** ALU-ul **nu face înmulțiri** (le face multiplicatorul); mantise 24 × 24 → 48 biți. La depășire se saturează la cea mai mare valoare.",
+    "Ordinea obișnuită: **multiplicare → acumulare → deplasare → rotunjire**."
+  ]},
+  {"curs": 5, "titlu": "Arhitectura memoriei", "puncte": [
+    "O instrucțiune MAC dintr-un filtru FIR cere **4 accesări ale memoriei** într-un ciclu: citirea instrucțiunii, citirea coeficientului, citirea eșantionului, scrierea eșantionului înapoi (linia de întârziere).",
+    "**Von Neumann:** un singur bloc de memorie (program + date), un singur set de magistrale → MAC-ul din FIR ia 4 cicluri.",
+    "**Harvard:** două blocuri de memorie independente, cu magistrale separate → 2 accesări pe ciclu. La DSP: **Harvard modificată** (un bloc cu program și date, celălalt doar date). Variante cu 3 blocuri (program + date X + date Y).",
+    "**Memorii cu acces multiplu:** memorii **rapide** (mai multe accesări secvențiale pe ciclu, un singur set de magistrale) sau memorii **multiport** (accesări în paralel, cel puțin două seturi de magistrale; cele mai folosite: **dual-port**; dezavantaj: arie mare pe cip).",
+    "**Operații speciale de scriere:** cu instrucțiuni speciale, scrierea se face **în paralel** cu citiri (cu restricții).",
+    "**Reducerea accesărilor:** **cache pentru program** (memorie mică în procesor pentru instrucțiuni); **adresarea modulo** (linia de întârziere fără mutarea datelor); algoritmi pe blocuri.",
+    "**Stări de așteptare – cauze:** conflicte la accesarea resurselor; memorii lente; împărțirea magistralei cu alte dispozitive. (Cache-ul NU e o cauză.) Durată: de la ¼ de ciclu (DSP32C) la 1 ciclu.",
+    "**SRAM vs DRAM:** SRAM e mai ușor de folosit, mai rapidă, mai scumpă și ocupă mai multă suprafață; DRAM trebuie **reîmprospătată** periodic (are nevoie de controler DRAM) și e mai ieftină → potrivită pentru volume mari de date.",
+    "**DMA** = transfer de date în/din memoria procesorului **fără intervenția procesorului**. Memoria externă: de obicei un singur set de magistrale (unele DSP au două porturi)."
+  ]},
+  {"curs": 6, "titlu": "Adresarea datelor", "puncte": [
+    "**AGU** (unitatea de generare a adreselor) calculează adresele **în paralel** cu calea de date.",
+    "**Implicită:** registrele sunt fixate de instrucțiune (`P = X * Y`, `MUL a`). **Imediată:** valoarea e în instrucțiune (`AX0 = 1234`, `MOVE #1234, A`).",
+    "**Directă la registru:** programatorul alege registrele (`SUBF R1, R2`). **Directă la memorie** (absolută): adresa e în instrucțiune (`AX0 = DM(1000)`, `MOVE $1000, A`).",
+    "**Indirectă cu registru:** adresa e într-un registru (`A0 = A0 + *R5`). Cel mai folosit mod la DSP (potrivit pentru tablouri).",
+    "**Cu post-incrementare/decrementare:** `*R5++` (folosește, apoi +1), `*R5--`, `*R5++R17` (folosește, apoi + valoarea din R17). **Pre-decrementare:** `-(R0)` (întâi −1, apoi accesează).",
+    "**Cu indexare:** adresa = R5 + N6 (`X:(R5 + N6)`, `*-AR1(1)`); **registrele NU se modifică** (asta o deosebește de premodificare).",
+    "**Modulo (circulară):** buffer circular (FIFO), pointerul revine automat la început; buffer de lungime L începe la granița cu cea mai mică putere a lui 2 ≥ L (48 → 64; 256 → 0, 256, 512 …). Ex: 16 mod 5 = 1.",
+    "**Inversarea biților:** pentru FFT radix-2; ordinea pentru 8 puncte: 0, 4, 2, 6, 1, 5, 3, 7. Fără suport în AGU → se folosește rotația. Alternativă: aritmetica cu transport invers.",
+    "**Scurte și paginate:** instrucțiune + adresă într-un singur cuvânt (economie de memorie și de un ciclu); la paginată, un registru ține numărul paginii (TMS320C5x: pagini de 128 de cuvinte)."
+  ]}
+]

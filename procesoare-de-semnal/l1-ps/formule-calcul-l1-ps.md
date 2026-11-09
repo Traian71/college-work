@@ -27,9 +27,9 @@ Ponderile sunt scrise **în ordinea în care citești biții, de la stânga la d
 
 → 10110000 = −1 + 0,25 + 0,125 = **−0,625**.
 
-Pentru alte lungimi pornești de la puterea cea mai mare și cobori: 16 biți întreg = −2¹⁵ (−32768), 2¹⁴ (16384), …, 2⁰;
-exponent pe 3 biți = −4, 2, 1; pe 5 biți = −16, 8, 4, 2, 1; pe 6 biți = −32, 16, 8, 4, 2, 1.
-Alte puteri utile: 2⁸ = 256, 2¹⁰ = 1024, 2¹⁵ = 32768, 2¹⁶ = 65536; 2⁻⁸ = 0,00390625.
+În curs și în grile apar doar aceste formate: **8 biți** (întreg sau fracționar) și virgulă mobilă cu **mantisă 10 +
+exponent 6** sau **mantisă 5 + exponent 3 (sau 5)**. Ponderile exponentului: pe 3 biți **−4, 2, 1**; pe 5 biți
+**−16, 8, 4, 2, 1**; pe 6 biți **−32, 16, 8, 4, 2, 1**.
 
 **Regula de aur (complement față de 2):** bitul cel mai din stânga (MSB) are pondere **negativă**; restul pozitive.
 Aduni ponderile biților care sunt 1. Atât.
@@ -108,6 +108,15 @@ Cuvântul are **mantisa (M) în stânga** și **exponentul (E) în dreapta**:
 3. Mantisă: ponderi −1, 0,5, 0,25, 0,125, 0,0625, …
 4. Înmulțești mantisa cu 2^E (E pozitiv = mut virgula la dreapta, E negativ = la stânga).
 
+### Pas cu pas: 1100000000111110, mantisă 10 biți, exponent 6 biți
+
+1. Tai după 10 biți: mantisa **1100000000**, exponentul **111110**.
+2. Exponentul (ponderi −32, 16, 8, 4, 2, 1): 1·(−32) + 1·16 + 1·8 + 1·4 + 1·2 + 0·1 = **−2**.
+3. Mantisa (ponderi −1, 0,5, 0,25, …): 1·(−1) + 1·0,5 = **−0,5** (restul sunt 0).
+4. Valoarea: −0,5 × 2⁻² = −0,5 × 0,25 = **−0,125**.
+
+(Cursul face același lucru mutând virgula: exponent −2 = virgula mutată 2 poziții la stânga.)
+
 ### Exemplele din curs (mantisă 10 biți, exponent 6 biți)
 
 | Cuvânt | Mantisă | Exponent | Valoare |
@@ -134,26 +143,19 @@ Scrii numărul ca **M × 2^E** cu M între −1 și 1 (de obicei |M| ≥ 0,5), a
 - 3,25 = 0,8125 × 2² → M = 01101, E = 010 → **01101010** (5 + 3).
 - −3 = −0,75 × 2² → M = −0,75 = 10100, E = 010 → **10100010** (5 + 3).
 
-### Limitele unui format în virgulă mobilă (ex. 5 + 3)
-- Mantisă: de la −1 la 1 − 2⁻⁴ = 0,9375. Exponent: de la −4 la 3.
-- Cel mai mare număr: 0,9375 × 2³ = **7,5**; cel mai negativ: −1 × 2³ = **−8**.
-- Cel mai mic număr pozitiv: 2⁻⁴ × 2⁻⁴ = 2⁻⁸ = **0,0039**.
-- Gama dinamică: 7,5 / 0,0039 = 1920 ≈ **65,7 dB**.
-
 ---
 
 ## 4. Gama dinamică și precizia
 
 **Gama dinamică = cel mai mare număr / cel mai mic număr (pozitiv) reprezentabil.** În decibeli: **GD[dB] = 20 · log₁₀(GD)**.
 
+Cifrele din curs (de recunoscut, nu de calculat):
+
 | Format | Max | Min | Gama dinamică | dB |
 |---|---|---|---|---|
-| Fix fracționar 8 biți | 1 − 2⁻⁷ | 2⁻⁷ | 127 | 42,1 |
-| Fix fracționar 16 biți | 1 − 2⁻¹⁵ | 2⁻¹⁵ | 32767 | **90,3** |
-| Fix fracționar 32 biți (curs) | 1 − 2⁻³¹ | 2⁻³¹ | **≈ 2,15 × 10⁹** | **≈ 187** |
-| Mobil 32 biți: 24 mantisă + 8 exp. (curs) | 3,40 × 10³⁸ | 5,88 × 10⁻³⁹ | **≈ 5,79 × 10⁷⁶** | **> 1535** |
+| Fix fracționar 32 biți | 1 − 2⁻³¹ | 2⁻³¹ | **≈ 2,15 × 10⁹** | **≈ 187** |
+| Mobil 32 biți: 24 mantisă + 8 exp. | 3,40 × 10³⁸ | 5,88 × 10⁻³⁹ | **≈ 5,79 × 10⁷⁶** | **> 1535** |
 
-- Regulă rapidă la virgulă fixă: **≈ 6 dB pe bit** (6,02 · (N − 1) dB). Întregii pe N biți au aceeași gamă (2ᴺ⁻¹ − 1).
 - Din curs: telecom ~**50 dB** e suficient; audio de înaltă fidelitate ~**90 dB**.
 - La același număr de biți, **virgula mobilă are gamă dinamică mult mai mare**.
 
