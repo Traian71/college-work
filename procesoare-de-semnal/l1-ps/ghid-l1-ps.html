@@ -82,6 +82,8 @@ code, .mono { font-family: var(--mono); font-size: .88em; }
 .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .btn { font: 700 15px var(--body); border-radius: 8px; padding: 9px 16px; border: 1px solid var(--accent); background: var(--accent); color: var(--paper); cursor: pointer; }
 .btn.ghost { background: transparent; color: var(--accent); }
+.sari { display: inline-flex; gap: 6px; align-items: center; margin-left: auto; font-size: 15px; color: var(--muted); }
+.sari input { width: 70px; font: 600 15px var(--body); padding: 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); color: var(--ink); }
 .btn:disabled { opacity: .45; cursor: default; }
 .verdict { font-weight: 700; }
 .verdict.ok { color: var(--ok); } .verdict.bad { color: var(--bad); }
@@ -135,7 +137,7 @@ const store = {
   set(k, v) { try { localStorage.setItem("psl1:" + k, JSON.stringify(v)); } catch {} }
 };
 const titlu = n => (DATA.cursuri.find(c => c.curs === n) || {}).titlu || "";
-let state = { tab: "invata", curs: store.get("curs", 1), filtru: store.get("filtru", "toate"), idx: 0, sim: null };
+let state = { tab: "invata", curs: store.get("curs", 1), filtru: store.get("filtru", "toate"), idx: store.get("idx:" + store.get("filtru", "toate"), 0), sim: null };
 
 // pista de semnal din antet: o sinusoidă eșantionată
 (function () {
@@ -204,20 +206,24 @@ const views = {
         ${c.rezumat.map(s => `<div class="sec"><h3>${esc(s.titlu)}</h3><ul>${s.puncte.map(p => `<li>${esc(p)}</li>`).join("")}</ul></div>`).join("")}</details>
       <div class="row"><button class="btn" id="go-grile">Grile din cursul ${c.curs} (${DATA.grile.filter(q => q.curs === c.curs).length})</button></div>`;
     v.querySelectorAll("[data-c]").forEach(b => b.onclick = () => { state.curs = +b.dataset.c; store.set("curs", state.curs); render(); });
-    $("#go-grile").onclick = () => { state.filtru = "c" + c.curs; state.idx = 0; store.set("filtru", state.filtru); go("grile"); };
+    $("#go-grile").onclick = () => { state.filtru = "c" + c.curs; state.idx = store.get("idx:" + state.filtru, 0); store.set("filtru", state.filtru); go("grile"); };
   },
   grile() {
     const f = state.filtru;
     const list = DATA.grile.filter(q => f === "toate" ? true : f === "vechi" ? q.tip === "vechi" : q.curs === +f.slice(1));
     if (state.idx >= list.length) state.idx = 0;
+    store.set("idx:" + f, state.idx);
     const v = $("#view");
     const filters = [["toate", "Toate"], ["vechi", "Doar grile vechi"], ...DATA.cursuri.map(c => ["c" + c.curs, "Curs " + c.curs])];
     v.innerHTML = `<div class="chips">${filters.map(([k, t]) => `<button class="chip" aria-pressed="${k === f}" data-f="${k}">${t}</button>`).join("")}</div>
       <div class="progress" aria-hidden="true"><i style="width:${list.length ? ((state.idx + 1) / list.length * 100) : 0}%"></i></div>`;
-    v.querySelectorAll("[data-f]").forEach(b => b.onclick = () => { state.filtru = b.dataset.f; state.idx = 0; store.set("filtru", state.filtru); render(); });
+    v.querySelectorAll("[data-f]").forEach(b => b.onclick = () => { state.filtru = b.dataset.f; state.idx = store.get("idx:" + state.filtru, 0); store.set("filtru", state.filtru); render(); });
     if (!list.length) { v.insertAdjacentHTML("beforeend", `<p class="muted">Nicio grilă aici.</p>`); return; }
     v.appendChild(questionCard(list[state.idx], state.idx + 1, list.length));
-    v.insertAdjacentHTML("beforeend", `<div class="row"><button class="btn ghost" id="prev">Înapoi</button><button class="btn" id="next">Următoarea</button></div>`);
+    v.insertAdjacentHTML("beforeend", `<div class="row"><button class="btn ghost" id="prev">Înapoi</button><button class="btn" id="next">Următoarea</button><span class="sari"><label for="sari">Sari la</label><input id="sari" type="number" inputmode="numeric" min="1" max="${list.length}" placeholder="nr."><button class="btn ghost" id="sari-go">Du-te</button></span></div>`);
+    const sari = () => { const n = parseInt($("#sari").value, 10); if (n >= 1 && n <= list.length) { state.idx = n - 1; render(); window.scrollTo(0, 0); } };
+    $("#sari-go").onclick = sari;
+    $("#sari").onkeydown = e => { if (e.key === "Enter") sari(); };
     $("#prev").onclick = () => { state.idx = (state.idx - 1 + list.length) % list.length; render(); };
     $("#next").onclick = () => { state.idx = (state.idx + 1) % list.length; render(); window.scrollTo(0, 0); };
   },
