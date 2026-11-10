@@ -32,3 +32,4 @@
 - **Status:** gata de învățat.
 
 - 9 nov seara: grila „a, b și c” corectată (doar d), căsuța „Sari la” + poziția salvată la Grile, secțiunea 7 din formule rescrisă cu câte o instrucțiune din curs pentru fiecare mod de adresare + calcule cu adrese.
+- 10 nov: buton „Amestecă” la Grile (ordine random salvată, toate filtrele pornesc de la 1) + „Ordinea normală”.

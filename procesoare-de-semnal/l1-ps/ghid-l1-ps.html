@@ -210,13 +210,19 @@ const views = {
   },
   grile() {
     const f = state.filtru;
-    const list = DATA.grile.filter(q => f === "toate" ? true : f === "vechi" ? q.tip === "vechi" : q.curs === +f.slice(1));
+    let list = DATA.grile.filter(q => f === "toate" ? true : f === "vechi" ? q.tip === "vechi" : q.curs === +f.slice(1));
+    const ord = store.get("ordine", null);
+    if (ord) { const pos = new Map(ord.map((id, i) => [id, i])); list = list.slice().sort((a, b) => (pos.get(a.id) ?? 1e9) - (pos.get(b.id) ?? 1e9)); }
     if (state.idx >= list.length) state.idx = 0;
     store.set("idx:" + f, state.idx);
     const v = $("#view");
     const filters = [["toate", "Toate"], ["vechi", "Doar grile vechi"], ...DATA.cursuri.map(c => ["c" + c.curs, "Curs " + c.curs])];
     v.innerHTML = `<div class="chips">${filters.map(([k, t]) => `<button class="chip" aria-pressed="${k === f}" data-f="${k}">${t}</button>`).join("")}</div>
+      <div class="chips"><button class="chip" id="amesteca">Amestecă</button>${ord ? `<button class="chip" id="normal">Ordinea normală</button><span class="muted" style="font-size:14px">ordine amestecată</span>` : ""}</div>
       <div class="progress" aria-hidden="true"><i style="width:${list.length ? ((state.idx + 1) / list.length * 100) : 0}%"></i></div>`;
+    const reia = () => { filters.forEach(([k]) => store.set("idx:" + k, 0)); state.idx = 0; render(); window.scrollTo(0, 0); };
+    $("#amesteca").onclick = () => { store.set("ordine", shuffle(DATA.grile.map(q => q.id))); reia(); };
+    if (ord) $("#normal").onclick = () => { try { localStorage.removeItem("psl1:ordine"); } catch {} reia(); };
     v.querySelectorAll("[data-f]").forEach(b => b.onclick = () => { state.filtru = b.dataset.f; state.idx = store.get("idx:" + state.filtru, 0); store.set("filtru", state.filtru); render(); });
     if (!list.length) { v.insertAdjacentHTML("beforeend", `<p class="muted">Nicio grilă aici.</p>`); return; }
     v.appendChild(questionCard(list[state.idx], state.idx + 1, list.length));
