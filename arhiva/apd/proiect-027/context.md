@@ -35,4 +35,4 @@
 - **ZIP:** `apd/proiect-027/Tema027_FileMitita_Traian.zip` (cele 2 PDF-uri, Program.cs + csproj, codul plăcilor, .pkt), copiat și pe Desktop.
 - **Upload:** încercat pe 12 nov, refuzat de Moodle: trimiterile se deschid abia **duminică 15 nov 2026, 00:00**
   (allowsubmissionsfromdate). De încărcat atunci: `python3 instrumente/moodle.py submit 7573 apd/proiect-027/Tema027_FileMitita_Traian.zip --yes`.
-- **Status:** totul gata, mai rămâne doar încărcarea de după 15 nov. Prezentarea e în săptămânile 9–10.
+- **Status:** totul gata. Încărcarea de după 15 nov o face Traian singur (12 nov), din ZIP-ul de pe Desktop. Prezentarea e în săptămânile 9–10.
