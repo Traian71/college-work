@@ -1,0 +1,24 @@
+@startuml
+skinparam defaultFontName Arial
+skinparam defaultFontSize 13
+rectangle "Vector sursă\nblocuri sortate de lățime w\n[0,w) [w,2w) | [2w,3w) [3w,4w) | ..." as src
+rectangle "Thread producător\nAdd(Pereche(st, mij, dr))\nla final CompleteAdding()" as prod
+queue "BlockingCollection<Pereche>\ncapacitate limitată c" as q
+rectangle "Consumator 1" as c1
+rectangle "Consumator 2" as c2
+rectangle "Consumator 3" as c3
+rectangle "Consumator 4" as c4
+rectangle "Vector destinație\nintervale disjuncte\n[0,2w) [2w,4w) ..." as dst
+rectangle "Thread principal\nJoin pe toate threadurile,\ncopiază intervalul fără pereche,\nschimbă sursa cu destinația, w = 2w" as main
+src --> prod : perechi de\nintervale vecine
+prod --> q : Add\n(așteaptă dacă e plină)
+q --> c1 : Take
+q --> c2 : Take
+q --> c3 : Take
+q --> c4 : Take
+c1 --> dst : interclasare
+c2 --> dst
+c3 --> dst
+c4 --> dst
+dst --> main : nivel terminat
+@enduml

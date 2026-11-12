@@ -1,0 +1,15 @@
+@startuml
+skinparam defaultFontName Arial
+skinparam defaultFontSize 13
+hide empty description
+state "Așteaptă o pereche" as Asteapta : coada e goală, dar nu e închisă
+state "Interclasează" as Inter : sursa[st, mij) și sursa[mij, dr)\n→ destinație[st, dr)
+state "Terminat" as Term : iese din foreach,\nthreadul principal face Join
+[*] --> Asteapta : threadul pornește
+Asteapta --> Inter : a primit o pereche
+Inter --> Inter : mai sunt perechi în coadă
+Inter --> Asteapta : coada a rămas goală
+Asteapta --> Term : coada închisă (CompleteAdding)\nși golită
+Inter --> Term : coada închisă și golită
+Term --> [*]
+@enduml
