@@ -42,11 +42,9 @@ def main():
         for ip in destinatari:
             udp.send(ip, PORT, mesaj)          # cate o datagrama unicast pentru fiecare membru
         trimiteri.append(len(destinatari))
-        print("n = " + str(n) + "  x = " + str(round(x, 3)) + "  trimiteri: " + str(len(destinatari)))
+        print("n = " + str(n) + "  t = " + str(round(uptime() - start, 1)) + " s  x = " + str(round(x, 3)) + "  trimiteri: " + str(len(destinatari)))
         n = n + 1
-        asteptare = start + n / FS - uptime()  # urmatorul esantion la start + n/fs
-        if asteptare > 0:
-            sleep(asteptare)
+        sleep(1.0 / FS)                        # urmatorul esantion dupa 1/fs
 
     for ip in membri:
         udp.send(ip, PORT, "END;" + str(n))

@@ -1,7 +1,7 @@
 # Placile B, C, D, E - membrii grupului (Tema 027 RC)
 # Se schimba doar JOIN_DUPA si LEAVE_DUPA:
 #   B, D: JOIN_DUPA = 0,  LEAVE_DUPA = -1
-#   C:    JOIN_DUPA = 0,  LEAVE_DUPA = 25   (se retrage in timpul rularii)
+#   C:    JOIN_DUPA = 0,  LEAVE_DUPA = 45   (se retrage in timpul rularii)
 #   E:    JOIN_DUPA = 15, LEAVE_DUPA = -1   (se inscrie dupa inceperea fluxului)
 from udp import *
 from time import *

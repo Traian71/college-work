@@ -1,0 +1,11 @@
+#!/bin/zsh
+# deschide <x> <y>: inchide fereastra de dispozitiv deschisa, deschide placa de la (x,y), o aranjeaza
+W=$(osascript -e 'tell application "System Events" to tell (first process whose name contains "PacketTracer") to get name of window 1')
+if [ "$W" != "Cisco Packet Tracer" ] && [ "$W" != "Packet Tracer MCP" ]; then
+  osascript -e "tell application \"System Events\" to tell (first process whose name contains \"PacketTracer\") to click (first button of window \"$W\" whose subrole is \"AXCloseButton\")" >/dev/null; sleep 0.8
+fi
+/private/tmp/claude-501/-Users-traianfile-college-college-work/7cc250bb-b798-47d4-9858-e969c34dafc6/scratchpad/clic $1 $2; sleep 1.8
+W=$(osascript -e 'tell application "System Events" to tell (first process whose name contains "PacketTracer") to get name of window 1')
+osascript -e "tell application \"System Events\" to tell (first process whose name contains \"PacketTracer\") to tell window \"$W\"" -e 'set position to {433, 34}' -e 'set size to {900, 1065}' -e 'end tell'
+sleep 0.6; /private/tmp/claude-501/-Users-traianfile-college-college-work/7cc250bb-b798-47d4-9858-e969c34dafc6/scratchpad/clic 982 82; sleep 1
+echo $W

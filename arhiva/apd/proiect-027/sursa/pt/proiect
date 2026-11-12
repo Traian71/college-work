@@ -1,0 +1,11 @@
+#!/bin/zsh
+# proiect <x> <y> <nume> <fisier>: creeaza proiect Python3 pe placa de la (x,y) si lipeste codul
+/private/tmp/claude-501/-Users-traianfile-college-college-work/7cc250bb-b798-47d4-9858-e969c34dafc6/scratchpad/clic $1 $2; sleep 1.8
+/private/tmp/claude-501/-Users-traianfile-college-college-work/7cc250bb-b798-47d4-9858-e969c34dafc6/scratchpad/clic 984 246; sleep 1.2
+/private/tmp/claude-501/-Users-traianfile-college-college-work/7cc250bb-b798-47d4-9858-e969c34dafc6/scratchpad/clic 616 301; sleep 1.2
+osascript -e 'tell application "System Events" to keystroke "a" using {command down}' -e "tell application \"System Events\" to keystroke \"$3\""
+/private/tmp/claude-501/-Users-traianfile-college-college-work/7cc250bb-b798-47d4-9858-e969c34dafc6/scratchpad/clic 812 532; sleep 0.8; /private/tmp/claude-501/-Users-traianfile-college-college-work/7cc250bb-b798-47d4-9858-e969c34dafc6/scratchpad/clic 726 639; sleep 0.6; /private/tmp/claude-501/-Users-traianfile-college-college-work/7cc250bb-b798-47d4-9858-e969c34dafc6/scratchpad/clic 973 729; sleep 1.8
+/private/tmp/claude-501/-Users-traianfile-college-college-work/7cc250bb-b798-47d4-9858-e969c34dafc6/scratchpad/clic 592 362 dublu; sleep 1.5
+pbcopy < $4; /private/tmp/claude-501/-Users-traianfile-college-college-work/7cc250bb-b798-47d4-9858-e969c34dafc6/scratchpad/clic 1000 500; sleep 0.4
+osascript -e 'tell application "System Events" to keystroke "a" using {command down}' -e 'delay 0.3' -e 'tell application "System Events" to keystroke "v" using {command down}'
+sleep 1.2

@@ -21,6 +21,18 @@
   - Document: `apd/proiect-027/Tema027_APD_IS_FileMitita_Traian.pdf` (6 pagini), din `sursa/build_apd_is.py` + Chrome headless.
   - RC: codul plăcilor `apd/proiect-027/RC/sursa_A.py` și `membru.py` (A_s = 10, T = 4 s, fs = 2, 80 de eșantioane;
     C pleacă la 25 s, E intră la 15 s după pornirea programului lor), testat offline cu `sursa/pt/sim_offline.py`.
-- **Packet Tracer:** pluginul cisco-pt-mcp nu era încărcat în PT. Portul 7531 era ținut de o sesiune Claude veche din VS Code (10 nov),
-  oprită de mine. `sursa/pt/pt_daemon.py` pornește puntea și primește comenzi pe 127.0.0.1:7532.
-- **Rămas:** simularea în PT (încărcat pluginul, topologie, codul în plăci, rulare, capturi, .pkt), documentul RC, ZIP, upload.
+- **Packet Tracer (12 nov, pe Mac):**
+  - Portul 7531 al punții MCP era ținut de o sesiune Claude veche din VS Code (10 nov); am oprit-o. Pluginul din PT se pornește din
+    Extensions > Packet Tracer MCP (dacă îi închizi fereastra, se deconectează). `sursa/pt/pt_daemon.py` = puntea + comenzi pe 127.0.0.1:7532.
+  - Ecranul e scalat (1710×1107 puncte): click-urile se dau în puncte (`clic`, `trage3`, `rot` în `sursa/pt/`).
+  - SBC-PT din PT 9 are doar Wireless3 + Bluetooth: am pus modulul PT-IOT-NM-1CFE (drag din poza modulului în slot, cu placa oprită).
+    Plăcile adăugate de plugin n-au alimentare, așa că le-am pus din lista de dispozitive. IP-urile s-au pus din Config (pluginul nu poate pe SBC).
+  - Prima rulare a ieșit greșit: pauza cu `uptime()` nu mergea în A și s-a terminat în 2 s. Acum A folosește `sleep(1/fs)`, iar C pleacă la 45 s.
+  - Rularea bună: pornite B, C, D, E, apoi A (11:21:57 … 11:22:28). JOIN E -> indicele următor 16 = primul primit de E;
+    LEAVE C -> indicele următor 46, ultimul primit de C = 45; trimiteri/eșantion 0, 2, 3 (n 2–15), 4 (n 16–45), 3 (n 46–79), total 266.
+  - Capturi în `sursa/capturi/`, raport `apd/proiect-027/Tema027_RC_FileMitita_Traian.pdf` (6 pagini, `sursa/build_rc.py`),
+    `.pkt` în `apd/proiect-027/RC/`.
+- **ZIP:** `apd/proiect-027/Tema027_FileMitita_Traian.zip` (cele 2 PDF-uri, Program.cs + csproj, codul plăcilor, .pkt), copiat și pe Desktop.
+- **Upload:** încercat pe 12 nov, refuzat de Moodle: trimiterile se deschid abia **duminică 15 nov 2026, 00:00**
+  (allowsubmissionsfromdate). De încărcat atunci: `python3 instrumente/moodle.py submit 7573 apd/proiect-027/Tema027_FileMitita_Traian.zip --yes`.
+- **Status:** totul gata, mai rămâne doar încărcarea de după 15 nov. Prezentarea e în săptămânile 9–10.
