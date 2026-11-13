@@ -24,3 +24,5 @@
   that PowerPoint without checking.
 - **Status (7 Nov):** document, slides and script ready. Waiting for Traian's recording + link; then rebuild slides with
   the link, zip PDF + PPTX, `moodle.py submit 7374`.
+- **Alegerea temei (13 nov):** profesoara cere completarea fișierului de alegere a temei (link pe Moodle) până pe 1.12.2026.
+  Traian completează singur, pe rândul lui (44, 441_sgB), titlul: „Recunoașterea automată a vorbirii: de la parametrii semnalului vocal la rețelele neuronale”.
