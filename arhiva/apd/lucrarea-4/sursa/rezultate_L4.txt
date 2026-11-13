@@ -1,0 +1,53 @@
+Sistem: macOS 26.7.2, Apple M2, 8 procesoare logice, .NET 8 Release, 13.11.2026 17:47
+=== L4 128 16
+^Dx
+N = 128, P = 16
+A: 1 1 1 1 1 1 1 1 
+Sum(A)=128; Seq time = 0,048 ms
+Sum(A)=128; ParV1 time = 5,368 ms
+Sum(A)=128; ParV1 time = 5,3665 ms
+Sum(A)=128; ParV1 time = 4,9078 ms
+Sum(A)=128; ParV1 time = 5,271 ms
+Sum(A)=128; ParV1 time = 5,0561 ms
+Sum(A)=128; ParV1 time = 4,5968 ms
+Sum(A)=128; ParV1 time = 4,7866 ms
+Sum(A)=128; ParV1 time = 4,81 ms
+Sum(A)=128; ParV1 time = 5,3839 ms
+Sum(A)=128; ParV1 time = 4,4845 ms
+V1: 0 rezultate gresite din 10
+Sum(A)=128; ParV1 + mutex time = 4,9437 ms
+Sum(A)=128; ParV2 time = 0,823 ms
+Sum(A)=128; ParV3 time = 7,8061 ms
+Sum(A)=128; ParV4 time = 0,9705 ms
+Sum(A)=128; ParV5 time = 4,3152 ms
+B: 815 990 563 411 11 54 698 448 
+Seq:  min=8; max=995; media=499,0078125; time = 0,1096 ms
+Par:  min=8; max=995; media=499,0078125; time = 0,7425 ms
+Press any key for exit...
+
+=== L4 1024 16
+^Dx
+N = 1024, P = 16
+A: 1 1 1 1 1 1 1 1 
+Sum(A)=1024; Seq time = 0,0517 ms
+Sum(A)=1024; ParV1 time = 41,2293 ms
+Sum(A)=1024; ParV1 time = 119,3663 ms
+Sum(A)=1024; ParV1 time = 38,2983 ms
+Sum(A)=1024; ParV1 time = 38,1271 ms
+Sum(A)=1024; ParV1 time = 36,5645 ms
+Sum(A)=1024; ParV1 time = 46,0144 ms
+Sum(A)=1024; ParV1 time = 45,2184 ms
+Sum(A)=1024; ParV1 time = 39,4867 ms
+Sum(A)=1024; ParV1 time = 38,6179 ms
+Sum(A)=1024; ParV1 time = 37,5844 ms
+V1: 0 rezultate gresite din 10
+Sum(A)=1024; ParV1 + mutex time = 39,5002 ms
+Sum(A)=1024; ParV2 time = 0,8182 ms
+Sum(A)=1024; ParV3 time = 131,3529 ms
+Sum(A)=1024; ParV4 time = 1,1761 ms
+Sum(A)=1024; ParV5 time = 36,1335 ms
+B: 815 990 563 411 11 54 698 448 
+Seq:  min=0; max=999; media=497,8623046875; time = 0,1163 ms
+Par:  min=0; max=999; media=497,8623046875; time = 0,9079 ms
+Press any key for exit...
+
