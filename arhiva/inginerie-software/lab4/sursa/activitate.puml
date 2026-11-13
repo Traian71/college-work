@@ -1,0 +1,57 @@
+@startuml
+skinparam defaultFontName Arial
+skinparam defaultFontSize 13
+title Diagrama de activitate – Promovarea unui student la un curs
+
+|Student|
+start
+:Se înscrie la curs\n(plătește taxa, dacă e cazul);
+fork
+  :Participă la curs;
+fork again
+  :Participă la laborator;
+  :Predă temele de laborator;
+end fork
+|Cadru didactic|
+:Notează laboratorul;
+if (Laborator promovat?) then (nu)
+  |Student|
+  :Reface laboratorul\n(anul următor);
+  stop
+else (da)
+endif
+|Student|
+:Susține examenul;
+|Cadru didactic|
+:Corectează lucrarea;
+if (Nota >= 5?) then (nu)
+  |Student|
+  :Plătește taxa de restanță;
+  |Secretariat|
+  :Înregistrează plata;
+  |Student|
+  :Susține restanța;
+  |Cadru didactic|
+  :Corectează restanța;
+  if (Nota >= 5?) then (nu)
+    |Student|
+    :Reface cursul\n(anul următor);
+    stop
+  else (da)
+  endif
+else (da)
+endif
+|Student|
+:Consultă nota;
+if (Mulțumit de notă?) then (nu)
+  :Solicită re-evaluare;
+  |Cadru didactic|
+  :Re-evaluează lucrarea;
+else (da)
+endif
+|Secretariat|
+:Trece nota în catalog;
+|Student|
+:Curs promovat;
+stop
+@enduml

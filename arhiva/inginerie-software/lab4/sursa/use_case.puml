@@ -1,0 +1,46 @@
+@startuml
+skinparam defaultFontName Arial
+skinparam defaultFontSize 13
+left to right direction
+title Diagrama use case – Promovarea unui student la un curs
+
+actor Student
+actor "Cadru didactic" as Prof
+actor Secretariat
+
+rectangle "Promovarea unui curs" {
+  usecase "Participă la curs" as UC1
+  usecase "Participă la laborator" as UC2
+  usecase "Susține examenul" as UC4
+  usecase "Susține restanța" as UC7
+  usecase "Consultă nota" as UC5
+  usecase "Solicită re-evaluare" as UC6
+
+  usecase "Notează laboratorul" as UC9
+  usecase "Predă temele de laborator" as UC3
+  usecase "Corectează lucrarea" as UC10
+  usecase "Plătește taxa de restanță" as UC8
+  usecase "Trece nota în catalog" as UC11
+}
+
+Student --> UC1
+Student --> UC2
+Student --> UC4
+Student --> UC7
+Student --> UC5
+Student --> UC6
+
+UC2 ..> UC3 : <<include>>
+UC4 ..> UC10 : <<include>>
+UC7 ..> UC8 : <<include>>
+UC7 .up.> UC4 : <<extend>>\n(nota < 5)
+UC6 .up.> UC5 : <<extend>>\n(nemulțumit de notă)
+UC1 -[hidden]-> UC9
+UC5 -[hidden]-> UC11
+
+UC9 --> Prof
+UC10 --> Prof
+UC6 --> Prof
+UC8 --> Secretariat
+UC11 --> Secretariat
+@enduml
