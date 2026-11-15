@@ -6,4 +6,4 @@
 - **Cerințe** (`materiale/proiecte_iom_2026_441.pdf`, 8 teme):
   - O arhivă cu documentația (tema, metodologia, setul de date + link, rezultate bune și rele, limitări, help de instalare) și codul.
   - Interfața: Gradio sau altă tehnologie; Python e permis doar pentru backend.
-- **Status (15 nov):** neales. Traian trebuie să-și aleagă coechipierul și tema și să le treacă în fișier până pe 1 dec.
+- **Echipa (15 nov):** Traian e în echipă cu colegul Matei; tema a ales-o Matei (Traian nu mi-a spus încă care e). Traian revine când se lucrează proiectul.

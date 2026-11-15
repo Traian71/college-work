@@ -26,3 +26,4 @@
   the link, zip PDF + PPTX, `moodle.py submit 7374`.
 - **Alegerea temei (13 nov):** profesoara cere completarea fișierului de alegere a temei (link pe Moodle) până pe 1.12.2026.
   Traian completează singur, pe rândul lui (44, 441_sgB), titlul: „Recunoașterea automată a vorbirii: de la parametrii semnalului vocal la rețelele neuronale”.
+- **15 nov:** Traian amână înregistrarea. Trebuie să i-o reamintesc când revine (termen 12 dec 2026).
