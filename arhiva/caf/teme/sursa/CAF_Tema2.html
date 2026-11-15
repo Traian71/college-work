@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<title>CAF Tema 2</title>
+<style>
+  @page { size: A4; margin: 16mm 18mm; }
+  body { font-family: "Times New Roman", serif; font-size: 12.5pt; line-height: 1.45; color: #000; }
+  h1 { font-size: 16pt; text-align: center; margin: 0 0 2px; }
+  .sub { text-align: center; margin-bottom: 12px; }
+  h2 { font-size: 13.5pt; margin: 14px 0 6px; }
+  p { margin: 4px 0; }
+  ul { margin: 2px 0 6px; padding-left: 26px; }
+  .eq { margin: 5px 0 5px 28px; }
+  .rez { border: 1px solid #000; padding: 1px 5px; }
+  .ov { border-top: 1px solid #000; padding-top: 1px; display: inline-block; line-height: 1.1; }
+  .sec { break-inside: avoid; }
+  svg { display: block; margin: 6px 0 6px 28px; }
+  svg text { font-family: "Times New Roman", serif; font-size: 15px; }
+</style>
+</head>
+<body>
+<h1>CAF – Tema 2</h1>
+<div class="sub">File-Mitita Traian, grupa 441A</div>
+
+<h2>1.</h2>
+<p>Din diagramă, sistemul este format din 3 blocuri legate în <b>serie</b>:</p>
+<ul>
+  <li>blocul 1: A, B, C, D, E în paralel;</li>
+  <li>blocul din mijloc: 3 ramuri în paralel:
+    F–G (serie); &nbsp;[(H–I) ∥ (J–K)] în serie cu L; &nbsp;[M ∥ (N–O)] în serie cu (P ∥ R);</li>
+  <li>blocul 9: S ∥ (T–V) ∥ U.</li>
+</ul>
+<p>Relații folosite: serie R<sub>A∩B</sub> = R<sub>A</sub>·R<sub>B</sub>; paralel R<sub>A∪B</sub> = R<sub>A</sub> + R<sub>B</sub> − R<sub>A</sub>R<sub>B</sub>,
+  respectiv 1 − R = (1 − R<sub>A</sub>)(1 − R<sub>B</sub>)…</p>
+
+<p class="eq">R<sub>1</sub> = 1 − (1 − R<sub>A</sub>)(1 − R<sub>B</sub>)(1 − R<sub>C</sub>)(1 − R<sub>D</sub>)(1 − R<sub>E</sub>)</p>
+<p class="eq">R<sub>2</sub> = R<sub>F</sub>R<sub>G</sub></p>
+<p class="eq">R<sub>3</sub> = R<sub>H</sub>R<sub>I</sub> + R<sub>J</sub>R<sub>K</sub> − R<sub>H</sub>R<sub>I</sub>R<sub>J</sub>R<sub>K</sub>
+  &nbsp;&nbsp;(H–I ∥ J–K)</p>
+<p class="eq">R<sub>4</sub> = R<sub>3</sub>·R<sub>L</sub></p>
+<p class="eq">R<sub>5</sub> = R<sub>M</sub> + R<sub>N</sub>R<sub>O</sub> − R<sub>M</sub>R<sub>N</sub>R<sub>O</sub>
+  &nbsp;&nbsp;(M ∥ N–O)</p>
+<p class="eq">R<sub>6</sub> = R<sub>P</sub> + R<sub>R</sub> − R<sub>P</sub>R<sub>R</sub>
+  &nbsp;&nbsp;(P ∥ R)</p>
+<p class="eq">R<sub>7</sub> = R<sub>5</sub>·R<sub>6</sub></p>
+<p class="eq">R<sub>8</sub> = 1 − (1 − R<sub>2</sub>)(1 − R<sub>4</sub>)(1 − R<sub>7</sub>)
+  &nbsp;&nbsp;(cele 3 ramuri din mijloc în paralel)</p>
+<p class="eq">R<sub>9</sub> = 1 − (1 − R<sub>S</sub>)(1 − R<sub>T</sub>R<sub>V</sub>)(1 − R<sub>U</sub>)</p>
+
+<p>Schema echivalentă:</p>
+<svg width="520" height="150" viewBox="0 0 520 150">
+  <g stroke="#000" stroke-width="1.4" fill="none">
+    <circle cx="14" cy="75" r="4"/>
+    <line x1="18" y1="75" x2="60" y2="75"/>
+    <rect x="60" y="63" width="40" height="24"/>
+    <line x1="100" y1="75" x2="160" y2="75"/>
+    <line x1="160" y1="25" x2="160" y2="125"/>
+    <line x1="160" y1="25" x2="210" y2="25"/><rect x="210" y="13" width="40" height="24"/><line x1="250" y1="25" x2="300" y2="25"/>
+    <line x1="160" y1="75" x2="210" y2="75"/><rect x="210" y="63" width="40" height="24"/><line x1="250" y1="75" x2="300" y2="75"/>
+    <line x1="160" y1="125" x2="210" y2="125"/><rect x="210" y="113" width="40" height="24"/><line x1="250" y1="125" x2="300" y2="125"/>
+    <line x1="300" y1="25" x2="300" y2="125"/>
+    <line x1="300" y1="75" x2="360" y2="75"/>
+    <rect x="360" y="63" width="40" height="24"/>
+    <line x1="400" y1="75" x2="460" y2="75"/>
+    <circle cx="464" cy="75" r="4"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="80" y="80">1</text><text x="230" y="30">2</text><text x="230" y="80">4</text>
+    <text x="230" y="130">7</text><text x="380" y="80">9</text>
+    <text x="14" y="102">IN</text><text x="470" y="102">OUT</text>
+    <text x="318" y="20" font-size="14">(8)</text>
+  </g>
+</svg>
+
+<p class="eq"><span class="rez">R<sub>SIST</sub> = R<sub>1</sub> · R<sub>8</sub> · R<sub>9</sub></span></p>
+<p>Înlocuind:</p>
+<p class="eq">R<sub>SIST</sub> = [1 − (1 − R<sub>A</sub>)(1 − R<sub>B</sub>)(1 − R<sub>C</sub>)(1 − R<sub>D</sub>)(1 − R<sub>E</sub>)] ·</p>
+<p class="eq">· {1 − (1 − R<sub>F</sub>R<sub>G</sub>)[1 − (R<sub>H</sub>R<sub>I</sub> + R<sub>J</sub>R<sub>K</sub> − R<sub>H</sub>R<sub>I</sub>R<sub>J</sub>R<sub>K</sub>)R<sub>L</sub>]
+  [1 − (R<sub>M</sub> + R<sub>N</sub>R<sub>O</sub> − R<sub>M</sub>R<sub>N</sub>R<sub>O</sub>)(R<sub>P</sub> + R<sub>R</sub> − R<sub>P</sub>R<sub>R</sub>)]} ·</p>
+<p class="eq">· [1 − (1 − R<sub>S</sub>)(1 − R<sub>T</sub>R<sub>V</sub>)(1 − R<sub>U</sub>)]</p>
+
+<div class="sec">
+<h2>2.</h2>
+<p>Sistemul paralel funcționează dacă funcționează cel puțin un element:
+  S = E<sub>1</sub> ∪ E<sub>2</sub> ∪ … ∪ E<sub>n</sub></p>
+<p>Cu relațiile lui de Morgan (sistemul se defectează numai dacă se defectează toate elementele):</p>
+<p class="eq"><span class="ov">S</span> = <span class="ov">E<sub>1</sub> ∪ E<sub>2</sub> ∪ … ∪ E<sub>n</sub></span>
+  = <span class="ov">E</span><sub>1</sub> ∩ <span class="ov">E</span><sub>2</sub> ∩ … ∩ <span class="ov">E</span><sub>n</sub></p>
+<p>Pentru defectări independente:</p>
+<p class="eq">F<sub>P(n)</sub> = P(<span class="ov">S</span>) = P(<span class="ov">E</span><sub>1</sub>)·P(<span class="ov">E</span><sub>2</sub>)·…·P(<span class="ov">E</span><sub>n</sub>)
+  = F<sub>1</sub>F<sub>2</sub>…F<sub>n</sub> = ∏<sub>i=1</sub><sup>n</sup> F<sub>i</sub> = ∏<sub>i=1</sub><sup>n</sup> (1 − R<sub>i</sub>)</p>
+<p class="eq"><span class="rez">R<sub>SIST</sub> = R<sub>P(n)</sub> = 1 − F<sub>P(n)</sub> = 1 − ∏<sub>i=1</sub><sup>n</sup> (1 − R<sub>i</sub>)
+  = 1 − (1 − R<sub>1</sub>)(1 − R<sub>2</sub>)…(1 − R<sub>n</sub>)</span></p>
+<p class="eq">ex.: n = 2 ⇒ R<sub>SIST</sub> = R<sub>1</sub> + R<sub>2</sub> − R<sub>1</sub>R<sub>2</sub>; &nbsp;
+  elemente identice (R<sub>i</sub> = R) ⇒ R<sub>SIST</sub> = 1 − (1 − R)<sup>n</sup></p>
+</div>
+</body>
+</html>

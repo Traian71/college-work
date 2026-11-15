@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<title>CAF Tema 3</title>
+<style>
+  @page { size: A4; margin: 15mm 17mm; }
+  body { font-family: "Times New Roman", serif; font-size: 12.5pt; line-height: 1.42; color: #000; }
+  h1 { font-size: 16pt; text-align: center; margin: 0 0 2px; }
+  .sub { text-align: center; margin-bottom: 10px; }
+  h2 { font-size: 13.5pt; margin: 12px 0 5px; break-after: avoid; }
+  h3 { font-size: 12.5pt; margin: 9px 0 3px; break-after: avoid; }
+  p { margin: 3px 0; }
+  .eq { margin: 4px 0 4px 26px; }
+  .rez { border: 1px solid #000; padding: 1px 5px; }
+  .n { border-top: 1px solid #000; padding-top: 1px; display: inline-block; line-height: 1.1; }
+  .box { border: 1px solid #000; padding: 3px 8px; margin: 4px 0 4px 26px; display: inline-block; }
+  .sec { break-inside: avoid; }
+  table.bl { border-collapse: collapse; margin: 4px 0 4px 26px; }
+  table.bl td { padding: 1px 10px 1px 0; vertical-align: top; }
+  svg { display: block; margin: 4px 0 4px 26px; }
+  svg text { font-family: "Times New Roman", serif; font-size: 15px; }
+  ol { margin: 2px 0; padding-left: 50px; }
+  .cols { display: flex; gap: 40px; }
+</style>
+</head>
+<body>
+<h1>CAF – Tema 3</h1>
+<div class="sub">File-Mitita Traian, grupa 441A</div>
+
+<h2>a.</h2>
+<p>Notez blocurile serie-paralel din diagramă și nodurile N1…N6:</p>
+<table class="bl">
+  <tr><td>1: (B–C) ∥ D, între N1 și N2</td><td>R<sub>1</sub> = R<sub>B</sub>R<sub>C</sub> + R<sub>D</sub> − R<sub>B</sub>R<sub>C</sub>R<sub>D</sub></td></tr>
+  <tr><td>2: E–F, între N1 și N3</td><td>R<sub>2</sub> = R<sub>E</sub>R<sub>F</sub></td></tr>
+  <tr><td>3: G–H (punte), între N2 și N3</td><td>R<sub>3</sub> = R<sub>G</sub>R<sub>H</sub></td></tr>
+  <tr><td>4: (I–J) ∥ (K–L), între N2 și N4</td><td>R<sub>4</sub> = R<sub>I</sub>R<sub>J</sub> + R<sub>K</sub>R<sub>L</sub> − R<sub>I</sub>R<sub>J</sub>R<sub>K</sub>R<sub>L</sub></td></tr>
+  <tr><td>5: M ∥ (N–O), între N3 și N5</td><td>R<sub>5</sub> = R<sub>M</sub> + R<sub>N</sub>R<sub>O</sub> − R<sub>M</sub>R<sub>N</sub>R<sub>O</sub></td></tr>
+  <tr><td>6: P (punte), între N4 și N5</td><td>R<sub>6</sub> = R<sub>P</sub></td></tr>
+  <tr><td>7: Q ∥ R, între N4 și N6</td><td>R<sub>7</sub> = R<sub>Q</sub> + R<sub>R</sub> − R<sub>Q</sub>R<sub>R</sub></td></tr>
+  <tr><td>8: S–T, între N5 și N6</td><td>R<sub>8</sub> = R<sub>S</sub>R<sub>T</sub></td></tr>
+  <tr><td>9: (U–V) ∥ W ∥ X ∥ (Y–Z)</td><td>R<sub>9</sub> = 1 − (1 − R<sub>U</sub>R<sub>V</sub>)(1 − R<sub>W</sub>)(1 − R<sub>X</sub>)(1 − R<sub>Y</sub>R<sub>Z</sub>)</td></tr>
+</table>
+
+<svg width="640" height="200" viewBox="0 0 640 200">
+  <g stroke="#000" stroke-width="1.4" fill="none">
+    <circle cx="10" cy="100" r="4"/><line x1="14" y1="100" x2="40" y2="100"/>
+    <rect x="40" y="88" width="34" height="24"/><line x1="74" y1="100" x2="110" y2="100"/>
+    <line x1="110" y1="30" x2="110" y2="170"/>
+    <!-- sus -->
+    <line x1="110" y1="30" x2="140" y2="30"/><rect x="140" y="18" width="34" height="24"/><line x1="174" y1="30" x2="300" y2="30"/>
+    <rect x="234" y="18" width="34" height="24"/>
+    <line x1="268" y1="30" x2="380" y2="30"/><rect x="380" y="18" width="34" height="24"/><line x1="414" y1="30" x2="470" y2="30"/>
+    <!-- jos -->
+    <line x1="110" y1="170" x2="140" y2="170"/><rect x="140" y="158" width="34" height="24"/><line x1="174" y1="170" x2="234" y2="170"/>
+    <rect x="234" y="158" width="34" height="24"/>
+    <line x1="268" y1="170" x2="380" y2="170"/><rect x="380" y="158" width="34" height="24"/><line x1="414" y1="170" x2="470" y2="170"/>
+    <!-- punti -->
+    <line x1="210" y1="30" x2="210" y2="86"/><rect x="198" y="86" width="24" height="28"/><line x1="210" y1="114" x2="210" y2="170"/>
+    <line x1="340" y1="30" x2="340" y2="86"/><rect x="328" y="86" width="24" height="28"/><line x1="340" y1="114" x2="340" y2="170"/>
+    <line x1="470" y1="30" x2="470" y2="170"/>
+    <line x1="470" y1="100" x2="510" y2="100"/><rect x="510" y="88" width="34" height="24"/><line x1="544" y1="100" x2="580" y2="100"/>
+    <circle cx="584" cy="100" r="4"/>
+  </g>
+  <g fill="#000"><circle cx="210" cy="30" r="3"/><circle cx="210" cy="170" r="3"/><circle cx="340" cy="30" r="3"/><circle cx="340" cy="170" r="3"/></g>
+  <g text-anchor="middle">
+    <text x="57" y="105">A</text><text x="157" y="35">1</text><text x="157" y="175">2</text>
+    <text x="210" y="105">3</text><text x="251" y="35">4</text><text x="251" y="175">5</text>
+    <text x="340" y="105">6</text><text x="397" y="35">7</text><text x="397" y="175">8</text><text x="527" y="105">9</text>
+    <text x="10" y="128">IN</text><text x="592" y="128">OUT</text>
+    <text x="96" y="60" font-size="13">N1</text><text x="210" y="13" font-size="13">N2</text><text x="210" y="197" font-size="13">N3</text>
+    <text x="340" y="13" font-size="13">N4</text><text x="340" y="197" font-size="13">N5</text><text x="486" y="60" font-size="13">N6</text>
+  </g>
+</svg>
+
+<p>A și blocul 9 sunt în serie cu structura dintre N1 și N6, care este nedecompozabilă (are două punți: 3 și 6):</p>
+<p class="eq">R<sub>SIST</sub> = R<sub>A</sub> · R<sub>NED</sub> · R<sub>9</sub></p>
+
+<h3>Formula probabilității totale (Bayes), element „cheie” P (blocul 6):</h3>
+<p class="eq">R<sub>NED</sub> = R<sub>P</sub> · P(S/P) + (1 − R<sub>P</sub>) · P(S/<span class="n">P</span>)</p>
+
+<p><b>Cazul 1: P funcționează</b> ⇒ N4 și N5 devin un singur nod. Rămâne o punte (1, 2, 3, 4, 5) în serie cu 7 ∥ 8.
+  Aplic din nou formula probabilității totale, cu elementul cheie 3 (G–H):</p>
+<p class="eq">– 3 bun (N2 = N3): (1 ∥ 2) serie (4 ∥ 5) ⇒ (R<sub>1</sub> + R<sub>2</sub> − R<sub>1</sub>R<sub>2</sub>)(R<sub>4</sub> + R<sub>5</sub> − R<sub>4</sub>R<sub>5</sub>)</p>
+<p class="eq">– 3 defect: (1–4) ∥ (2–5) ⇒ R<sub>1</sub>R<sub>4</sub> + R<sub>2</sub>R<sub>5</sub> − R<sub>1</sub>R<sub>2</sub>R<sub>4</sub>R<sub>5</sub></p>
+<p class="eq">P(S/P) = [R<sub>3</sub>(R<sub>1</sub> + R<sub>2</sub> − R<sub>1</sub>R<sub>2</sub>)(R<sub>4</sub> + R<sub>5</sub> − R<sub>4</sub>R<sub>5</sub>)
+  + (1 − R<sub>3</sub>)(R<sub>1</sub>R<sub>4</sub> + R<sub>2</sub>R<sub>5</sub> − R<sub>1</sub>R<sub>2</sub>R<sub>4</sub>R<sub>5</sub>)] · (R<sub>7</sub> + R<sub>8</sub> − R<sub>7</sub>R<sub>8</sub>)</p>
+
+<p><b>Cazul 2: P defect</b> ⇒ ramurile devin 4–7 (serie) și 5–8 (serie). Rămâne o punte cu elementul cheie 3:</p>
+<p class="eq">– 3 bun: (1 ∥ 2) serie (4–7 ∥ 5–8) ⇒ (R<sub>1</sub> + R<sub>2</sub> − R<sub>1</sub>R<sub>2</sub>)(R<sub>4</sub>R<sub>7</sub> + R<sub>5</sub>R<sub>8</sub> − R<sub>4</sub>R<sub>5</sub>R<sub>7</sub>R<sub>8</sub>)</p>
+<p class="eq">– 3 defect: (1–4–7) ∥ (2–5–8) ⇒ R<sub>1</sub>R<sub>4</sub>R<sub>7</sub> + R<sub>2</sub>R<sub>5</sub>R<sub>8</sub> − R<sub>1</sub>R<sub>2</sub>R<sub>4</sub>R<sub>5</sub>R<sub>7</sub>R<sub>8</sub></p>
+<p class="eq">P(S/<span class="n">P</span>) = R<sub>3</sub>(R<sub>1</sub> + R<sub>2</sub> − R<sub>1</sub>R<sub>2</sub>)(R<sub>4</sub>R<sub>7</sub> + R<sub>5</sub>R<sub>8</sub> − R<sub>4</sub>R<sub>5</sub>R<sub>7</sub>R<sub>8</sub>)
+  + (1 − R<sub>3</sub>)(R<sub>1</sub>R<sub>4</sub>R<sub>7</sub> + R<sub>2</sub>R<sub>5</sub>R<sub>8</sub> − R<sub>1</sub>R<sub>2</sub>R<sub>4</sub>R<sub>5</sub>R<sub>7</sub>R<sub>8</sub>)</p>
+
+<p><b>Rezultat:</b></p>
+<div class="box">R<sub>SIST</sub> = R<sub>A</sub> · [R<sub>P</sub> · P(S/P) + (1 − R<sub>P</sub>) · P(S/<span class="n">P</span>)] ·<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;· [1 − (1 − R<sub>U</sub>R<sub>V</sub>)(1 − R<sub>W</sub>)(1 − R<sub>X</sub>)(1 − R<sub>Y</sub>R<sub>Z</sub>)]</div>
+<p class="eq">cu R<sub>1</sub>…R<sub>8</sub>, P(S/P) și P(S/<span class="n">P</span>) de mai sus.</p>
+
+<div class="sec">
+<h3>Altă metodă: transfigurări triunghi → stea</h3>
+<p>Pentru elemente de înaltă fiabilitate (F<sub>i</sub> ≪ 1), cu F = 1 − R și relațiile aproximative
+  F<sub>1</sub> ≅ F<sub>12</sub>F<sub>31</sub>, F<sub>2</sub> ≅ F<sub>23</sub>F<sub>12</sub>, F<sub>3</sub> ≅ F<sub>31</sub>F<sub>23</sub>:</p>
+<p class="eq">– triunghiul N1–N2–N3 (laturile 1, 2, 3) se transformă în stea cu centrul O:
+  F<sub>O–N1</sub> ≅ F<sub>1</sub>F<sub>2</sub>, &nbsp;F<sub>O–N2</sub> ≅ F<sub>1</sub>F<sub>3</sub>, &nbsp;F<sub>O–N3</sub> ≅ F<sub>2</sub>F<sub>3</sub>;</p>
+<p class="eq">– apare triunghiul O–N4–N5 (laturile O–N2–4, O–N3–5 și 6), care se transformă la fel în stea;</p>
+<p class="eq">– rezultă o structură serie-paralel, care se calculează direct.</p>
+<p>(Se mai pot folosi și enumerarea stărilor sistemului sau metoda legăturilor / tăieturilor minimale.)</p>
+</div>
+
+<div class="sec">
+<h2>b.</h2>
+<p><b>Legătura (calea) minimală</b> = mulțime de elemente a căror bună funcționare asigură buna funcționare a sistemului
+  și în care nu există o submulțime de elemente a căror funcționare singură să ducă la buna funcționare a sistemului
+  (în graful de fiabilitate: drum de la IN la OUT în care fiecare nod este parcurs o singură dată).</p>
+<p><b>Tăietura</b> = mulțime de elemente a căror defectare conduce la defectarea sistemului, indiferent de starea celorlalte.
+  <b>Tăietura minimală</b> = tăietura în care nu există o submulțime de elemente a căror defectare singură să ducă la
+  defectarea sistemului.</p>
+<div class="cols">
+<div>
+<p><b>Legături minimale:</b></p>
+<ol>
+  <li>A B C I J Q U V</li>
+  <li>A D K L R W</li>
+  <li>A E F M S T X</li>
+  <li>A E F N O S T Y Z</li>
+  <li>A B C G H M S T W</li>
+  <li>A E F H G I J Q X</li>
+  <li>A D I J P S T W</li>
+  <li>A E F M P Q U V</li>
+</ol>
+</div>
+<div>
+<p><b>Tăieturi minimale:</b></p>
+<ol>
+  <li><span class="n">A</span></li>
+  <li><span class="n">B</span> <span class="n">D</span> <span class="n">E</span></li>
+  <li><span class="n">I</span> <span class="n">K</span> <span class="n">M</span> <span class="n">N</span></li>
+  <li><span class="n">Q</span> <span class="n">R</span> <span class="n">S</span></li>
+  <li><span class="n">U</span> <span class="n">W</span> <span class="n">X</span> <span class="n">Y</span></li>
+  <li><span class="n">E</span> <span class="n">G</span> <span class="n">I</span> <span class="n">K</span></li>
+  <li><span class="n">B</span> <span class="n">D</span> <span class="n">G</span> <span class="n">M</span> <span class="n">N</span></li>
+  <li><span class="n">I</span> <span class="n">K</span> <span class="n">P</span> <span class="n">S</span></li>
+</ol>
+</div>
+</div>
+</div>
+</body>
+</html>

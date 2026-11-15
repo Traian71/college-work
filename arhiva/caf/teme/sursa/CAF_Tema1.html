@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<title>CAF Tema 1</title>
+<style>
+  @page { size: A4; margin: 16mm 18mm; }
+  body { font-family: "Times New Roman", serif; font-size: 12.5pt; line-height: 1.45; color: #000; }
+  h1 { font-size: 16pt; text-align: center; margin: 0 0 2px; }
+  .sub { text-align: center; margin-bottom: 12px; }
+  h2 { font-size: 13.5pt; margin: 14px 0 6px; }
+  p { margin: 4px 0; }
+  .eq { margin: 5px 0 5px 28px; }
+  .fr { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; margin: 0 2px; }
+  .fr > span:first-child { border-bottom: 1px solid #000; padding: 0 3px; }
+  .fr > span { line-height: 1.25; }
+  .big { font-size: 140%; vertical-align: middle; }
+  table { border-collapse: collapse; margin: 6px 0 6px 28px; }
+  td, th { border: 1px solid #000; padding: 2px 9px; text-align: center; }
+  .rez { border: 1px solid #000; padding: 2px 5px; white-space: nowrap; display: inline-block; vertical-align: middle; }
+  .obs { font-size: 11.5pt; margin-left: 28px; }
+  .pb { page-break-before: always; }
+  math { font-family: "Times New Roman", serif; font-size: 1em; }
+</style>
+</head>
+<body>
+<h1>CAF – Tema 1</h1>
+<div class="sub">File-Mitita Traian, grupa 441A</div>
+
+<h2>1.</h2>
+<p>Se dă: f(t) = a<sub>1</sub>λ<sub>1</sub>e<sup>−λ<sub>1</sub>t</sup> + a<sub>2</sub>λ<sub>2</sub>e<sup>−λ<sub>2</sub>t</sup>, t ≥ 0</p>
+<p>Condiția de normare:
+  ∫<sub>0</sub><sup>∞</sup> f(t)dt = a<sub>1</sub>·[−e<sup>−λ<sub>1</sub>t</sup>]<sub>0</sub><sup>∞</sup> + a<sub>2</sub>·[−e<sup>−λ<sub>2</sub>t</sup>]<sub>0</sub><sup>∞</sup>
+  = a<sub>1</sub> + a<sub>2</sub> = 1</p>
+
+<p><b>Funcția de fiabilitate</b> (adimensională):</p>
+<p class="eq">R(t) = ∫<sub>t</sub><sup>∞</sup> f(u)du = a<sub>1</sub>λ<sub>1</sub>∫<sub>t</sub><sup>∞</sup>e<sup>−λ<sub>1</sub>u</sup>du + a<sub>2</sub>λ<sub>2</sub>∫<sub>t</sub><sup>∞</sup>e<sup>−λ<sub>2</sub>u</sup>du
+  = a<sub>1</sub>λ<sub>1</sub>·<span class="fr"><span>e<sup>−λ<sub>1</sub>t</sup></span><span>λ<sub>1</sub></span></span>
+  + a<sub>2</sub>λ<sub>2</sub>·<span class="fr"><span>e<sup>−λ<sub>2</sub>t</sup></span><span>λ<sub>2</sub></span></span></p>
+<p class="eq"><span class="rez">R(t) = a<sub>1</sub>e<sup>−λ<sub>1</sub>t</sup> + a<sub>2</sub>e<sup>−λ<sub>2</sub>t</sup></span></p>
+
+<p><b>Funcția de repartiție</b> (probabilitatea de defectare, adimensională):</p>
+<p class="eq">F(t) = 1 − R(t) &nbsp;⇒&nbsp; <span class="rez">F(t) = 1 − a<sub>1</sub>e<sup>−λ<sub>1</sub>t</sup> − a<sub>2</sub>e<sup>−λ<sub>2</sub>t</sup></span>
+  &nbsp; = a<sub>1</sub>(1 − e<sup>−λ<sub>1</sub>t</sup>) + a<sub>2</sub>(1 − e<sup>−λ<sub>2</sub>t</sup>)</p>
+<p class="eq">(verificare: F(t) = ∫<sub>0</sub><sup>t</sup> f(u)du = a<sub>1</sub>(1 − e<sup>−λ<sub>1</sub>t</sup>) + a<sub>2</sub>(1 − e<sup>−λ<sub>2</sub>t</sup>) ✓)</p>
+
+<p><b>Rata defectărilor</b> [h<sup>−1</sup>]:</p>
+<p class="eq"><span class="rez">z(t) = <span class="fr"><span>f(t)</span><span>R(t)</span></span> =
+  <span class="fr"><span>a<sub>1</sub>λ<sub>1</sub>e<sup>−λ<sub>1</sub>t</sup> + a<sub>2</sub>λ<sub>2</sub>e<sup>−λ<sub>2</sub>t</sup></span><span>a<sub>1</sub>e<sup>−λ<sub>1</sub>t</sup> + a<sub>2</sub>e<sup>−λ<sub>2</sub>t</sup></span></span></span></p>
+
+<p><b>Media timpului de bună funcționare</b> (MTBF) [h]:</p>
+<p class="eq">m = ∫<sub>0</sub><sup>∞</sup> R(t)dt = a<sub>1</sub>∫<sub>0</sub><sup>∞</sup>e<sup>−λ<sub>1</sub>t</sup>dt + a<sub>2</sub>∫<sub>0</sub><sup>∞</sup>e<sup>−λ<sub>2</sub>t</sup>dt
+  &nbsp;⇒&nbsp; <span class="rez">m = <span class="fr"><span>a<sub>1</sub></span><span>λ<sub>1</sub></span></span> + <span class="fr"><span>a<sub>2</sub></span><span>λ<sub>2</sub></span></span></span></p>
+
+<h2>2.</h2>
+<p>n = 100 circuite integrate, Δt = 100 h, n(t) = n − r (nr. de CI în stare de funcționare la momentul t):</p>
+<table>
+  <tr><th>t (h)</th><td>0</td><td>100</td><td>200</td><td>300</td><td>400</td><td>500</td><td>600</td></tr>
+  <tr><th>r (cumulat)</th><td>0</td><td>2</td><td>5</td><td>9</td><td>11</td><td>13</td><td>20</td></tr>
+  <tr><th>Δr (pe interval)</th><td>–</td><td>2</td><td>3</td><td>4</td><td>2</td><td>2</td><td>7</td></tr>
+  <tr><th>n(t)</th><td>100</td><td>98</td><td>95</td><td>91</td><td>89</td><td>87</td><td>80</td></tr>
+</table>
+<p>Formule (estimare neparametrică):
+  <math><mover accent="true"><mi mathvariant="normal">F</mi><mo>^</mo></mover></math>(t) = <span class="fr"><span>r</span><span>n</span></span>;&nbsp;
+  <math><mover accent="true"><mi mathvariant="normal">R</mi><mo>^</mo></mover></math>(t) = <span class="fr"><span>n − r</span><span>n</span></span>;&nbsp;
+  <math><mover accent="true"><mover accent="true"><mi mathvariant="normal">f</mi><mo>¯</mo></mover><mo>^</mo></mover></math>(t, t+Δt) = <span class="fr"><span>Δr(Δt)</span><span>n·Δt</span></span>;&nbsp;
+  <math><mover accent="true"><mover accent="true"><mi mathvariant="normal">z</mi><mo>¯</mo></mover><mo>^</mo></mover></math>(t, t+Δt) = <span class="fr"><span>Δr(Δt)</span><span>n(t)·Δt</span></span>;&nbsp;
+  <math><mover accent="true"><mi mathvariant="normal">m</mi><mo>^</mo></mover></math> = <span class="fr"><span>Σt<sub>i</sub></span><span>n</span></span>;&nbsp;
+  <math><mover accent="true"><mi mathvariant="normal">t</mi><mo>^</mo></mover></math><sub>α</sub> = momentul la care apar n·α defectări</p>
+
+<p><b>a)</b> <math><mover accent="true"><mi mathvariant="normal">R</mi><mo>^</mo></mover></math>(200) – funcția de fiabilitate (probabilitatea de bună funcționare până la 200 h), adimensională:</p>
+<p class="eq"><math><mover accent="true"><mi mathvariant="normal">R</mi><mo>^</mo></mover></math>(200) = <span class="fr"><span>100 − 5</span><span>100</span></span> = <span class="rez">0,95</span> &nbsp;(95%)</p>
+
+<p><b>b)</b> <math><mover accent="true"><mi mathvariant="normal">R</mi><mo>^</mo></mover></math>(800) – funcția de fiabilitate la 800 h, adimensională:</p>
+<p class="eq">Încercarea s-a oprit la 600 h. Valorile estimate neparametric nu pot fi extrapolate pentru durate
+  mai mari decât durata încercării ⇒ <span class="rez"><math><mover accent="true"><mi mathvariant="normal">R</mi><mo>^</mo></mover></math>(800) nu se poate calcula</span> din aceste date.</p>
+<p class="eq">Se știe doar că <math><mover accent="true"><mi mathvariant="normal">R</mi><mo>^</mo></mover></math>(800) ≤ <math><mover accent="true"><mi mathvariant="normal">R</mi><mo>^</mo></mover></math>(600) = <span class="fr"><span>100 − 20</span><span>100</span></span> = 0,80.</p>
+
+<p><b>c)</b> <math><mover accent="true"><mi mathvariant="normal">F</mi><mo>^</mo></mover></math>(400) – funcția de repartiție a timpului de funcționare (probabilitatea de defectare până la 400 h), adimensională:</p>
+<p class="eq"><math><mover accent="true"><mi mathvariant="normal">F</mi><mo>^</mo></mover></math>(400) = <span class="fr"><span>11</span><span>100</span></span> = <span class="rez">0,11</span> &nbsp;(11%)</p>
+
+<p><b>d)</b> <math><mover accent="true"><mover accent="true"><mi mathvariant="normal">f</mi><mo>¯</mo></mover><mo>^</mo></mover></math>(200, 300) – densitatea de probabilitate (medie) a timpului de funcționare pe intervalul (200, 300) h, [h<sup>−1</sup>]:</p>
+<p class="eq">Δr = 9 − 5 = 4 defectări, Δt = 300 − 200 = 100 h</p>
+<p class="eq"><math><mover accent="true"><mover accent="true"><mi mathvariant="normal">f</mi><mo>¯</mo></mover><mo>^</mo></mover></math>(200, 300) = <span class="fr"><span>4</span><span>100 · 100</span></span> = <span class="rez">4 · 10<sup>−4</sup> h<sup>−1</sup></span></p>
+
+<p><b>e)</b> <math><mover accent="true"><mover accent="true"><mi mathvariant="normal">z</mi><mo>¯</mo></mover><mo>^</mo></mover></math>(300, 400) – rata (medie) a defectărilor pe intervalul (300, 400) h, [h<sup>−1</sup>]:</p>
+<p class="eq">Δr = 11 − 9 = 2 defectări, n(300) = 100 − 9 = 91, Δt = 100 h</p>
+<p class="eq"><math><mover accent="true"><mover accent="true"><mi mathvariant="normal">z</mi><mo>¯</mo></mover><mo>^</mo></mover></math>(300, 400) = <span class="fr"><span>2</span><span>91 · 100</span></span> = <span class="rez">2,2 · 10<sup>−4</sup> h<sup>−1</sup></span>
+  &nbsp;(= <span class="fr"><span><math><mover accent="true"><mover accent="true"><mi mathvariant="normal">f</mi><mo>¯</mo></mover><mo>^</mo></mover></math>(300,400)</span><span><math><mover accent="true"><mi mathvariant="normal">R</mi><mo>^</mo></mover></math>(300)</span></span> = <span class="fr"><span>2·10<sup>−4</sup></span><span>0,91</span></span> = 2,198·10<sup>−4</sup> h<sup>−1</sup>)</p>
+
+<p><b>f)</b> <math><mover accent="true"><mi mathvariant="normal">m</mi><mo>^</mo></mover></math> – media timpului de (bună) funcționare (MTBF), [h]:</p>
+<p class="eq">Momentele exacte ale defectărilor nu se cunosc ⇒ fiecare defectare se ia la mijlocul intervalului său
+  (50, 150, 250, 350, 450, 550 h). Până la 600 h s-au defectat r = 20 CI:</p>
+<p class="eq">Σt<sub>i</sub> = 2·50 + 3·150 + 4·250 + 2·350 + 2·450 + 7·550 = 100 + 450 + 1000 + 700 + 900 + 3850 = 7000 h</p>
+<p class="eq"><math><mover accent="true"><mi mathvariant="normal">m</mi><mo>^</mo></mover></math> = <span class="fr"><span>Σt<sub>i</sub></span><span>r</span></span> = <span class="fr"><span>7000</span><span>20</span></span> = <span class="rez">350 h</span></p>
+<p class="obs">Obs.: celelalte 80 de CI funcționau încă la 600 h, deci 350 h este media doar pentru CI defectate. Media
+  pentru tot lotul nu se poate estima neparametric (ar fi cel puțin (7000 + 80·600)/100 = 550 h).</p>
+
+<p><b>g)</b> <math><mover accent="true"><mi mathvariant="normal">t</mi><mo>^</mo></mover></math><sub>0,2</sub> – cuantila de ordinul 0,2 a timpului de funcționare, [h]:</p>
+<p class="eq">n·α = 100 · 0,2 = 20 defectări; r = 20 la t = 600 h &nbsp;(<math><mover accent="true"><mi mathvariant="normal">F</mi><mo>^</mo></mover></math>(600) = 20/100 = 0,2)
+  &nbsp;⇒&nbsp; <span class="rez"><math><mover accent="true"><mi mathvariant="normal">t</mi><mo>^</mo></mover></math><sub>0,2</sub> = 600 h</span></p>
+</body>
+</html>
