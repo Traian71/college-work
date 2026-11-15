@@ -1,0 +1,5 @@
+suma f0^2 = 120000.0  suma e^2 = 360.0  suma |e| = 36.0
+MSE = 40.0
+MAE = 4.0
+SNR = 25.23 dB
+PSNR = 30.00 dB

@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<title>Test PIm - Măsuri obiective de calitate</title>
+<style>
+  @page { size: A4; margin: 18mm 18mm 16mm 18mm; }
+  body { font-family: "Times New Roman", Times, serif; font-size: 12pt; line-height: 1.35; color: #000; }
+  h1 { font-size: 15pt; text-align: center; margin: 0 0 4px 0; }
+  .sub { text-align: center; margin: 0 0 10px 0; }
+  h2 { font-size: 13pt; margin: 14px 0 4px 0; }
+  p { margin: 4px 0; }
+  ol { margin: 4px 0; padding-left: 22px; }
+  li { margin: 3px 0; }
+  table.m { border-collapse: collapse; display: inline-table; margin: 4px 18px 4px 4px; vertical-align: middle; }
+  table.m td { border: 1px solid #000; width: 34px; text-align: center; padding: 2px; }
+  code { font-family: Consolas, "Courier New", monospace; font-size: 10.5pt; }
+  .info { border: 1px solid #000; padding: 5px 8px; margin-bottom: 6px; }
+</style>
+</head>
+<body>
+
+<h1>Test de verificare – Prelucrarea imaginilor</h1>
+<p class="sub">Curs intern: <b>Măsuri obiective de calitate, cu referință, pentru imagini</b></p>
+
+<div class="info">
+Nume și prenume: ...................................................... &nbsp;&nbsp; Echipa: ..........................<br>
+Timp de lucru: 30 de minute. Total: 10 puncte (1 punct din oficiu). Se permite calculatorul.<br>
+Partea practică se rezolvă în Python (numpy, scikit-image, scipy, matplotlib), cu imaginea <code>lena.png</code> (512×512, color, din materialele de laborator).
+Notații: f<sub>0</sub> = imaginea de referință (originală, nedegradată), f = imaginea testată (degradată), ambele de M×N pixeli.
+</div>
+
+<h2>Subiectul I – Teorie (3 puncte)</h2>
+<ol>
+  <li>(1 p) Ce înseamnă o măsură de calitate <i>obiectivă</i> și <i>cu referință</i>? Prin ce diferă de o măsură subiectivă și de o măsură fără referință?</li>
+  <li>(1 p) Scrieți formulele pentru MSE, MAE, SNR și PSNR. Cum variază fiecare dintre ele atunci când calitatea imaginii f crește? De ce PSNR este întotdeauna mai mare decât SNR?</li>
+  <li>(1 p) De ce MSE nu este întotdeauna în acord cu percepția umană? Ce compară măsura SSIM între cele două imagini și ce proprietăți are (cel puțin două)?</li>
+</ol>
+
+<h2>Subiectul II – Calcul (2,5 puncte)</h2>
+<p>Se dau imaginea de referință f<sub>0</sub> și imaginea degradată f (3×3 pixeli):</p>
+<div>
+f<sub>0</sub> =
+<table class="m">
+<tr><td>100</td><td>100</td><td>100</td></tr>
+<tr><td>100</td><td>200</td><td>100</td></tr>
+<tr><td>100</td><td>100</td><td>100</td></tr>
+</table>
+f =
+<table class="m">
+<tr><td>112</td><td>100</td><td>94</td></tr>
+<tr><td>100</td><td>200</td><td>100</td></tr>
+<tr><td>106</td><td>100</td><td>88</td></tr>
+</table>
+</div>
+<ol type="a">
+  <li>(1 p) Calculați MSE și MAE.</li>
+  <li>(1 p) Calculați SNR și PSNR (în dB).</li>
+  <li>(0,5 p) Pe baza pragurilor de SNR de la curs, cum apreciați calitatea imaginii f?</li>
+</ol>
+
+<h2>Subiectul III – Python (3,5 puncte)</h2>
+<ol type="a">
+  <li>(1,5 p) Scrieți funcțiile <code>mse(f0, f)</code>, <code>snr(f0, f)</code> și <code>psnr(f0, f)</code> după formulele de la curs, folosind numpy
+  (fără funcții gata făcute, de exemplu din <code>skimage.metrics</code>).</li>
+  <li>(1,5 p) Scrieți un script care:
+    citește <code>lena.png</code> și o transformă în nivele de gri, în gama [0, 255] (aceasta este f<sub>0</sub>);
+    adaugă zgomot gaussian de medie 0 și deviație standard 10 (<code>np.random.normal</code>);
+    filtrează imaginea zgomotoasă cu un filtru de mediere aritmetică 3×3
+    (<code>signal.convolve2d(img, masca, mode='same', boundary='symm')</code>);
+    afișează imaginea zgomotoasă și pe cea filtrată și calculează, cu funcțiile de la a), MSE, SNR și PSNR ale fiecăreia față de f<sub>0</sub>.</li>
+  <li>(0,5 p) Comparați valorile obținute. A îmbunătățit filtrarea calitatea imaginii? Este imaginea filtrată „de calitate” conform pragului de la curs?</li>
+</ol>
+
+</body>
+</html>

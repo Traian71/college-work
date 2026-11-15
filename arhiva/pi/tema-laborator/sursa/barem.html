@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<title>Barem PIm - Măsuri obiective de calitate</title>
+<style>
+  @page { size: A4; margin: 15mm 16mm 14mm 16mm; }
+  body { font-family: "Times New Roman", Times, serif; font-size: 11pt; line-height: 1.28; color: #000; }
+  h1 { font-size: 14pt; text-align: center; margin: 0 0 2px 0; }
+  .sub { text-align: center; margin: 0 0 8px 0; }
+  h2 { font-size: 12pt; margin: 10px 0 3px 0; }
+  p { margin: 3px 0; }
+  ul, ol { margin: 2px 0; padding-left: 20px; }
+  li { margin: 2px 0; }
+  .pct { font-weight: bold; }
+  pre { font-family: Consolas, "Courier New", monospace; font-size: 9pt; line-height: 1.2; border: 1px solid #999; padding: 5px 7px; margin: 4px 0; white-space: pre-wrap; }
+  code { font-family: Consolas, "Courier New", monospace; font-size: 9.5pt; }
+  .doc { border-top: 1px solid #000; margin-top: 10px; padding-top: 2px; }
+</style>
+</head>
+<body>
+
+<h1>Barem de corectare</h1>
+<p class="sub">Test: Măsuri obiective de calitate, cu referință, pentru imagini – 10 puncte (1 punct din oficiu)</p>
+
+<h2>Subiectul I – Teorie (3 p)</h2>
+<ol>
+  <li><b>(1 p)</b> Obiectivă: valoarea e calculată cu o formulă (funcție de măsură), nu dată de observatori umani; subiectivă: notă dată de observatori <span class="pct">(0,25 p)</span>.
+  Cu referință: imaginea testată/degradată f se compară cu imaginea originală nedegradată f<sub>0</sub>, se măsoară fidelitatea față de referință <span class="pct">(0,5 p)</span>.
+  Fără referință: calitatea se apreciază doar din f, fără original <span class="pct">(0,25 p)</span>.</li>
+  <li><b>(1 p)</b> Formulele (cu sumele după m = 0..M−1, n = 0..N−1), <span class="pct">0,15 p</span> fiecare:<br>
+  MSE = (1/MN)·ΣΣ (f(m,n) − f<sub>0</sub>(m,n))<sup>2</sup>; &nbsp; MAE = (1/MN)·ΣΣ |f(m,n) − f<sub>0</sub>(m,n)|;<br>
+  SNR = 10·log<sub>10</sub>[ ΣΣ f<sub>0</sub><sup>2</sup>(m,n) / ΣΣ (f(m,n) − f<sub>0</sub>(m,n))<sup>2</sup> ] [dB]; &nbsp;
+  PSNR = 10·log<sub>10</sub>[ MN·max f<sub>0</sub><sup>2</sup>(m,n) / ΣΣ (f(m,n) − f<sub>0</sub>(m,n))<sup>2</sup> ] [dB].<br>
+  Când calitatea crește: MSE și MAE scad, SNR și PSNR cresc <span class="pct">(0,2 p)</span>.
+  PSNR &gt; SNR deoarece fiecare f<sub>0</sub><sup>2</sup>(m,n) ≤ max f<sub>0</sub><sup>2</sup>, deci MN·max f<sub>0</sub><sup>2</sup> ≥ ΣΣ f<sub>0</sub><sup>2</sup>(m,n), iar numitorul e același <span class="pct">(0,2 p)</span>.</li>
+  <li><b>(1 p)</b> MSE compară pixel cu pixel și nu ține cont de vecinătate/structură; distorsiuni diferite (zgomot, blur, compresie, deplasare de luminozitate) pot da aceeași MSE, dar arată foarte diferit <span class="pct">(0,4 p)</span>.
+  SSIM compară luminanța, contrastul și structura, folosind medii locale, dispersii locale și corelația locală (integrează contextul spațial) <span class="pct">(0,3 p)</span>.
+  Proprietăți: simetrie S(x,y) = S(y,x); valori în [0, 1]; maxim unic: S(x,y) = 1 doar dacă x = y <span class="pct">(0,15 p pentru fiecare, max. 0,3 p)</span>.</li>
+</ol>
+
+<h2>Subiectul II – Calcul (2,5 p)</h2>
+<p>Erorile f − f<sub>0</sub> sunt nenule doar în 4 pixeli: +12, −6, +6, −12. ΣΣ e<sup>2</sup> = 144 + 36 + 36 + 144 = 360; ΣΣ |e| = 36; ΣΣ f<sub>0</sub><sup>2</sup> = 8·100<sup>2</sup> + 200<sup>2</sup> = 120000; max f<sub>0</sub> = 200; MN = 9.</p>
+<ol type="a">
+  <li><b>(1 p)</b> MSE = 360 / 9 = <b>40</b> <span class="pct">(0,5 p)</span>; MAE = 36 / 9 = <b>4</b> <span class="pct">(0,5 p)</span>.</li>
+  <li><b>(1 p)</b> SNR = 10·log<sub>10</sub>(120000 / 360) = 10·log<sub>10</sub>(333,3) ≈ <b>25,23 dB</b> <span class="pct">(0,5 p)</span>;
+  PSNR = 10·log<sub>10</sub>(9·200<sup>2</sup> / 360) = 10·log<sub>10</sub>(1000) = <b>30 dB</b> <span class="pct">(0,5 p)</span>.
+  Dacă se folosește 255 în loc de max f<sub>0</sub> (PSNR ≈ 32,11 dB) se acordă 0,25 p.</li>
+  <li><b>(0,5 p)</b> SNR &gt; 25 dB, deci imaginea este „de calitate” <span class="pct">(0,25 p)</span>; SNR &lt; 30 dB, deci diferențele față de original pot fi încă perceptibile <span class="pct">(0,25 p)</span>.</li>
+</ol>
+<p>La a) și b): formulă corectă, dar greșeală de calcul → jumătate din punctajul cerinței.</p>
+
+<h2>Subiectul III – Python (3,5 p)</h2>
+<p>Soluție de referință (rulată; valorile depind puțin de zgomotul generat):</p>
+<pre>import numpy as np
+import math
+import matplotlib.pyplot as plt
+from skimage import io, color
+from scipy import signal
+
+def mse(f0, f):
+    h, w = f0.shape
+    return np.sum((f - f0) ** 2) / (h * w)
+
+def snr(f0, f):
+    return 10 * math.log10(np.sum(f0 ** 2) / np.sum((f - f0) ** 2))
+
+def psnr(f0, f):
+    h, w = f0.shape
+    return 10 * math.log10(h * w * np.max(f0) ** 2 / np.sum((f - f0) ** 2))
+
+img = io.imread('lena.png')
+img = color.rgb2gray(img) * 255          # f0, gama [0,255]
+h, w = img.shape
+N = np.random.normal(0, 10, (h, w))
+img_noise = img + N
+mask = np.ones([3, 3]) / 9
+img_filt = signal.convolve2d(img_noise, mask, mode='same', boundary='symm')
+plt.figure(), plt.imshow(img_noise, cmap='gray')
+plt.figure(), plt.imshow(img_filt, cmap='gray')
+print('zgomotoasa:', mse(img, img_noise), snr(img, img_noise), psnr(img, img_noise))
+print('filtrata:  ', mse(img, img_filt), snr(img, img_filt), psnr(img, img_filt))</pre>
+<ol type="a">
+  <li><b>(1,5 p)</b> <code>mse</code>, <code>snr</code>, <code>psnr</code> câte <span class="pct">0,5 p</span>. Se acceptă și variantele cu bucle <code>for</code> sau cu ignorarea marginilor (<code>capat</code>, ca în Lab 4),
+  precum și 255 în loc de <code>np.max(f0)</code> la PSNR (varianta din Lab 4). Calcul pe <code>uint8</code> fără conversie la float (diferența dă overflow): −0,25 p.</li>
+  <li><b>(1,5 p)</b> citire + nivele de gri în [0, 255] <span class="pct">(0,25 p)</span>; zgomot gaussian adăugat <span class="pct">(0,25 p)</span>;
+  masca 3×3 cu toți coeficienții 1/9 și filtrarea <span class="pct">(0,5 p)</span>; afișarea celor două imagini <span class="pct">(0,25 p)</span>; calculul măsurilor pentru ambele imagini <span class="pct">(0,25 p)</span>.</li>
+  <li><b>(0,5 p)</b> Valori așteptate (±0,2): zgomotoasă MSE ≈ 100 (≈ σ<sup>2</sup>), SNR ≈ 22,1 dB, PSNR ≈ 27,8 dB;
+  filtrată MSE ≈ 41,6, SNR ≈ 25,9 dB, PSNR ≈ 31,6 dB (cu 255: PSNR ≈ 28,1 și 31,9 dB).
+  Filtrarea îmbunătățește calitatea: MSE scade de aproximativ 2,4 ori, SNR și PSNR cresc cu aproximativ 3,8 dB <span class="pct">(0,25 p)</span>.
+  Imaginea zgomotoasă nu este de calitate (SNR &lt; 25 dB), cea filtrată este (SNR &gt; 25 dB), dar diferențele (ușoară încețoșare) rămân vizibile, SNR &lt; 30 dB <span class="pct">(0,25 p)</span>.</li>
+</ol>
+
+<p><b>Oficiu: 1 p.</b> Total: 1 + 3 + 2,5 + 3,5 = 10 puncte.</p>
+
+<div class="doc">
+<h2>Prompt-uri folosite și corecții</h2>
+<p>Testul și baremul au fost realizate cu ajutorul unui asistent AI (Claude, Anthropic). Prompt-ul folosit:</p>
+<ol>
+  <li>„Rezolvă tema de laborator la Prelucrarea imaginilor (grupa 441A: Măsuri obiective de calitate, cu referință, pentru imagini): un test de ~30 de minute, teorie + Python, și baremul, doar din materia de la curs și laborator.”</li>
+</ol>
+<p>Verificări și corecții: formulele și pragurile au fost luate din cursul 4 (handouts, „Măsurarea calității imaginilor”) și din capitolul de filtrare din carte, cu notația de la curs (f, f<sub>0</sub>, M×N, PSNR cu max f<sub>0</sub>, nu cu 255).
+La SNR am folosit f<sub>0</sub><sup>2</sup> la numărător, ca în slide-urile de curs (în capitol apare f<sup>2</sup>).
+SSIM a rămas doar la teorie, pentru că la laborator nu a fost implementat. Codul de la Subiectul III folosește doar funcțiile din laboratoare (skimage.io/color, np.random.normal, signal.convolve2d).
+Toate rezultatele din barem au fost recalculate în Python (soluția de mai sus rulată pe lena.png, cu mai multe valori ale zgomotului, comparată și cu skimage.metrics).
+Am adăugat <code>boundary='symm'</code> la filtrare, pentru că varianta cu completare cu zero întuneca marginile și creștea MSE (≈ 54 în loc de ≈ 42).
+Valorile de la Subiectul II au fost alese astfel încât calculul să se poată face de mână (PSNR = 30 dB exact).</p>
+</div>
+
+</body>
+</html>
