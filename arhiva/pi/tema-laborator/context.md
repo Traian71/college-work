@@ -20,4 +20,4 @@
   filtrare cu `boundary='symm'`; secțiunea despre AI e în barem, nu în test (testul e pentru colegi).
 - **Surse** (`sursa/`): `test.html`, `barem.html`, `solutie_subiect3.py` + `output_solutie.txt`,
   `verificare_subiect2.py` + `output_verificare_subiect2.txt`, `lena.png`.
-- **Status:** gata, de verificat de Traian, neîncărcat.
+- **Status:** gata, neîncărcat. 20 nov: Traian o verifică și o încarcă singur (link: https://curs.upb.ro/2026/mod/assign/view.php?id=61891); PDF-urile copiate și în ~/Desktop/PIm tema de laborator/.
