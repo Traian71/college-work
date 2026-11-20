@@ -13,11 +13,12 @@
 - **Materia folosită** (`materiale/`): `handouts4.pdf` (curs 4, slide-urile 39–52 „Măsurarea calității imaginilor”:
   MSE, MAE, SNR, PSNR, praguri SNR 25/30 dB, SSIM), `cartePAI-04-filtrare.pdf` (rel. 3.5–3.8), `lab3-PI.zip` (MSE în
   Lab 3), `lab-pi.zip` (Lab 4: funcții mse/psnr, `lena.png`).
-- **Livrabil** (`pi/tema-laborator/`): `Test_PIm_Masuri_calitate_FileMitita_Traian.pdf` (1 pag.: teorie 3 p, calcul pe
-  imagine 3×3 2,5 p, Python 3,5 p, oficiu 1 p) și `Barem_PIm_Masuri_calitate_FileMitita_Traian.pdf` (2 pag.: răspunsuri,
+- **Livrabil** (`pi/tema-laborator/`, din 20 nov în Word, la cererea lui Traian): `Test_PIm_Masuri_calitate_FileMitita_Traian.docx` (1 pag.: teorie 3 p, calcul pe
+  imagine 3×3 2,5 p, Python 3,5 p, oficiu 1 p) și `Barem_PIm_Masuri_calitate_FileMitita_Traian.docx` (2 pag.: răspunsuri,
   punctaje parțiale, soluția Python, secțiunea „Prompt-uri folosite și corecții”).
 - **Decizii:** notația și PSNR cu max f0 ca la curs (255 acceptat în barem); SSIM doar la teorie (nu e în laboratoare);
   filtrare cu `boundary='symm'`; secțiunea despre AI e în barem, nu în test (testul e pentru colegi).
-- **Surse** (`sursa/`): `test.html`, `barem.html`, `solutie_subiect3.py` + `output_solutie.txt`,
+- **Surse** (`sursa/`): `test.html`, `barem.html`, `build_docx.py` (HTML → .docx), `pdf/` (vechile PDF-uri), `solutie_subiect3.py` + `output_solutie.txt`,
   `verificare_subiect2.py` + `output_verificare_subiect2.txt`, `lena.png`.
 - **Status:** gata, neîncărcat. 20 nov: Traian o verifică și o încarcă singur (link: https://curs.upb.ro/2026/mod/assign/view.php?id=61891); PDF-urile copiate și în ~/Desktop/PIm tema de laborator/.
+  20 nov: a cerut varianta Word; .docx-urile sunt în `pi/tema-laborator/` și în ~/Desktop/PIm tema de laborator/. Baremul Word are la prompturi doar prompt-ul 1 (rândul cu indicațiile fusese scos din barem.html).
