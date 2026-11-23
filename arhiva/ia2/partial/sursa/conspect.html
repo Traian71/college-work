@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="ro"><head><meta charset="utf-8">
+<title>Conspect IA2 – lucrarea de la curs</title>
+<style>
+  @page { size: A4; margin: 11mm 13mm; }
+  body { font-family: "Helvetica Neue", Arial, sans-serif; font-size: 9.6pt; line-height: 1.32; color: #111; }
+  h1 { font-size: 16pt; margin: 0 0 2px; }
+  .sub { color: #555; margin: 0 0 6px; }
+  h2 { font-size: 12pt; margin: 10px 0 4px; padding: 2px 6px; background: #1f3b6f; color: #fff; break-after: avoid; }
+  h3 { font-size: 10.3pt; margin: 8px 0 3px; color: #1f3b6f; break-after: avoid; }
+  p { margin: 3px 0; }
+  ul { margin: 2px 0 4px; padding-left: 16px; } li { margin: 1px 0; }
+  table { border-collapse: collapse; width: 100%; margin: 4px 0; font-size: 8.9pt; break-inside: avoid; }
+  th, td { border: 1px solid #999; padding: 2px 5px; vertical-align: top; text-align: left; }
+  th { background: #e8edf6; }
+  .f { font-family: "Cambria Math", "STIX Two Math", Georgia, serif; font-size: 10.2pt; }
+  .box { border: 1.5px solid #1f3b6f; background: #f3f6fb; padding: 4px 8px; margin: 5px 0; break-inside: avoid; }
+  .atent { border-left: 4px solid #c0392b; background: #fdf1ef; padding: 3px 8px; margin: 5px 0; break-inside: avoid; }
+  .calc { font-family: Menlo, monospace; font-size: 8.4pt; background: #f6f6f6; padding: 4px 8px; white-space: pre; margin: 3px 0; line-height: 1.3; break-inside: avoid; }
+  .doua { display: flex; gap: 10px; } .doua > div { flex: 1; }
+  .pag { break-before: page; }
+  b.r { color: #c0392b; }
+</style></head><body>
+
+<h1>Conspect IA2 – lucrarea de la curs (miercuri, 25 nov)</h1>
+<p class="sub">Inteligență artificială 2 – Recunoașterea formelor, prof. A. Rădoi · făcut din cursurile 1–8 de pe Moodle și testul de anul trecut din Drive</p>
+
+<div class="box">
+<b>Ce știm:</b> lucrarea valorează <b>20 de puncte</b> din notă și se dă <b>fără redare</b> (din _curs_proinfo). Testul de anul trecut
+avea <b>2 probleme de calcul</b>. Fiecare problemă avea punctele a), b), c) și amesteca un calcul cu o întrebare scurtă de teorie:<br>
+1) <b>forward pass</b> printr-o rețea mică (sigmoid/ReLU) + „explicați caracteristicile sigmoid / 2 avantaje ReLU”;<br>
+2) <b>funcție de cost</b> (entropie încrucișată cu softmax <i>sau</i> MSE) + <b>un pas de SGD</b> calculat de mână.<br>
+<b>Pentru notă de trecere:</b> învață pe de rost secțiunile 1–4 (asta s-a dat) și refă singur cele 4 probleme de la pagina 2.
+Restul (CNN, RNN, PCA, regularizare) e la pagina 3, pentru întrebări scurte de teorie. Pe Moodle nu e niciun anunț despre ce
+cursuri intră. Până acum s-au predat cursurile 1–8 (până la RNN).
+</div>
+
+<h2>1. Neuronul și rețeaua complet conectată (curs 5)</h2>
+<p class="f">Un neuron: suma ponderată, apoi funcția de activare: &nbsp; y = f(wᵀx + b) = f(Σᵢ wᵢxᵢ + b)</p>
+<p class="f">Rețea cu 2 straturi: &nbsp; aⱼ = Σᵢ wⱼᵢ xᵢ + wⱼ₀ → zⱼ = h(aⱼ) (strat ascuns) → aₖ = Σⱼ wₖⱼ zⱼ + wₖ₀ → yₖ = f(aₖ) (ieșire)</p>
+<p><b>Cum lucrezi la examen:</b> calculezi pe rând, pentru fiecare nod, <b>suma ponderată + bias</b>. Apoi aplici <b>activarea</b> și
+treci la stratul următor. Scrie toate calculele intermediare, se cer explicit. Ai grijă la <b>ce pondere merge unde</b>: urmărește
+săgeata din desen (wᵢⱼ de la nodul i la nodul j), nu te lua doar după indici.</p>
+<p><b>Număr de parametri</b> (strat complet conectat cu n intrări și m ieșiri): n·m ponderi + m bias-uri.</p>
+
+<h2>2. Funcții de activare – formulă, derivată, avantaje (se cer la teorie!)</h2>
+<table>
+<tr><th style="width:15%">Funcție</th><th style="width:31%">Formulă / derivată</th><th>Avantaje</th><th>Dezavantaje</th></tr>
+<tr><td><b>Sigmoid</b> (logistică)</td><td class="f">σ(x) = 1 / (1 + e⁻ˣ) ∈ (0, 1)<br>σ′(x) = σ(x)(1 − σ(x))<br>σ(−x) = 1 − σ(x), σ(0) = 0,5</td>
+<td>formă de „S”, netedă, derivabilă peste tot (bună pentru backprop); mărginită în (0,1), deci ieșirea se interpretează ca <b>probabilitate</b>; monoton crescătoare; derivata se calculează din valoarea funcției; prag 0,5 la clasificare binară</td>
+<td><b>se saturează</b> la capete → gradienți care dispar (vanishing gradient), rețeaua nu mai învață; <b>nu e centrată în 0</b>; gradientul are mereu același semn; are exponențială (mai lentă)</td></tr>
+<tr><td><b>Tanh</b></td><td class="f">tanh(x) = 2σ(2x) − 1 ∈ (−1, 1)<br>tanh′(x) = 1 − tanh²(x)</td><td>ca sigmoid, dar <b>centrată în 0</b></td><td>se saturează și ea la capete</td></tr>
+<tr><td><b>ReLU</b></td><td class="f">ReLU(x) = max(0, x)<br>derivata: 1 pt x &gt; 0, 0 pt x &lt; 0</td>
+<td>1) <b>calcul foarte ieftin</b> (doar un max); 2) <b>accelerează convergența SGD</b>: pentru x &gt; 0 gradientul e 1, deci nu dispare (nu se saturează); 3) activări rare (multe zerouri)</td>
+<td>nemărginită superior (valori și gradienți mari); <b>„moare”</b> pentru x &lt; 0 (gradient 0, neuronul nu se mai actualizează)</td></tr>
+<tr><td><b>Leaky ReLU</b></td><td class="f">f(x) = x pt x ≥ 0, αx pt x &lt; 0 (α ≈ 0,01)</td><td>rezolvă „moartea” ReLU (gradient mic, dar nenul pentru x &lt; 0)</td><td>încă un hiper-parametru α</td></tr>
+<tr><td><b>Softmax</b> (ieșire, K clase)</td><td class="f">yₖ = e^{aₖ} / Σⱼ e^{aⱼ}</td><td>ieșirile sunt în (0,1) și au suma 1 → o <b>distribuție de probabilitate</b> pe clase</td><td>nu dă niciodată exact 0 sau 1</td></tr>
+</table>
+<p><b>De ce e nevoie de activare neliniară:</b> fără ea, mai multe straturi liniare puse unul după altul dau tot o funcție liniară,
+deci rețeaua n-ar putea învăța granițe de decizie neliniare.</p>
+
+<h2>3. Funcții de cost (curs 4–6)</h2>
+<table>
+<tr><th style="width:24%">Cost</th><th style="width:40%">Formulă</th><th>Când / observații</th></tr>
+<tr><td><b>MSE</b> (eroare medie pătratică)</td><td class="f">E = ½ Σₖ (yₖ − tₖ)² &nbsp;(sau 1/N Σ)<br>∂E/∂yₖ = yₖ − tₖ</td><td>regresie; ½ e pus ca să se simplifice cu 2 la derivare</td></tr>
+<tr><td><b>Entropie încrucișată binară</b></td><td class="f">L = −Σₙ [tₙ ln yₙ + (1 − tₙ) ln(1 − yₙ)]</td><td>clasificare 2 clase, ieșire sigmoid; gradient: Σ (yₙ − tₙ) xₙ</td></tr>
+<tr><td><b>Entropie încrucișată multi-clasă</b></td><td class="f">L = −Σₖ tₖ ln yₖ &nbsp;(t codat „1 din K”, one-hot)<br>⇒ L = −ln y<sub>corect</sub></td><td>K clase, ieșire softmax; gradient: (yₖ − tₖ) xₙ. Folosește <b>ln</b>, cum e în curs (dacă folosești log₁₀, scrie asta)</td></tr>
+</table>
+<div class="atent"><b>Întrebare clasică:</b> de ce costul CE nu ajunge la 0 nici cu acuratețe 100%? Pentru că softmax dă mereu valori
+<b>strict între 0 și 1</b>, deci y<sub>corect</sub> &lt; 1 și −ln y<sub>corect</sub> &gt; 0. Acuratețea 100% înseamnă doar că clasa corectă are probabilitatea cea mai mare, nu că probabilitatea ei e 1.<br>
+<b>Altă idee:</b> costul e mai mare când modelul dă probabilitate mică clasei corecte (ex. −ln 0,3 = 1,20 &gt; −ln 0,4 = 0,92).</div>
+
+<h2>4. Optimizare: GD, SGD și variante (curs 4–5)</h2>
+<p class="f"><b>GD:</b> w ← w − η · ∂E/∂w &nbsp; (pas în direcția opusă gradientului; η = rata de învățare)</p>
+<ul>
+<li><b>η prea mic:</b> converge încet, dar sigur. <b>η prea mare:</b> merge repede, dar oscilează în jurul minimului sau diverge. Se poate porni cu un η mare și să fie scăzut pe parcurs.</li>
+<li><b>GD</b> calculează gradientul pe tot setul de antrenare. <b>SGD</b> actualizează după fiecare exemplu, iar <b>mini-batch</b> după 8, 16, 32… exemple (mai rapid, cu zgomot care ajută).</li>
+<li><span class="f"><b>Momentum:</b> Δw⁽ᵗ⁾ = −η∇E + μΔw⁽ᵗ⁻¹⁾, &nbsp; w ← w + Δw</span> (μ ≈ 0,9): adaugă „inerție” și reduce oscilațiile. <b>Nesterov:</b> gradientul se calculează în punctul w + μΔw.</li>
+<li><b>AdaGrad:</b> împarte η la √(suma pătratelor gradienților); parametrii cu gradient acumulat mare primesc o rată mică. Dezavantaj: învățarea devine lentă spre final.
+<b>RMSProp:</b> folosește o medie mobilă a pătratelor gradienților în loc de sumă (β ≈ 0,9). <b>Adam</b> = RMSProp + momentum, cu corecție de bias (β₁ = 0,9, β₂ = 0,99); e cel mai folosit.</li>
+<li><b>Normalizarea datelor:</b> x̃ = (x − μ)/σ, cu aceleași μ și σ la antrenare, validare și test. Ajută convergența.</li>
+</ul>
+<p><b>Rețeta unui pas SGD la examen:</b> (1) forward: calculezi ieșirea x; (2) eroarea e = x − t; (3) costul E; (4) derivata
+pentru fiecare parametru, cu regula lanțului: <span class="f">∂E/∂w = Σ (eroare) · (intrarea înmulțită cu w)</span>, <span class="f">∂E/∂b = eroarea</span>;
+(5) w<sub>nou</sub> = w − η·∂E/∂w. <b>Actualizezi și bias-urile!</b></p>
+
+<h3>Backpropagation (curs 5–6), dacă se cere o derivată „pe graf”</h3>
+<p class="f">∂L/∂wⱼᵢ = δⱼ · zᵢ, &nbsp; la ieșire (MSE): δₖ = yₖ − tₖ, &nbsp; în stratul ascuns: δⱼ = h′(aⱼ) Σₖ wₖⱼ δₖ</p>
+<p>Exemplul din curs: f = (x + y)·z cu x = −2, y = 5, z = −4 → q = x + y = 3, ∂f/∂z = q = 3, ∂f/∂q = z = −4, ∂f/∂x = ∂f/∂y = −4·1 = −4.
+<b>Regula:</b> gradientul de la ieșire se înmulțește cu derivata locală a fiecărui nod (regula lanțului).</p>
+
+<h2 class="pag">5. Subiectele de anul trecut – rezolvate (refă-le singur pe foaie!)</h2>
+<p>Anul trecut s-au dat 2 variante. Rezolvarea din Drive are câteva greșeli; mai jos sunt variantele corectate și verificate.</p>
+
+<h3>Varianta 1 – Problema 1: rețea 3–2–2, sigmoid în stratul ascuns, ReLU la ieșire, intrări (10, 30, 20)</h3>
+<p>Ponderi din desen: I1→H1 = 0,2; I1→H2 = 0,7; I2→H1 = −0,1; I2→H2 = −1,2; I3→H1 = 0,4; I3→H2 = 1,2; H1→O1 = 1,1; H1→O2 = −3,1; H2→O1 = 0,1; H2→O2 = 1,17; fără bias.</p>
+<div class="calc">a) H1 = 0,2·10 − 0,1·30 + 0,4·20 = 2 − 3 + 8 = 7        → σ(7)  = 1/(1+e⁻⁷) = 0,9991
+   H2 = 0,7·10 − 1,2·30 + 1,2·20 = 7 − 36 + 24 = −5     → σ(−5) = 1/(1+e⁵)  = 0,0067
+   O1 = 1,1·0,9991 + 0,1·0,0067 = 1,0997               → ReLU(1,0997) = 1,0997
+   O2 = −3,1·0,9991 + 1,17·0,0067 = −3,0893           → ReLU(−3,0893) = 0</div>
+<p>b) Caracteristicile sigmoid: vezi tabelul de la secțiunea 2. Scrie 4–5 idei: formă de S, ieșire în (0,1) (probabilitate), monotonă, derivabilă cu σ′ = σ(1−σ), saturație → vanishing gradient.</p>
+
+<h3>Varianta 1 – Problema 2: x = Ay + b, A ∈ ℝ³ˣ³, Aᵢⱼ = w<sub>i−j</sub>, cost MSE, un pas SGD</h3>
+<div class="calc">a) A = [ w0  w-1  w-2 ]     x0 = w0·y0 + w-1·y1 + w-2·y2 + b0
+       [ w1  w0   w-1 ]     x1 = w1·y0 + w0·y1  + w-1·y2 + b1
+       [ w2  w1   w0  ]     x2 = w2·y0 + w1·y1  + w0·y2  + b2
+   Parametri: w-2, w-1, w0, w1, w2 (5) + b0, b1, b2 (3) = 8 parametri.
+b) E = ½ [(x0 − t0)² + (x1 − t1)² + (x2 − t2)²]
+c) y = [0,6  0  0,4], t = [1  0  0], η = 0,01, w-2 = 0,2, w-1 = 0,1, w0 = 0, w1 = 0,1, w2 = 0,2, b = 0
+   forward: x0 = 0,1·0 + 0,2·0,4 = 0,08;  x1 = 0,1·0,6 + 0,1·0,4 = 0,1;  x2 = 0,2·0,6 = 0,12
+   erori e = x − t = [−0,92  0,1  0,12],  E = ½(0,8464 + 0,01 + 0,0144) = 0,4354
+   ∂E/∂w0  = e0·y0 + e1·y1 + e2·y2 = −0,552 + 0 + 0,048 = −0,504 → w0  = 0 + 0,01·0,504 = 0,00504
+   ∂E/∂w1  = e1·y0 + e2·y1 = 0,06                              → w1  = 0,1 − 0,0006 = 0,0994
+   ∂E/∂w-1 = e0·y1 + e1·y2 = 0,04                              → w-1 = 0,1 − 0,0004 = 0,0996
+   ∂E/∂w2  = e2·y0 = 0,072                                     → w2  = 0,2 − 0,00072 = 0,19928
+   ∂E/∂w-2 = e0·y2 = −0,368                                    → w-2 = 0,2 + 0,00368 = 0,20368
+   ∂E/∂bi  = ei → b0 = 0,0092,  b1 = −0,001,  b2 = −0,0012   (în rezolvarea din Drive lipsesc bias-urile!)</div>
+<p><b>Truc:</b> w<sub>k</sub> apare în toate pozițiile (i, j) cu i − j = k, deci ∂E/∂w<sub>k</sub> = Σ<sub>i−j=k</sub> eᵢ·yⱼ.</p>
+
+<h3>Varianta 2 – Problema 1: rețea 2–2–2 cu ReLU (tabel: i1 = 2, i2 = −1, w11 = 1, w12 = −0,5, w21 = 0,5, w22 = −1, w31 = 0,5, w32 = −1, w41 = −0,5, w42 = 1, b1 = 0,5, b2 = −0,5, b3 = −1, b4 = 0,5, t1 = 1, t2 = 0,5)</h3>
+<p>Din desen: w11 merge i1→h1, w12 merge i1→h2, w21 merge i2→h1 și w22 merge i2→h2. La ieșire, w31 merge h3→o1, w32 merge h3→o2, w41 merge h4→o1 și w42 merge h4→o2.</p>
+<div class="calc">a) h1 = w11·i1 + w21·i2 + b1 = 1·2 + 0,5·(−1) + 0,5 = 2        → h3 = ReLU(2) = 2
+   h2 = w12·i1 + w22·i2 + b2 = −0,5·2 + (−1)·(−1) − 0,5 = −0,5 → h4 = ReLU(−0,5) = 0
+   o1 = w31·h3 + w41·h4 + b3 = 0,5·2 + (−0,5)·0 − 1 = 0
+   o2 = w32·h3 + w42·h4 + b4 = −1·2 + 1·0 + 0,5 = −1,5   (dacă pui și ReLU la ieșire: o2 = 0)
+   (bonus, cu ținta dată: E = ½[(1 − 0)² + (0,5 + 1,5)²] = 2,5)</div>
+<div class="atent">În rezolvarea din Drive, h2 = 1,5, pentru că s-a folosit w21 în loc de w12 la i1. Urmărește săgețile din desen.
+Dacă desenul de la examen e altfel, scrie pe foaie ce convenție folosești („wᵢⱼ = de la i la j”).</div>
+<p>b) Două avantaje ReLU: <b>calcul foarte ieftin</b> (max(0, x)) și <b>nu se saturează pentru x &gt; 0</b> (gradient 1, deci SGD converge mai repede și gradientul nu dispare).</p>
+
+<h3>Varianta 2 – Problema 2: entropie încrucișată, 4 clase (comedie, horror, acțiune, dragoste)</h3>
+<div class="calc">a) y = [0,1  0,4  0,3  0,2], t = [0 1 0 0] (horror)  → L = −ln 0,4 = 0,916   (cu log10: 0,398)
+b) dacă t = [0 0 1 0]                                    → L = −ln 0,3 = 1,204   (mai mare: clasa corectă are probabilitate mai mică)
+c) softmax dă 0 &lt; yₖ &lt; 1, deci y_corect &lt; 1 și −ln y_corect &gt; 0. Costul nu ajunge niciodată la 0, chiar cu acuratețe 100%.</div>
+
+<h2 class="pag">6. Restul materiei – pentru întrebări scurte de teorie</h2>
+<div class="doua"><div>
+<h3>Regularizare (curs 6)</h3>
+<ul>
+<li><b>Supra-învățare (overfitting):</b> modelul e foarte bun pe antrenare, dar generalizează slab. <b>Sub-învățare:</b> modelul e prea simplu.</li>
+<li><span class="f">MSE = Bias² + Varianță + σ²<sub>zgomot</sub></span>. Bias mare înseamnă model prea simplu (sub-învățare), varianță mare înseamnă model prea sensibil (supra-învățare). Zgomotul nu se poate reduce.</li>
+<li><span class="f">L̃(w) = L(w) + λR(w)</span>. <b>L2</b> (weight decay): R = ½‖w‖², gradientul devine ∇L + λw și împinge ponderile spre 0. <b>L1</b>: R = Σ|wₖ|, gradient + λ·sign(w), dă ponderi exact 0 (rare).</li>
+<li><b>Early stopping:</b> te oprești când eroarea pe validare începe să crească, deși pe antrenare încă scade.</li>
+<li><b>Dropout:</b> la antrenare anulezi aleator noduri (ascunse și de intrare, nu de ieșire), cu altă alegere la fiecare exemplu. Se folosește p = 0,5 la nodurile ascunse și 0,8 la intrare. E ieftin.</li>
+<li><b>Ensemble:</b> media predicțiilor mai multor modele. <b>Augmentarea datelor:</b> translații, rotiri, scalări, zgomot.</li>
+</ul>
+<h3>CNN (curs 6–7)</h3>
+<ul>
+<li>Convoluție: <span class="f">C(j,k) = Σₗ Σₘ I(j+l, k+m)·K(l,m)</span>. Avantaje: ponderi partajate (puțini parametri), conexiuni locale, aceleași trăsături detectate oriunde în imagine.</li>
+<li><b>Dimensiune ieșire:</b> <span class="f">⌊(N + 2P − M)/S⌋ + 1</span> (N = intrare, M = filtru, P = padding, S = stride). Fără padding („valid”): N − M + 1. „Same”: P = (M − 1)/2.</li>
+<li><b>Parametri:</b> filtru M×M×C → M²C + 1; cu C<sub>out</sub> filtre → <span class="f">(M²C + 1)·C<sub>out</sub></span>. Conv 1×1: C + 1 parametri, reduce numărul de canale.</li>
+<li><b>Pooling</b> (max / medie, de obicei 2×2 cu stride 2): reduce dimensiunea, n-are parametri. Ex.: max-pool 2×2 pe [[3,5,4,6],[1,1,9,4],[7,10,9,5],[12,2,9,4]] dă [[5,9],[12,9]].</li>
+<li>Rețele: LeNet (cifre), AlexNet (2012, ImageNet), VGG (filtre 3×3), Inception/GoogLeNet, ResNet. Detecție: <b>IoU</b> = intersecție/reuniune, corect dacă IoU &gt; 0,5; <b>NMS</b> elimină dreptunghiurile suprapuse (IoU ≥ 0,5). Segmentare: U-Net.</li>
+</ul>
+</div><div>
+<h3>RNN (curs 8)</h3>
+<ul>
+<li>Procesează secvențe x⁽¹⁾…x⁽τ⁾. <b>Aceiași parametri la fiecare pas</b> (partajați în timp), iar graful conține cicluri.</li>
+<li><span class="f">a⁽ᵗ⁾ = b + W h⁽ᵗ⁻¹⁾ + U x⁽ᵗ⁾, &nbsp; h⁽ᵗ⁾ = tanh(a⁽ᵗ⁾), &nbsp; o⁽ᵗ⁾ = c + V h⁽ᵗ⁾, &nbsp; ŷ⁽ᵗ⁾ = softmax(o⁽ᵗ⁾)</span>. U leagă intrarea de nodul ascuns, W leagă nodul ascuns de el însuși, V leagă nodul ascuns de ieșire.</li>
+<li>Cost: <span class="f">L = Σₜ L⁽ᵗ⁾ = −Σₜ log p(y⁽ᵗ⁾ | x⁽¹⁾…x⁽ᵗ⁾)</span>. Gradienții se calculează cu <b>BPTT</b> (backprop through time) pe graful desfășurat; costul e O(τ).</li>
+<li>h⁽ᵗ⁾ rezumă trecutul într-un vector de lungime fixă. <b>Bidirecțional</b> = RNN înainte + RNN înapoi (vorbire, scris de mână). <b>Codor–decodor (seq2seq)</b>: codorul dă un context C de dimensiune fixă, decodorul generează (traducere, recunoaștere vocală, întrebări-răspuns).</li>
+</ul>
+<h3>Clasificare (curs 3–4)</h3>
+<ul>
+<li><b>Generativ:</b> modelezi p(x|Cₖ) și p(Cₖ), apoi aplici Bayes: <span class="f">p(Cₖ|x) = p(x|Cₖ)p(Cₖ) / Σₗ p(x|Cₗ)p(Cₗ)</span>. Cu 2 clase obții p(C₁|x) = σ(a), cu K clase obții softmax.</li>
+<li><b>Discriminant:</b> o funcție y(x) = wᵀx + w₀ dă direct clasa; are mai puțini parametri și de obicei merge mai bine. Logit: a = ln(σ/(1−σ)).</li>
+</ul>
+<h3>PCA și ICA (curs 2–3)</h3>
+<ul>
+<li><b>PCA:</b> proiectezi pe M &lt; D direcții astfel încât <b>varianța proiecțiilor să fie maximă</b> (sau, echivalent, eroarea de proiecție minimă).
+Pași: (1) scazi media x̄; (2) <span class="f">K = 1/N Σ (xₙ − x̄)(xₙ − x̄)ᵀ</span>; (3) afli valorile și vectorii proprii ai lui K; (4) păstrezi vectorii proprii cu cele mai mari M valori proprii.
+Varianța pe direcția u₁ este λ₁. Eroarea pierdută este suma valorilor proprii aruncate. Se folosește la reducerea dimensiunii, compresie, extragere de trăsături și vizualizare (se mai numește KLT).</li>
+<li><b>ICA:</b> separă surse <b>statistic independente</b> dintr-un amestec x = As (problema „cocktail party”, doi vorbitori și două microfoane). Sursele trebuie să fie ne-gaussiene. PCA găsește direcții <b>necorelate</b>, ICA găsește componente <b>independente</b>.</li>
+</ul>
+</div></div>
+
+<div class="box"><b>Plan pentru azi și mâine:</b> (1) învață tabelul cu activări și formulele de cost (30 min); (2) refă pe foaie, fără să te uiți, cele 4 probleme de la pagina 2 (1 h);
+(3) inventează o variantă: schimbă numerele, pune sigmoid în loc de ReLU sau 3 clase în loc de 4, și refă-o (30 min); (4) citește o dată pagina 3. La examen: scrie formula, apoi înlocuiește valorile, apoi calculează. Scrie toți pașii intermediari, ca să primești punctaj parțial.</div>
+</body></html>
