@@ -35,6 +35,14 @@
   .grafice { display: flex; justify-content: space-between; margin: 8px 0; }
   .doua { display: flex; gap: 18px; align-items: flex-start; } .doua > div { flex: 1; }
   .pag { break-before: page; }
+  .enunt { background: #fffdf8; border: 1.5px solid #d9c4ad; border-radius: 8px; padding: 9px 14px 8px; margin: 8px 0 12px; font-size: 10.2pt; line-height: 1.55; break-inside: avoid; }
+  .enunt .et { font-size: 8.6pt; letter-spacing: .06em; color: #8a4a2a; font-weight: 700; margin-bottom: 3px; }
+  .enunt p { margin: 4px 0; }
+  .enunt img { display: block; margin: 8px auto 2px; border-radius: 4px; }
+  .enunt .nota { color: #7a6f64; font-size: 9.2pt; text-align: center; }
+  .enunt table { font-size: 9pt; margin: 6px 0; }
+  .enunt table td, .enunt table th { padding: 2px 3px; text-align: center; }
+  .rezolvare { font-size: 8.6pt; letter-spacing: .06em; color: #557a44; font-weight: 700; margin: 10px 0 2px; }
   .katex { font-size: 1.07em; }
   .foaie { width: 178mm; height: 148mm; box-sizing: border-box; border: 2px dashed #b4532a; border-radius: 6px; padding: 4mm 5mm;
            display: flex; gap: 6mm; font-size: 10.6pt; line-height: 1.45; overflow: hidden; }
@@ -212,6 +220,16 @@ $\delta_j = h'(a_j)\sum_k w_{kj}\,\delta_k$ în stratul ascuns.</p>
 <p>Refă-le singur pe foaie și abia apoi verifică aici. Rezolvarea care circulă pe Drive are greșeli, așa că nu te lua după ea.</p>
 
 <h3>Varianta 1 · Problema 1: sigmoid în stratul ascuns, ReLU la ieșire, intrări (10, 30, 20)</h3>
+<div class="enunt"><div class="et">ENUNȚUL, EXACT CUM S-A DAT</div>
+<p>1. Fie o arhitectură de rețea neuronală, cu intrările $I_1, I_2, I_3$.</p>
+<p>a) Considerând că stratul ascuns folosește ca funcție de activare funcția sigmoid, iar stratul de ieșire folosește o activare ReLU,
+calculați ieșirea rețelei pentru valorile 10, 30, 20 $(I_1, I_2, I_3)$.</p>
+<p>b) Explicați pe scurt caracteristicile funcției sigmoid.</p>
+<img src="enunt/v1p1_schema.jpg" style="width:78mm">
+<div class="nota">schema din enunț, desenată de mână. Minusurile se văd greu: $I_2 \to H_1 = -0{,}1$, $\;I_2 \to H_2 = -1{,}2$, $\;H_1 \to O_2 = -3{,}1$.<br>
+S-ul din cercuri e doar semnul de neuron; ce activare are fiecare strat scrie în text.</div>
+</div>
+<p class="rezolvare">REZOLVARE</p>
 <div class="schema">{{V1P1}}</div>
 <div class="pas"><span class="nr">1</span><div>
 <div class="ec">$H_1 = 0{,}2\cdot10 - 0{,}1\cdot30 + 0{,}4\cdot20 = 2 - 3 + 8 = 7 \;\Rightarrow\; \sigma(7) = \dfrac{1}{1+e^{-7}} = $ <span class="rez">0,9991</span></div>
@@ -226,6 +244,20 @@ $\delta_j = h'(a_j)\sum_k w_{kj}\,\delta_k$ în stratul ascuns.</p>
 <p><b>b)</b> Caracteristicile sigmoid: răspunsul gata făcut de la capitolul 3.</p>
 
 <h3>Varianta 1 · Problema 2: $x = Ay + b$, cu $A_{ij} = w_{i-j}$, cost MSE, un pas de SGD</h3>
+<div class="enunt"><div class="et">ENUNȚUL, EXACT CUM S-A DAT (FĂRĂ SCHEMĂ)</div>
+<p>2. O rețea neuronală poate fi reprezentată sub forma $\;x = f(y) = Ay + b$,
+unde $y \in \mathbb{R}^N$ este intrarea, $A \in \mathbb{R}^{N\times N}$, $b \in \mathbb{R}^N$, $N = 3$. De asemenea, elementele matricii $A$ sunt
+$A_{ij} = w_{i-j}$ $\;(i, j \in \{0, 1, 2\})$. Presupunem că, în setul de antrenare, avem disponibile perechi de tipul $(y, t)$, unde $t$ reprezintă
+targetul asociat intrării $y$. Se va folosi funcția de cost eroare medie pătratică.</p>
+<p>a) Scrieți expresia lui $x$ în funcție de valorile $w, y, b$. Câți parametri are rețeaua?</p>
+<p>b) Scrieți expresia funcției de cost.</p>
+<p>c) Scrieți sub formă explicită, punând în evidență parametrii rețelei, pașii algoritmului SGD. Pornind de la valorile arbitrare:<br>
+$w_{-2} = 0{,}2,\; w_{-1} = 0{,}1,\; w_0 = 0,\; w_1 = 0{,}1,\; w_2 = 0{,}2$<br>
+$b_0 = b_1 = b_2 = 0$<br>
+$\eta = 0{,}01$ (rata de învățare)<br>
+calculați valorile după prima iterație a SGD. Se va considera perechea: $\;(y = [0{,}6\;\; 0\;\; 0{,}4],\; t = [1\;\; 0\;\; 0])$</p>
+</div>
+<p class="rezolvare">REZOLVARE</p>
 <p><b>Ce spune problema, pe românește:</b> e un strat de rețea <b>fără activare</b>, cu 3 intrări $(y_0, y_1, y_2)$ și 3 ieșiri $(x_0, x_1, x_2)$.
 Matricea $A$ e specială: căsuța din rândul $i$, coloana $j$ conține ponderea $w_{i-j}$. De aceea pe fiecare diagonală e <b>aceeași</b> pondere:</p>
 <div class="schema">{{MATRICE}}</div>
@@ -254,8 +286,21 @@ Uită-te pe culori în schemă: de exemplu, $w_0$ apare în $x_0$ lângă $y_0$,
 <div class="atent">Pe Drive lipsesc bias-urile la pasul SGD. Și ele sunt parametri, deci se actualizează.</div>
 
 <h3>Varianta 2 · Problema 1: rețea cu ReLU</h3>
-<p>Date: $i_1 = 2$, $i_2 = -1$, $w_{11} = 1$, $w_{12} = -0{,}5$, $w_{21} = 0{,}5$, $w_{22} = -1$, $w_{31} = 0{,}5$, $w_{32} = -1$, $w_{41} = -0{,}5$, $w_{42} = 1$,
-$b_1 = 0{,}5$, $b_2 = -0{,}5$, $b_3 = -1$, $b_4 = 0{,}5$, ținte $t_1 = 1$, $t_2 = 0{,}5$. Pe desen, ponderile sunt așezate așa:</p>
+<div class="enunt"><div class="et">ENUNȚUL, EXACT CUM S-A DAT</div>
+<p>1. Fie următoarea rețea neurală cu un strat complet conectat și funcții de activare RELU. Rețeaua are 2 intrări $(i_1, i_2)$,
+4 unități ascunse $(h_1, h_2, h_3, h_4)$. Ieșirile sunt notate cu $(o_1, o_2)$, iar valorile dorite (target) cu $(t_1, t_2)$.
+Ponderile sunt notate cu $w$ și bias-urile cu $b$.</p>
+<img src="enunt/v2p1_schema.jpg" style="width:112mm">
+<div class="nota">schema din enunț</div>
+<p>a) Calculați cele două valori de la ieșire considerând valorile numerice din tabel. Scrieți pe foaie toate calculele, inclusiv cele intermediare.</p>
+<p>b) Menționați două avantaje ale funcției de activare RELU.</p>
+<table>
+<tr><th>$i_1$</th><th>$i_2$</th><th>$w_{11}$</th><th>$w_{12}$</th><th>$w_{21}$</th><th>$w_{22}$</th><th>$w_{31}$</th><th>$w_{32}$</th><th>$w_{41}$</th><th>$w_{42}$</th><th>$b_1$</th><th>$b_2$</th><th>$b_3$</th><th>$b_4$</th><th>$t_1$</th><th>$t_2$</th></tr>
+<tr><td>2.0</td><td>-1.0</td><td>1.0</td><td>-0.5</td><td>0.5</td><td>-1.0</td><td>0.5</td><td>-1.0</td><td>-0.5</td><td>1.0</td><td>0.5</td><td>-0.5</td><td>-1.0</td><td>0.5</td><td>1.0</td><td>0.5</td></tr>
+</table>
+</div>
+<p class="rezolvare">REZOLVARE</p>
+<p>Aceeași schemă, cu numerele din tabel puse direct pe fire:</p>
 <div class="schema">{{V2P1}}</div>
 <div class="pas"><span class="nr">1</span><div>
 <div class="ec">$h_1 = w_{11} i_1 + w_{21} i_2 + b_1 = 1\cdot2 + 0{,}5\cdot(-1) + 0{,}5 = 2 \;\Rightarrow\; h_3 = \text{ReLU}(2) = $ <span class="rez">2</span></div>
@@ -271,7 +316,21 @@ $b_1 = 0{,}5$, $b_2 = -0{,}5$, $b_3 = -1$, $b_4 = 0{,}5$, ținte $t_1 = 1$, $t_2
 <p><b>b)</b> Două avantaje ReLU: răspunsul gata făcut de la capitolul 3. (Bonus, dacă se cere eroarea: $E = \tfrac12[(1-0)^2 + (0{,}5+1{,}5)^2] = 2{,}5$.)</p>
 
 <h3>Varianta 2 · Problema 2: entropia încrucișată, 4 clase</h3>
-<p>Clase: comedie, horror, acțiune, dragoste. Rețeaua scoate $y = [0{,}1;\ 0{,}4;\ 0{,}3;\ 0{,}2]$.</p>
+<div class="enunt"><div class="et">ENUNȚUL, EXACT CUM S-A DAT (FĂRĂ SCHEMĂ)</div>
+<p>2. Prietenul tău Tom îți cere să construiești un model pentru a-l ajuta să se decidă ce film să vadă în funcție de posterul filmului.
+Categoriile sunt comedie, horror, acțiune, dragoste. Ai primit un set de date mare care mapează fiecare poster $x$ la una din cele 4 categorii.
+Te decizi să folosești funcția de cost entropie încrucișată, definită ca:</p>
+<p style="text-align:center">$L_{CE}(y, t) = -\displaystyle\sum_{k=1}^{C} t_k \log y_k$</p>
+<p>unde $t$ reprezintă eticheta corectă (ground truth) asociată posterului $x$, $y$ reprezintă vectorul de distribuții obținut la ieșirea rețelei
+și $C$ reprezintă numărul de clase. Dacă posterul are eticheta horror, $t = [0, 1, 0, 0]$, iar dacă are eticheta comedie, $t = [1, 0, 0, 0]$.</p>
+<p>a) Presupunem că modelul are la ieșire $y = [0.1, 0.4, 0.3, 0.2]$ și prezice corect eticheta. Cât este valoarea entropiei încrucișate?</p>
+<p>b) Cât este costul dacă eticheta corectă ar fi fost $[0, 0, 1, 0]$?</p>
+<p>c) Presupunem că ultimul strat al modelului are o funcție de activare de tip softmax și că modelul antrenat atinge acuratețe 100%.
+Explicați [de ce co]stul nu va fi niciodată 0 în acest caz.</p>
+<div class="nota">[ ] = cuvinte acoperite de deget pe poză</div>
+</div>
+<p class="rezolvare">REZOLVARE</p>
+<p>„Prezice corect eticheta” înseamnă că cea mai mare probabilitate (0,4) e la clasa corectă, adică horror.</p>
 <div class="pas"><span class="nr">a</span><div>
 <div class="ec">eticheta corectă e horror, $t = [0,1,0,0]$: $\;L = -(0\cdot\ln0{,}1 + 1\cdot\ln0{,}4 + 0 + 0) = -\ln 0{,}4 = $ <span class="rez">0,916</span></div>
 <div class="ex">rămâne doar termenul clasei corecte</div></div></div>

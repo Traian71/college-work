@@ -10,11 +10,12 @@
   pentru x = Ay + b cu A_ij = w_{i-j}. Rezolvarea din Drive are greșeli: la v2 h2 calculat cu w21 în loc de w12 (corect h2 = −0,5 →
   h4 = 0, o1 = 0, o2 = −1,5), la SGD lipsesc bias-urile, la v1 O1 = 1,0997 (nu 1,1006). Verificat în Python.
   În Drive mai sunt `Examen/Ce_s_a_dat.jpg` (salvat) și „Final exemplu” + „Foaie de formule Final” (pentru finalul din ianuarie, nedescărcate).
-- **Livrabil:** `ia2/partial/Conspect_IA2_lucrare_curs.pdf` (12 pagini), copiat pe Desktop. Refăcut pe 23 nov la cererea lui:
+- **Livrabil:** `ia2/partial/Conspect_IA2_lucrare_curs.pdf` (14 pagini), copiat pe Desktop. Refăcut pe 23 nov la cererea lui:
   nimic criptic, fiecare formulă explicată pe românește, scheme pentru fiecare rețea și calcul, pașii pe rânduri separate,
   culori calde (nu albastru), mult spațiu. Capitole: 1 neuronul, 2 rețeaua (cu explicația indicilor w_ji, w_j0, a_j, z_j),
   3 activări (grafice + plusuri/minusuri + răspunsuri gata făcute), 4 cost, 5 gradient descent + backprop,
-  6 subiectele de anul trecut rezolvate cu scheme, 7 restul (regularizare, CNN, clasificare, PCA/ICA), 8 foaia de formule (½ A4).
+  6 subiectele de anul trecut rezolvate cu scheme (fiecare cu enunțul integral transcris + schema originală decupată din poză,
+  `sursa/enunt/`; adăugat tot pe 23 nov la cererea lui), 7 restul (regularizare, CNN, clasificare, PCA/ICA), 8 foaia de formule (½ A4).
 - **Surse:** `sursa/build_conspect.py` (rulează `python3 build_conspect.py`) = `conspect_template.html` (text, KaTeX din CDN)
   + `scheme.py` (toate schemele SVG) → `conspect.html` → PDF cu Chrome headless.
 - **Materiale:** `materiale/curs1–8.pdf`, `_curs_proinfo.pdf` (Moodle), `materiale/drive-ani-trecuti/`.
