@@ -20,10 +20,13 @@
   .doua { display: flex; gap: 10px; } .doua > div { flex: 1; }
   .pag { break-before: page; }
   b.r { color: #c0392b; }
+  .foaie { width: 184mm; height: 148mm; box-sizing: border-box; border: 2px dashed #1f3b6f; padding: 3mm 4mm;
+           display: flex; gap: 4mm; font-family: "Cambria Math", "STIX Two Math", Georgia, serif; font-size: 10.4pt; line-height: 1.25; overflow: hidden; }
+  .foaie .col { flex: 1; } .foaie p { margin: 0 0 2.2mm; } .foaie .opt { background: #eee; padding: 1mm; }
 </style></head><body>
 
 <h1>Conspect IA2 – lucrarea de la curs (miercuri, 25 nov)</h1>
-<p class="sub">Inteligență artificială 2 – Recunoașterea formelor, prof. A. Rădoi · făcut din cursurile 1–8 de pe Moodle și testul de anul trecut din Drive</p>
+<p class="sub">Inteligență artificială 2 – Recunoașterea formelor, prof. A. Rădoi · făcut din cursurile 1–7 de pe Moodle și testul de anul trecut din Drive</p>
 
 <div class="box">
 <b>Ce știm:</b> lucrarea valorează <b>20 de puncte</b> din notă și se dă <b>fără redare</b> (din _curs_proinfo). Testul de anul trecut
@@ -31,8 +34,8 @@ avea <b>2 probleme de calcul</b>. Fiecare problemă avea punctele a), b), c) și
 1) <b>forward pass</b> printr-o rețea mică (sigmoid/ReLU) + „explicați caracteristicile sigmoid / 2 avantaje ReLU”;<br>
 2) <b>funcție de cost</b> (entropie încrucișată cu softmax <i>sau</i> MSE) + <b>un pas de SGD</b> calculat de mână.<br>
 <b>Pentru notă de trecere:</b> învață pe de rost secțiunile 1–4 (asta s-a dat) și refă singur cele 4 probleme de la pagina 2.
-Restul (CNN, RNN, PCA, regularizare) e la pagina 3, pentru întrebări scurte de teorie. Pe Moodle nu e niciun anunț despre ce
-cursuri intră. Până acum s-au predat cursurile 1–8 (până la RNN).
+Restul (CNN, PCA, regularizare) e la pagina 3, pentru întrebări scurte de teorie. <b>Intră cursurile 1–7</b> (fără RNN).
+Ai voie cu o <b>foaie de formule scrisă de mână, cât jumătate de pagină</b>: varianta gata de copiat e la pagina 4.
 </div>
 
 <h2>1. Neuronul și rețeaua complet conectată (curs 5)</h2>
@@ -153,13 +156,15 @@ c) softmax dă 0 &lt; yₖ &lt; 1, deci y_corect &lt; 1 și −ln y_corect &gt; 
 <li>Rețele: LeNet (cifre), AlexNet (2012, ImageNet), VGG (filtre 3×3), Inception/GoogLeNet, ResNet. Detecție: <b>IoU</b> = intersecție/reuniune, corect dacă IoU &gt; 0,5; <b>NMS</b> elimină dreptunghiurile suprapuse (IoU ≥ 0,5). Segmentare: U-Net.</li>
 </ul>
 </div><div>
-<h3>RNN (curs 8)</h3>
-<ul>
-<li>Procesează secvențe x⁽¹⁾…x⁽τ⁾. <b>Aceiași parametri la fiecare pas</b> (partajați în timp), iar graful conține cicluri.</li>
-<li><span class="f">a⁽ᵗ⁾ = b + W h⁽ᵗ⁻¹⁾ + U x⁽ᵗ⁾, &nbsp; h⁽ᵗ⁾ = tanh(a⁽ᵗ⁾), &nbsp; o⁽ᵗ⁾ = c + V h⁽ᵗ⁾, &nbsp; ŷ⁽ᵗ⁾ = softmax(o⁽ᵗ⁾)</span>. U leagă intrarea de nodul ascuns, W leagă nodul ascuns de el însuși, V leagă nodul ascuns de ieșire.</li>
-<li>Cost: <span class="f">L = Σₜ L⁽ᵗ⁾ = −Σₜ log p(y⁽ᵗ⁾ | x⁽¹⁾…x⁽ᵗ⁾)</span>. Gradienții se calculează cu <b>BPTT</b> (backprop through time) pe graful desfășurat; costul e O(τ).</li>
-<li>h⁽ᵗ⁾ rezumă trecutul într-un vector de lungime fixă. <b>Bidirecțional</b> = RNN înainte + RNN înapoi (vorbire, scris de mână). <b>Codor–decodor (seq2seq)</b>: codorul dă un context C de dimensiune fixă, decodorul generează (traducere, recunoaștere vocală, întrebări-răspuns).</li>
-</ul>
+<h3>CNN – exemplu de calcul (posibil la lucrare)</h3>
+<div class="calc">Intrare 32×32×3, 10 filtre 5×5, P = 0, S = 1:
+  ieșire (32 + 0 − 5)/1 + 1 = 28  → 28×28×10
+  parametri (5·5·3 + 1)·10 = 760
+apoi max-pool 2×2, S = 2 → 14×14×10 (0 parametri)
+Cu P = 2 („same”): (32 + 4 − 5)/1 + 1 = 32 → 32×32×10
+Cu S = 2, P = 0: ⌊(32 − 5)/2⌋ + 1 = 13 + 1 = 14</div>
+<p><b>Convoluție de mână</b> (fără padding): pui filtrul peste colțul din stânga-sus al imaginii, înmulțești element cu element,
+aduni (plus bias), apoi muți filtrul cu S pixeli. O imagine 4×4 cu un filtru 3×3 dă o ieșire 2×2.</p>
 <h3>Clasificare (curs 3–4)</h3>
 <ul>
 <li><b>Generativ:</b> modelezi p(x|Cₖ) și p(Cₖ), apoi aplici Bayes: <span class="f">p(Cₖ|x) = p(x|Cₖ)p(Cₖ) / Σₗ p(x|Cₗ)p(Cₗ)</span>. Cu 2 clase obții p(C₁|x) = σ(a), cu K clase obții softmax.</li>
@@ -175,5 +180,41 @@ Varianța pe direcția u₁ este λ₁. Eroarea pierdută este suma valorilor pr
 </div></div>
 
 <div class="box"><b>Plan pentru azi și mâine:</b> (1) învață tabelul cu activări și formulele de cost (30 min); (2) refă pe foaie, fără să te uiți, cele 4 probleme de la pagina 2 (1 h);
-(3) inventează o variantă: schimbă numerele, pune sigmoid în loc de ReLU sau 3 clase în loc de 4, și refă-o (30 min); (4) citește o dată pagina 3. La examen: scrie formula, apoi înlocuiește valorile, apoi calculează. Scrie toți pașii intermediari, ca să primești punctaj parțial.</div>
+(3) inventează o variantă: schimbă numerele, pune sigmoid în loc de ReLU sau 3 clase în loc de 4, și refă-o (30 min); (4) citește o dată pagina 3; (5) <b>scrie de mână foaia de formule de la pagina 4</b> (30 min). Scrisul te ajută și să le ții minte. La examen: scrie formula, apoi înlocuiește valorile, apoi calculează. Scrie toți pașii intermediari, ca să primești punctaj parțial.</div>
+
+<h2 class="pag">7. Foaia de formule – de copiat de mână (½ pagină A4)</h2>
+<p>Dreptunghiul de mai jos are exact o jumătate de A4 (210 × 148 mm). Copiază-l cât de mărunt poți. Pe foaie sunt doar formule,
+teoria o înveți. Ce e pe dreptunghiul gri e opțional, dacă îți mai rămâne loc.</p>
+<div class="foaie">
+<div class="col">
+<p><b>Neuron:</b> a = Σ wᵢxᵢ + b, &nbsp;z = f(a) &nbsp;(wᵢⱼ: de la i la j)</p>
+<p><b>Sigmoid:</b> σ(x) = 1/(1+e⁻ˣ) ∈ (0,1); σ′ = σ(1−σ); σ(−x) = 1−σ(x); σ(0) = ½</p>
+<p><b>tanh</b> = 2σ(2x) − 1 ∈ (−1,1); tanh′ = 1 − tanh²</p>
+<p><b>ReLU</b> = max(0,x), der. 1 / 0; &nbsp;<b>Leaky</b>: αx pt x&lt;0 (α=0,01)</p>
+<p><b>Softmax:</b> yₖ = e^{aₖ} / Σⱼ e^{aⱼ}, Σ yₖ = 1</p>
+<p><b>MSE:</b> E = ½ Σₖ (yₖ − tₖ)²; ∂E/∂yₖ = yₖ − tₖ</p>
+<p><b>CE bin:</b> L = −Σₙ [tₙ ln yₙ + (1−tₙ) ln(1−yₙ)]</p>
+<p><b>CE multi:</b> L = −Σₖ tₖ ln yₖ = −ln y<sub>corect</sub></p>
+<p><b>Grad.</b> (sigm/softmax + CE): ∇L = Σₙ (yₙ − tₙ) xₙ</p>
+<p><b>Bayes:</b> p(Cₖ|x) = p(x|Cₖ)p(Cₖ) / Σₗ p(x|Cₗ)p(Cₗ); 2 clase: σ(a),
+a = ln [p(x|C₁)p(C₁) / p(x|C₂)p(C₂)]; logit a = ln(σ/(1−σ))</p>
+<p><b>Nr. param.</b> FC n→m: n·m + m</p>
+</div>
+<div class="col">
+<p><b>GD/SGD:</b> w ← w − η ∂E/∂w; &nbsp;∂E/∂b = eroarea</p>
+<p><b>Momentum:</b> Δw⁽ᵗ⁾ = −η∇E + μΔw⁽ᵗ⁻¹⁾ (μ=0,9); w ← w + Δw</p>
+<p><b>AdaGrad:</b> r ← r + g²; <b>RMSProp:</b> r ← βr + (1−β)g²;
+w ← w − η g / √(r + δ)</p>
+<p><b>Adam:</b> s ← β₁s + (1−β₁)g, r ← β₂r + (1−β₂)g², ŝ = s/(1−β₁ᵗ), r̂ = r/(1−β₂ᵗ),
+w ← w − η ŝ / (√r̂ + δ)</p>
+<p><b>Backprop:</b> ∂L/∂wⱼᵢ = δⱼ zᵢ; δₖ = yₖ − tₖ; δⱼ = h′(aⱼ) Σₖ wₖⱼ δₖ</p>
+<p><b>Normalizare:</b> x̃ = (x − μ)/σ</p>
+<p><b>Reg.:</b> L̃ = L + λR; L2: R = ½‖w‖², ∇ + λw; L1: R = Σ|w|, ∇ + λ sign(w)</p>
+<p><b>MSE</b> = Bias² + Var + σ²<sub>zgomot</sub></p>
+<p><b>CNN:</b> ieșire ⌊(N + 2P − M)/S⌋ + 1; same: P = (M−1)/2;
+param. (M²C + 1)·C<sub>out</sub>; IoU = ∩/∪ &gt; 0,5</p>
+<p><b>PCA:</b> K = 1/N Σ (xₙ − x̄)(xₙ − x̄)ᵀ; K u = λu; păstrezi λ mari; var = λ</p>
+<p class="opt">ln 0,1 = −2,30 · ln 0,2 = −1,61 · ln 0,3 = −1,20 · ln 0,4 = −0,92 · ln 0,5 = −0,69 · e⁻¹ = 0,37</p>
+</div>
+</div>
 </body></html>
