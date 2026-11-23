@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="ro"><head><meta charset="utf-8">
+<title>IA2 – lucrarea de miercuri</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<style>
+  @page { size: A4; margin: 15mm 16mm; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: "Avenir Next", "Helvetica Neue", sans-serif; font-size: 10.6pt; line-height: 1.62; color: #2d2a26; }
+  h1 { font-size: 22pt; font-weight: 600; margin: 0; color: #2d2a26; }
+  .sub { color: #7a6f64; margin: 2px 0 14px; }
+  h2 { font-size: 15pt; font-weight: 600; color: #b4532a; margin: 26px 0 8px; padding-bottom: 4px; border-bottom: 2px solid #f0dcc6; break-after: avoid; }
+  h2 .n { display: inline-block; width: 26px; height: 26px; line-height: 26px; text-align: center; border-radius: 50%;
+          background: #b4532a; color: #fff; font-size: 12pt; margin-right: 8px; vertical-align: 2px; }
+  h3 { font-size: 11.8pt; font-weight: 600; color: #8a4a2a; margin: 18px 0 6px; break-after: avoid; }
+  p { margin: 7px 0; }
+  ul { margin: 6px 0 8px; padding-left: 20px; } li { margin: 4px 0; }
+  .box { background: #fbf1e6; border-radius: 10px; padding: 10px 14px; margin: 12px 0; break-inside: avoid; }
+  .atent { background: #fbe9e3; border-left: 4px solid #b4532a; border-radius: 6px; padding: 9px 13px; margin: 12px 0; break-inside: avoid; }
+  .bun { background: #eef3e8; border-left: 4px solid #557a44; border-radius: 6px; padding: 9px 13px; margin: 12px 0; break-inside: avoid; }
+  .schema { text-align: center; margin: 10px 0 6px; break-inside: avoid; }
+  .pas { display: grid; grid-template-columns: 28px 1fr; column-gap: 10px; margin: 10px 0; break-inside: avoid; }
+  .pas .nr { width: 24px; height: 24px; border-radius: 50%; background: #f3dcc6; color: #8a4a2a; font-weight: 700; text-align: center; line-height: 24px; font-size: 10pt; margin-top: 2px; }
+  .pas .ec { font-size: 11pt; }
+  .pas .ex { color: #7a6f64; font-size: 9.8pt; margin-top: 2px; }
+  .rez { color: #557a44; font-weight: 700; }
+  table { border-collapse: collapse; margin: 10px 0; width: 100%; font-size: 10pt; break-inside: avoid; }
+  th, td { padding: 6px 9px; text-align: left; vertical-align: top; border-bottom: 1px solid #ecdcca; }
+  th { color: #8a4a2a; font-weight: 600; border-bottom: 2px solid #e3c9ad; }
+  .act { display: grid; grid-template-columns: 175px 1fr; column-gap: 14px; margin: 14px 0; break-inside: avoid; align-items: start; }
+  .act h4 { margin: 0 0 3px; font-size: 11.5pt; color: #8a4a2a; }
+  .plusminus { display: grid; grid-template-columns: 1fr 1fr; column-gap: 12px; font-size: 9.9pt; }
+  .plusminus b.p { color: #557a44; } .plusminus b.m { color: #b23b3b; }
+  .grafice { display: flex; justify-content: space-between; margin: 8px 0; }
+  .doua { display: flex; gap: 18px; align-items: flex-start; } .doua > div { flex: 1; }
+  .pag { break-before: page; }
+  .katex { font-size: 1.07em; }
+  .foaie { width: 178mm; height: 148mm; box-sizing: border-box; border: 2px dashed #b4532a; border-radius: 6px; padding: 4mm 5mm;
+           display: flex; gap: 6mm; font-size: 10.6pt; line-height: 1.45; overflow: hidden; }
+  .foaie .col { flex: 1; } .foaie p { margin: 0 0 2.4mm; } .foaie b { color: #8a4a2a; }
+  .foaie .katex { font-size: 1em; }
+</style></head><body>
+
+<h1>IA2 – lucrarea de miercuri</h1>
+<p class="sub">Cursurile 1–7, explicate pe înțeles, cu subiectele de anul trecut rezolvate pas cu pas</p>
+
+<div class="box">
+<b>Cum arată lucrarea.</b> Valorează 20 de puncte, se dă fără redare și ai voie cu <b>o jumătate de pagină de formule scrisă de mână</b>
+(o variantă gata de copiat e pe ultima pagină).<br>
+Anul trecut au fost <b>2 probleme</b>:
+<ul>
+<li><b>Problema 1:</b> calculezi ce iese dintr-o rețea mică de neuroni, plus o întrebare de teorie despre funcțiile de activare.</li>
+<li><b>Problema 2:</b> calculezi o funcție de cost și faci un pas de învățare (SGD) de mână.</li>
+</ul>
+<b>Ordinea în care înveți:</b> capitolele 1–5 (bazele), apoi refaci singur subiectele din capitolul 6, apoi citești capitolul 7 și la
+final scrii foaia de formule.
+</div>
+
+<h2><span class="n">1</span>Ce face un singur neuron</h2>
+<p>Un neuron primește câteva numere (<b>intrările</b>) și face doar <b>doi pași</b>:</p>
+<ul>
+<li><b>Pasul 1:</b> înmulțește fiecare intrare cu numărul scris pe firul ei (<b>ponderea</b> $w$), adună tot și mai adaugă un număr fix (<b>bias-ul</b> $b$).</li>
+<li><b>Pasul 2:</b> bagă rezultatul într-o funcție (<b>funcția de activare</b> $f$). Ce iese e ieșirea neuronului.</li>
+</ul>
+<div class="schema">{{NEURON}}</div>
+
+<div class="pas"><span class="nr">1</span><div>
+<div class="ec">$a = w_1 x_1 + w_2 x_2 + w_3 x_3 + b = 0{,}5\cdot 2 + 1\cdot(-1) + 0{,}2\cdot 3 + 0{,}1 = 1 - 1 + 0{,}6 + 0{,}1 = $ <span class="rez">0,7</span></div>
+<div class="ex">suma ponderată + bias. Numărul ăsta se numește „pre-activare” și se notează cu $a$.</div></div></div>
+<div class="pas"><span class="nr">2</span><div>
+<div class="ec">cu ReLU: $\;y = \max(0;\ 0{,}7) = $ <span class="rez">0,7</span> &nbsp;&nbsp; sau cu sigmoid: $\;y = \dfrac{1}{1+e^{-0{,}7}} = $ <span class="rez">0,668</span></div>
+<div class="ex">activarea (capitolul 3 explică ce face fiecare).</div></div></div>
+
+<table>
+<tr><th style="width:22%">Simbol</th><th>Ce înseamnă</th></tr>
+<tr><td>$x_1, x_2, \dots$</td><td>intrările: numerele pe care le primește neuronul</td></tr>
+<tr><td>$w_1, w_2, \dots$</td><td>ponderile: câte una pe fiecare fir, adică „cât de mult contează” intrarea respectivă</td></tr>
+<tr><td>$b$</td><td>bias-ul: un număr adunat la final, care mută pragul de la care neuronul „se aprinde”</td></tr>
+<tr><td>$a$</td><td>suma ponderată + bias (înainte de activare)</td></tr>
+<tr><td>$f$, $y = f(a)$</td><td>funcția de activare și ieșirea neuronului</td></tr>
+</table>
+<p>În curs, primul pas mai e scris scurt așa: $\;a = \mathbf{w}^T\mathbf{x} + b = \sum_i w_i x_i + b$. E exact același lucru: $\sum_i$ înseamnă „adună pentru fiecare intrare $i$”.</p>
+
+<h2><span class="n">2</span>Rețeaua: neuroni puși pe straturi</h2>
+<p>O rețea are <b>straturi</b>, iar calculul merge de la stânga la dreapta:</p>
+<ul>
+<li><b>stratul de intrare</b>: doar numerele date, aici nu se calculează nimic;</li>
+<li><b>stratul ascuns</b>: neuroni ca în capitolul 1;</li>
+<li><b>stratul de ieșire</b>: tot neuroni, dar intrările lor sunt ieșirile stratului ascuns.</li>
+</ul>
+<p>„<b>Complet conectat</b>” înseamnă că fiecare neuron primește <b>toate</b> ieșirile stratului dinainte. Fiecare fir are ponderea lui,
+iar fiecare neuron are bias-ul lui.</p>
+<div class="schema">{{RETEA_221}}</div>
+
+<p><b>Calculul, neuron cu neuron.</b> Pentru fiecare neuron te uiți ce fire intră în el: înmulțești fiecare fir cu nodul din care
+pleacă, aduni, pui bias-ul, aplici activarea.</p>
+<div class="pas"><span class="nr">1</span><div>
+<div class="ec">$h_1$: $\;a = 1\cdot 2 + 0{,}5\cdot(-1) + 0{,}5 = 2 \;\Rightarrow\; \text{ReLU}(2) = $ <span class="rez">2</span></div>
+<div class="ex">în $h_1$ intră firul de la $x_1$ (pondere 1) și firul de la $x_2$ (pondere 0,5); bias 0,5</div></div></div>
+<div class="pas"><span class="nr">2</span><div>
+<div class="ec">$h_2$: $\;a = (-0{,}5)\cdot 2 + (-1)\cdot(-1) + (-0{,}5) = -0{,}5 \;\Rightarrow\; \text{ReLU}(-0{,}5) = $ <span class="rez">0</span></div>
+<div class="ex">ReLU transformă orice număr negativ în 0</div></div></div>
+<div class="pas"><span class="nr">3</span><div>
+<div class="ec">$y$: $\;a = 0{,}5\cdot 2 + (-0{,}5)\cdot 0 + (-1) = $ <span class="rez">0</span></div>
+<div class="ex">intrările ieșirii sunt rezultatele lui $h_1$ (2) și $h_2$ (0); aici nu e activare, deci $y = a$</div></div></div>
+
+<h3>Cum scrie cursul același lucru (formulele care te-au încurcat)</h3>
+<p>Cursul scrie calculul de mai sus cu indici, ca să meargă pentru orice număr de neuroni. Indicii îți spun <b>despre ce nod e vorba</b>:
+<b>$i$</b> = numărul intrării, <b>$j$</b> = numărul neuronului ascuns, <b>$k$</b> = numărul neuronului de ieșire.</p>
+<div class="pas"><span class="nr">1</span><div>
+<div class="ec">$a_j = \sum_i w_{ji}\, x_i + w_{j0}$</div>
+<div class="ex">pentru neuronul ascuns $j$: adună, pentru fiecare intrare $i$, ponderea firului dintre $i$ și $j$ înmulțită cu intrarea. Apoi adaugă
+$w_{j0}$. <b>$w_{ji}$ are doi indici</b> pentru că un fir leagă două noduri (aici: spre $j$, de la $i$). <b>$w_{j0}$ este bias-ul</b> neuronului $j$:
+cursul îl privește ca pe ponderea unei intrări imaginare $x_0 = 1$, deci $w_{j0}\cdot 1 = b_j$.</div></div></div>
+<div class="pas"><span class="nr">2</span><div>
+<div class="ec">$z_j = h(a_j)$</div>
+<div class="ex">$h$ e activarea din stratul ascuns (de ex. ReLU), iar $z_j$ e ce iese din neuronul ascuns $j$ (în exemplu: $z_1 = 2$, $z_2 = 0$).</div></div></div>
+<div class="pas"><span class="nr">3</span><div>
+<div class="ec">$a_k = \sum_j w_{kj}\, z_j + w_{k0}, \qquad y_k = f(a_k)$</div>
+<div class="ex">la fel pentru stratul de ieșire, doar că intrările nu mai sunt $x$-urile, ci $z$-urile. $f$ e activarea de la ieșire (sigmoid, softmax sau nimic).</div></div></div>
+<p>Săgețile „→” din formula pe un rând din curs înseamnă doar „<b>apoi</b>”: întâi calculezi $a_j$, apoi $z_j$, apoi $a_k$, apoi $y_k$.</p>
+
+<div class="atent"><b>Atenție la ordinea indicilor.</b> În curs, $w_{ji}$ înseamnă „spre $j$, de la $i$”. În subiectul de anul trecut, $w_{12}$
+era firul <b>de la</b> $i_1$ <b>spre</b> $h_2$, adică invers. Nu te baza pe indici: <b>uită-te pe desen pe ce fir e scrisă ponderea</b>
+și înmulțește-o cu nodul din care pleacă firul. Dacă nu e clar, scrie pe foaie ce convenție folosești.</div>
+
+<p><b>Câți parametri are rețeaua?</b> Un strat cu $n$ intrări și $m$ neuroni are $n\cdot m$ ponderi (câte una pe fir) și $m$ bias-uri.
+În exemplu: $(2\cdot 2 + 2) + (2\cdot 1 + 1) = 9$ parametri.</p>
+
+<h2><span class="n">3</span>Funcțiile de activare</h2>
+<p><b>De ce e nevoie de ele:</b> fără activare, oricâte straturi ai pune, rețeaua rămâne o funcție liniară (o dreaptă sau un plan) și
+nu poate învăța forme complicate. Activarea „îndoaie” rezultatul.</p>
+{{GRAFICE}}
+
+<div class="act"><div><h4>Sigmoid</h4>$\sigma(x) = \dfrac{1}{1+e^{-x}}$<br>$\sigma'(x) = \sigma(x)\,(1-\sigma(x))$</div><div>
+<p style="margin-top:0">Strivește orice număr între 0 și 1: $\sigma(0) = 0{,}5$, $\;\sigma(5) \approx 0{,}993$, $\;\sigma(-5) \approx 0{,}007$. Are forma literei S.</p>
+<div class="plusminus"><div><b class="p">Plusuri</b><br>ieșirea se poate citi ca probabilitate; e netedă și derivabilă peste tot (bună pentru backprop); derivata se calculează din valoarea ei; e crescătoare.</div>
+<div><b class="m">Minusuri</b><br>la capete curba e plată (<b>se saturează</b>), deci derivata ≈ 0 și gradientul „dispare” (vanishing gradient): rețeaua nu mai învață; nu e centrată în 0; $e^x$ costă calcul.</div></div></div></div>
+
+<div class="act"><div><h4>Tanh</h4>$\tanh(x) = 2\sigma(2x) - 1$<br>$\tanh'(x) = 1 - \tanh^2(x)$</div><div>
+<p style="margin-top:0">Ca sigmoid, dar între −1 și 1, deci <b>centrată în 0</b>. Se saturează și ea la capete.</p></div></div>
+
+<div class="act"><div><h4>ReLU</h4>$\text{ReLU}(x) = \max(0, x)$<br>derivata: 1 dacă $x>0$, 0 dacă $x&lt;0$</div><div>
+<p style="margin-top:0">Lasă numerele pozitive cum sunt și face 0 din cele negative.</p>
+<div class="plusminus"><div><b class="p">Plusuri</b><br><b>foarte ieftină</b> (doar un max); pentru $x>0$ derivata e 1, deci <b>nu se saturează</b> și SGD converge mai repede.</div>
+<div><b class="m">Minusuri</b><br>pentru $x&lt;0$ derivata e 0, deci neuronul poate „muri” (nu mai învață); e nemărginită în sus.</div></div></div></div>
+
+<div class="act"><div><h4>Leaky ReLU</h4>$f(x) = x$ dacă $x \ge 0$<br>$f(x) = 0{,}01\,x$ dacă $x&lt;0$</div><div>
+<p style="margin-top:0">Ca ReLU, dar la negative lasă o pantă mică, nu 0. Așa neuronul nu mai moare.</p></div></div>
+
+<div class="act"><div><h4>Softmax</h4>$y_k = \dfrac{e^{a_k}}{\sum_j e^{a_j}}$</div><div>
+<p style="margin-top:0">Se pune la ieșire când ai $K$ clase: transformă $K$ numere oarecare în <b>probabilități</b> (toate pozitive, cu suma 1).<br>
+Exemplu: $[2;\ 1;\ 0{,}1] \to e^2 = 7{,}39,\ e^1 = 2{,}72,\ e^{0,1} = 1{,}11$, suma $11{,}21$ $\;\Rightarrow\;$ <span class="rez">[0,659; 0,242; 0,099]</span>.</p></div></div>
+
+<div class="bun"><b>Răspunsuri gata făcute pentru teorie</b><br>
+<b>„Explicați caracteristicile sigmoid”:</b> are formă de S; ieșirea e strict între 0 și 1, deci se poate interpreta ca probabilitate; e
+monoton crescătoare; e continuă și derivabilă, cu $\sigma' = \sigma(1-\sigma)$ (util la backprop); $\sigma(0) = 0{,}5$ (pragul la clasificare binară);
+pentru valori foarte mari sau foarte mici se saturează și gradientul dispare.<br>
+<b>„Două avantaje ReLU”:</b> (1) se calculează foarte ieftin, $\max(0,x)$; (2) pentru $x>0$ derivata e 1, deci nu se saturează, gradientul nu
+dispare și antrenarea cu SGD converge mai repede.</div>
+
+<h2><span class="n">4</span>Funcția de cost: cât de greșită e rețeaua</h2>
+<p>Ai ce scoate rețeaua ($y$) și ce voiai să scoată (<b>ținta</b> $t$, „target”). Costul e <b>un singur număr</b> care spune cât de departe
+sunt. A antrena rețeaua înseamnă a face acest număr cât mai mic.</p>
+
+<h3>MSE (eroarea medie pătratică), pentru regresie</h3>
+<p style="text-align:center">$E = \dfrac{1}{2}\sum_k (y_k - t_k)^2$</p>
+<p>Pe românește: pentru fiecare ieșire faci diferența față de țintă, o ridici la pătrat, aduni tot și împarți la 2. ½ e pus ca să dispară
+2-ul când derivezi: $\;\dfrac{\partial E}{\partial y_k} = y_k - t_k\;$ (asta se numește <b>eroarea</b>).</p>
+<div class="pas"><span class="nr">=</span><div>
+<div class="ec">$y = (0;\ -1{,}5),\; t = (1;\ 0{,}5)$: $\;E = \tfrac12\left[(0-1)^2 + (-1{,}5-0{,}5)^2\right] = \tfrac12(1+4) = $ <span class="rez">2,5</span></div></div></div>
+
+<h3>Entropia încrucișată (cross-entropy), pentru clasificare</h3>
+<p>Ținta se scrie „<b>one-hot</b>”: un 1 pe poziția clasei corecte și 0 în rest. De exemplu, la 4 clase (comedie, horror, acțiune, dragoste),
+horror $= [0, 1, 0, 0]$. Ieșirea $y$ vine din softmax (probabilități).</p>
+<p style="text-align:center">$L = -\sum_k t_k \ln y_k \;=\; -\ln y_{\text{corect}}$</p>
+<p>Toți termenii cu $t_k = 0$ dispar, așa că <b>rămâne doar minus logaritmul probabilității clasei corecte</b>.</p>
+<table style="width:70%; margin-left:auto; margin-right:auto">
+<tr><th>probabilitatea clasei corecte</th><td>0,9</td><td>0,5</td><td>0,4</td><td>0,3</td><td>0,1</td></tr>
+<tr><th>costul $-\ln$</th><td>0,105</td><td>0,693</td><td>0,916</td><td>1,204</td><td>2,303</td></tr>
+</table>
+<p>Cu cât rețeaua e mai sigură pe clasa corectă, cu atât costul e mai mic. Pentru 2 clase (ieșire sigmoid):
+$\;L = -\left[\,t \ln y + (1-t)\ln(1-y)\,\right]$.</p>
+<div class="bun"><b>Întrebarea clasică: de ce costul nu ajunge la 0 nici cu acuratețe 100%?</b> Softmax dă mereu valori <b>strict</b> între 0 și 1,
+deci $y_{\text{corect}} &lt; 1$ și $-\ln y_{\text{corect}} > 0$. Acuratețea 100% înseamnă doar că clasa corectă are probabilitatea <b>cea mai mare</b>, nu că
+probabilitatea ei e exact 1.</div>
+
+<h2><span class="n">5</span>Cum învață rețeaua: gradient descent</h2>
+<div class="doua"><div>
+<p>Costul $E$ depinde de ponderi. <b>Derivata</b> $\dfrac{\partial E}{\partial w}$ (gradientul) e panta: îți spune în ce sens crește costul dacă modifici $w$.
+Ca să scadă costul, mergi <b>în sens invers</b>, cu un pas mic:</p>
+<p style="text-align:center; font-size:12pt">$w_{\text{nou}} = w - \eta \cdot \dfrac{\partial E}{\partial w}$</p>
+<p><b>$\eta$</b> (eta) este <b>rata de învățare</b>, adică mărimea pasului. Dacă e prea mică, merge încet. Dacă e prea mare, sare peste minim și oscilează.</p>
+</div><div class="schema">{{GRADIENT}}</div></div>
+<ul>
+<li><b>GD</b> calculează gradientul pe <b>tot</b> setul de date, apoi face un pas. <b>SGD</b> face un pas după <b>fiecare</b> exemplu (mai rapid, mai „zgomotos”). <b>Mini-batch</b> face un pas după un grup de 8, 16, 32… exemple.</li>
+<li><b>Momentum:</b> $\Delta w^{(t)} = -\eta\nabla E + \mu\,\Delta w^{(t-1)}$, apoi $w \leftarrow w + \Delta w$. Pasul ține minte o parte din pasul trecut ($\mu \approx 0{,}9$), ca o bilă care are inerție, deci oscilează mai puțin. <b>Nesterov</b>: calculezi gradientul în punctul unde te-ar duce inerția.</li>
+<li><b>AdaGrad:</b> fiecare pondere are pasul ei, împărțit la rădăcina sumei pătratelor gradienților de până atunci. Dezavantaj: la final pașii devin foarte mici. <b>RMSProp:</b> folosește o medie mobilă în loc de sumă. <b>Adam</b> = RMSProp + momentum, cu corecție la început; e cel mai folosit.</li>
+<li><b>Normalizarea datelor:</b> $\tilde{x} = (x-\mu)/\sigma$ (medie 0, varianță 1), cu aceleași $\mu$ și $\sigma$ la antrenare, validare și test. Ajută antrenarea să conveargă.</li>
+</ul>
+
+<h3>Backpropagation: cum se calculează derivatele</h3>
+<p>Se folosește <b>regula lanțului</b>: derivata unui nod = derivata care vine din dreapta × derivata locală a nodului. Exemplul din curs,
+$f = (x+y)\cdot z$ cu $x=-2,\ y=5,\ z=-4$:</p>
+<div class="schema">{{BACKPROP}}</div>
+<p>La „+” derivata locală e 1, deci gradientul trece la fel spre $x$ și $y$. La „×” fiecare intrare primește gradientul înmulțit cu
+<b>cealaltă</b> intrare. În rețea, cursul scrie asta așa: $\;\dfrac{\partial L}{\partial w_{ji}} = \delta_j\, z_i$, cu $\delta_k = y_k - t_k$ la ieșire și
+$\delta_j = h'(a_j)\sum_k w_{kj}\,\delta_k$ în stratul ascuns.</p>
+
+<h2 class="pag"><span class="n">6</span>Subiectele de anul trecut, rezolvate pas cu pas</h2>
+<p>Refă-le singur pe foaie și abia apoi verifică aici. Rezolvarea care circulă pe Drive are greșeli, așa că nu te lua după ea.</p>
+
+<h3>Varianta 1 · Problema 1: sigmoid în stratul ascuns, ReLU la ieșire, intrări (10, 30, 20)</h3>
+<div class="schema">{{V1P1}}</div>
+<div class="pas"><span class="nr">1</span><div>
+<div class="ec">$H_1 = 0{,}2\cdot10 - 0{,}1\cdot30 + 0{,}4\cdot20 = 2 - 3 + 8 = 7 \;\Rightarrow\; \sigma(7) = \dfrac{1}{1+e^{-7}} = $ <span class="rez">0,9991</span></div>
+<div class="ex">firele care intră în $H_1$: de la $I_1$ (0,2), $I_2$ (−0,1), $I_3$ (0,4); nu e bias</div></div></div>
+<div class="pas"><span class="nr">2</span><div>
+<div class="ec">$H_2 = 0{,}7\cdot10 - 1{,}2\cdot30 + 1{,}2\cdot20 = 7 - 36 + 24 = -5 \;\Rightarrow\; \sigma(-5) = \dfrac{1}{1+e^{5}} = $ <span class="rez">0,0067</span></div></div></div>
+<div class="pas"><span class="nr">3</span><div>
+<div class="ec">$O_1 = 1{,}1\cdot0{,}9991 + 0{,}1\cdot0{,}0067 = 1{,}0997 \;\Rightarrow\; \text{ReLU} = $ <span class="rez">1,0997</span></div>
+<div class="ex">la ieșire intrările sunt valorile <b>după</b> sigmoid</div></div></div>
+<div class="pas"><span class="nr">4</span><div>
+<div class="ec">$O_2 = -3{,}1\cdot0{,}9991 + 1{,}17\cdot0{,}0067 = -3{,}0893 \;\Rightarrow\; \text{ReLU} = $ <span class="rez">0</span></div></div></div>
+<p><b>b)</b> Caracteristicile sigmoid: răspunsul gata făcut de la capitolul 3.</p>
+
+<h3>Varianta 1 · Problema 2: $x = Ay + b$, cu $A_{ij} = w_{i-j}$, cost MSE, un pas de SGD</h3>
+<p><b>Ce spune problema, pe românește:</b> e un strat de rețea <b>fără activare</b>, cu 3 intrări $(y_0, y_1, y_2)$ și 3 ieșiri $(x_0, x_1, x_2)$.
+Matricea $A$ e specială: căsuța din rândul $i$, coloana $j$ conține ponderea $w_{i-j}$. De aceea pe fiecare diagonală e <b>aceeași</b> pondere:</p>
+<div class="schema">{{MATRICE}}</div>
+<p><b>a)</b> Ieșirile sunt scrise în dreapta schemei. Parametri: 5 ponderi ($w_{-2}, w_{-1}, w_0, w_1, w_2$) + 3 bias-uri ($b_0, b_1, b_2$) = <span class="rez">8 parametri</span>.</p>
+<p><b>b)</b> $\;E = \tfrac12\left[(x_0-t_0)^2 + (x_1-t_1)^2 + (x_2-t_2)^2\right]$</p>
+<p><b>c)</b> Date: $y = [0{,}6;\ 0;\ 0{,}4]$, $t = [1;\ 0;\ 0]$, $\eta = 0{,}01$, $w_{-2} = 0{,}2$, $w_{-1} = 0{,}1$, $w_0 = 0$, $w_1 = 0{,}1$, $w_2 = 0{,}2$, toate $b = 0$.</p>
+<div class="pas"><span class="nr">1</span><div>
+<div class="ec">$x_0 = 0\cdot0{,}6 + 0{,}1\cdot0 + 0{,}2\cdot0{,}4 = 0{,}08;\quad x_1 = 0{,}1\cdot0{,}6 + 0 + 0{,}1\cdot0{,}4 = 0{,}1;\quad x_2 = 0{,}2\cdot0{,}6 + 0 + 0 = 0{,}12$</div>
+<div class="ex">forward: calculezi ieșirile cu ponderile de acum</div></div></div>
+<div class="pas"><span class="nr">2</span><div>
+<div class="ec">$e = x - t = [-0{,}92;\ 0{,}1;\ 0{,}12], \qquad E = \tfrac12(0{,}8464 + 0{,}01 + 0{,}0144) = $ <span class="rez">0,4354</span></div>
+<div class="ex">eroarea fiecărei ieșiri: cât a greșit</div></div></div>
+<div class="pas"><span class="nr">3</span><div>
+<div class="ec">$\dfrac{\partial E}{\partial w} = $ suma, pe toate locurile unde apare $w$, din (eroarea rândului) × ($y$-ul de lângă $w$)</div>
+<div class="ex">De ce: $E$ conține $\tfrac12 e_i^2$, iar derivata dă $e_i \cdot \dfrac{\partial x_i}{\partial w}$. În $x_i$, lângă $w$ stă un $y$, deci $\dfrac{\partial x_i}{\partial w}$ = acel $y$.
+Uită-te pe culori în schemă: de exemplu, $w_0$ apare în $x_0$ lângă $y_0$, în $x_1$ lângă $y_1$ și în $x_2$ lângă $y_2$.</div></div></div>
+<table>
+<tr><th>pondere</th><th>unde apare</th><th>gradient</th><th>pondere nouă $\;w - 0{,}01\cdot\text{grad}$</th></tr>
+<tr><td>$w_0$</td><td>$x_0$ lângă $y_0$, $x_1$ lângă $y_1$, $x_2$ lângă $y_2$</td><td>$-0{,}92\cdot0{,}6 + 0{,}1\cdot0 + 0{,}12\cdot0{,}4 = -0{,}504$</td><td>$0 + 0{,}00504 = $ <span class="rez">0,00504</span></td></tr>
+<tr><td>$w_1$</td><td>$x_1$ lângă $y_0$, $x_2$ lângă $y_1$</td><td>$0{,}1\cdot0{,}6 + 0{,}12\cdot0 = 0{,}06$</td><td>$0{,}1 - 0{,}0006 = $ <span class="rez">0,0994</span></td></tr>
+<tr><td>$w_{-1}$</td><td>$x_0$ lângă $y_1$, $x_1$ lângă $y_2$</td><td>$-0{,}92\cdot0 + 0{,}1\cdot0{,}4 = 0{,}04$</td><td>$0{,}1 - 0{,}0004 = $ <span class="rez">0,0996</span></td></tr>
+<tr><td>$w_2$</td><td>$x_2$ lângă $y_0$</td><td>$0{,}12\cdot0{,}6 = 0{,}072$</td><td>$0{,}2 - 0{,}00072 = $ <span class="rez">0,19928</span></td></tr>
+<tr><td>$w_{-2}$</td><td>$x_0$ lângă $y_2$</td><td>$-0{,}92\cdot0{,}4 = -0{,}368$</td><td>$0{,}2 + 0{,}00368 = $ <span class="rez">0,20368</span></td></tr>
+<tr><td>$b_0, b_1, b_2$</td><td>câte unul în fiecare $x_i$, înmulțit cu 1</td><td>gradientul e chiar eroarea: $-0{,}92;\ 0{,}1;\ 0{,}12$</td><td><span class="rez">0,0092;&nbsp; −0,001;&nbsp; −0,0012</span></td></tr>
+</table>
+<div class="atent">Pe Drive lipsesc bias-urile la pasul SGD. Și ele sunt parametri, deci se actualizează.</div>
+
+<h3>Varianta 2 · Problema 1: rețea cu ReLU</h3>
+<p>Date: $i_1 = 2$, $i_2 = -1$, $w_{11} = 1$, $w_{12} = -0{,}5$, $w_{21} = 0{,}5$, $w_{22} = -1$, $w_{31} = 0{,}5$, $w_{32} = -1$, $w_{41} = -0{,}5$, $w_{42} = 1$,
+$b_1 = 0{,}5$, $b_2 = -0{,}5$, $b_3 = -1$, $b_4 = 0{,}5$, ținte $t_1 = 1$, $t_2 = 0{,}5$. Pe desen, ponderile sunt așezate așa:</p>
+<div class="schema">{{V2P1}}</div>
+<div class="pas"><span class="nr">1</span><div>
+<div class="ec">$h_1 = w_{11} i_1 + w_{21} i_2 + b_1 = 1\cdot2 + 0{,}5\cdot(-1) + 0{,}5 = 2 \;\Rightarrow\; h_3 = \text{ReLU}(2) = $ <span class="rez">2</span></div>
+<div class="ex">în $h_1$ intră $w_{11}$ (de la $i_1$) și $w_{21}$ (de la $i_2$)</div></div></div>
+<div class="pas"><span class="nr">2</span><div>
+<div class="ec">$h_2 = w_{12} i_1 + w_{22} i_2 + b_2 = -0{,}5\cdot2 + (-1)\cdot(-1) - 0{,}5 = -0{,}5 \;\Rightarrow\; h_4 = $ <span class="rez">0</span></div>
+<div class="ex">pe Drive aici s-a greșit: au folosit $w_{21}$ în loc de $w_{12}$ și le-a ieșit 1,5</div></div></div>
+<div class="pas"><span class="nr">3</span><div>
+<div class="ec">$o_1 = w_{31} h_3 + w_{41} h_4 + b_3 = 0{,}5\cdot2 + (-0{,}5)\cdot0 - 1 = $ <span class="rez">0</span></div></div></div>
+<div class="pas"><span class="nr">4</span><div>
+<div class="ec">$o_2 = w_{32} h_3 + w_{42} h_4 + b_4 = -1\cdot2 + 1\cdot0 + 0{,}5 = $ <span class="rez">−1,5</span></div>
+<div class="ex">desenul nu are ReLU la ieșire. Dacă la examen ți se spune că și ieșirea are ReLU, atunci $o_2 = 0$.</div></div></div>
+<p><b>b)</b> Două avantaje ReLU: răspunsul gata făcut de la capitolul 3. (Bonus, dacă se cere eroarea: $E = \tfrac12[(1-0)^2 + (0{,}5+1{,}5)^2] = 2{,}5$.)</p>
+
+<h3>Varianta 2 · Problema 2: entropia încrucișată, 4 clase</h3>
+<p>Clase: comedie, horror, acțiune, dragoste. Rețeaua scoate $y = [0{,}1;\ 0{,}4;\ 0{,}3;\ 0{,}2]$.</p>
+<div class="pas"><span class="nr">a</span><div>
+<div class="ec">eticheta corectă e horror, $t = [0,1,0,0]$: $\;L = -(0\cdot\ln0{,}1 + 1\cdot\ln0{,}4 + 0 + 0) = -\ln 0{,}4 = $ <span class="rez">0,916</span></div>
+<div class="ex">rămâne doar termenul clasei corecte</div></div></div>
+<div class="pas"><span class="nr">b</span><div>
+<div class="ec">dacă ar fi fost $t = [0,0,1,0]$ (acțiune): $\;L = -\ln 0{,}3 = $ <span class="rez">1,204</span></div>
+<div class="ex">costul e mai mare, pentru că rețeaua a dat o probabilitate mai mică clasei corecte</div></div></div>
+<div class="pas"><span class="nr">c</span><div>
+<div class="ec">de ce nu e niciodată 0: vezi caseta verde de la capitolul 4</div></div></div>
+
+<h2><span class="n">7</span>Restul materiei, pe scurt (pentru întrebări de teorie)</h2>
+
+<h3>Supra-învățarea și regularizarea</h3>
+<div class="doua"><div>
+<p><b>Supra-învățare (overfitting):</b> rețeaua „tocește” datele de antrenare. Pe ele merge foarte bine, dar pe date noi merge prost.
+<b>Sub-învățare:</b> modelul e prea simplu și greșește peste tot.</p>
+<p>Eroarea se descompune așa: $\text{MSE} = \text{Bias}^2 + \text{Varianță} + \sigma^2_{\text{zgomot}}$. Bias mare înseamnă sub-învățare, varianță mare
+înseamnă supra-învățare. Zgomotul nu se poate reduce.</p>
+</div><div class="schema">{{OVERFIT}}</div></div>
+<p>Cum o combați (<b>regularizare</b>):</p>
+<ul>
+<li><b>L2 (weight decay):</b> adaugi la cost $\lambda\cdot\tfrac12\sum w^2$. Penalizează ponderile mari, iar gradientul primește în plus $\lambda w$, care împinge ponderile spre 0. <b>L1:</b> adaugi $\lambda\sum|w|$; multe ponderi ajung exact 0.</li>
+<li><b>Early stopping:</b> te oprești când eroarea pe validare începe să crească (linia punctată din grafic).</li>
+<li><b>Dropout:</b> la antrenare „stingi” aleator neuroni (îi pui pe 0), alții la fiecare exemplu, cu p = 0,5 la stratul ascuns și 0,8 la intrare. La ieșire nu. Rețeaua nu se mai poate baza pe un singur neuron.</li>
+<li><b>Augmentarea datelor</b> (rotiri, translații, scalări, zgomot) și <b>ensemble</b> (media mai multor modele).</li>
+</ul>
+
+<h3>Rețele convoluționale (CNN)</h3>
+<p>Pentru imagini. În loc de ponderi pe fiecare pixel, se folosește un <b>filtru</b> mic (de ex. 3×3) care se plimbă peste imagine. La fiecare
+poziție înmulțești căsuță cu căsuță și aduni (plus bias). Avantaje: <b>puțini parametri</b> (aceleași ponderi peste tot), conexiuni locale, iar o
+trăsătură e recunoscută oriunde ar fi în imagine.</p>
+<div class="schema">{{CONV}}</div>
+<p><b>Dimensiunea ieșirii</b> (pe fiecare latură): $\;\left\lfloor \dfrac{N + 2P - M}{S} \right\rfloor + 1$, unde $N$ = latura intrării, $M$ = latura
+filtrului, $P$ = câți pixeli de 0 pui pe margine (<b>padding</b>), $S$ = din câți în câți pixeli muți filtrul (<b>stride</b>). Fără padding și cu $S = 1$
+iese $N - M + 1$. Ca să rămână aceeași dimensiune („same”) pui $P = (M-1)/2$.</p>
+<p><b>Parametri:</b> un filtru $M\times M$ pe o imagine cu $C$ canale are $M^2 C + 1$ parametri (ponderi + bias). Cu $C_{\text{out}}$ filtre ai
+$(M^2C+1)\cdot C_{\text{out}}$.</p>
+<div class="pas"><span class="nr">=</span><div>
+<div class="ec">Intrare 32×32×3, 10 filtre 5×5, $P=0$, $S=1$: ieșire $32 - 5 + 1 = 28$, deci <span class="rez">28×28×10</span>, cu $(5\cdot5\cdot3+1)\cdot10 = $ <span class="rez">760</span> parametri</div>
+<div class="ex">cu $P = 2$: $(32+4-5)/1 + 1 = 32$. Cu $S = 2$, $P = 0$: $\lfloor 27/2 \rfloor + 1 = 14$.</div></div></div>
+<div class="doua"><div class="schema">{{POOL}}</div><div>
+<p><b>Pooling</b> micșorează imaginea: din fiecare bloc 2×2 păstrezi maximul (<b>max-pooling</b>) sau media. Nu are parametri.</p>
+<p>Rețele cunoscute: LeNet (cifre scrise de mână), AlexNet (2012, ImageNet), VGG (filtre 3×3), GoogLeNet / Inception, ResNet.
+<b>Detecție:</b> IoU = aria intersecției / aria reuniunii; detecția e corectă dacă IoU > 0,5. NMS păstrează dreptunghiul cel mai sigur și le
+șterge pe cele suprapuse peste el. Segmentare: U-Net.</p></div></div>
+
+<h3>Clasificare: generativ și discriminant</h3>
+<ul>
+<li><b>Generativ:</b> modelezi cum arată datele din fiecare clasă, $p(x|C_k)$, și cât de des apare fiecare clasă, $p(C_k)$, apoi aplici Bayes:
+$\;p(C_k|x) = \dfrac{p(x|C_k)\,p(C_k)}{\sum_l p(x|C_l)\,p(C_l)}$. Pentru 2 clase rezultatul are forma unei sigmoide, pentru mai multe clase forma softmax.</li>
+<li><b>Discriminant:</b> o funcție $y(x) = w^Tx + w_0$ dă direct clasa, fără să modelezi datele. Are mai puțini parametri și de obicei merge mai bine.</li>
+</ul>
+
+<h3>PCA și ICA</h3>
+<div class="doua"><div>
+<p><b>PCA</b> reduce numărul de dimensiuni: proiectezi datele pe direcțiile pe care ele <b>variază cel mai mult</b> (sau, echivalent, pierzi cât mai
+puțin la proiecție). Pașii:</p>
+<ul>
+<li>scazi media din date;</li>
+<li>calculezi matricea de covarianță $K = \tfrac1N\sum (x_n - \bar{x})(x_n - \bar{x})^T$;</li>
+<li>afli valorile proprii $\lambda$ și vectorii proprii $u$ ai lui $K$ ($Ku = \lambda u$);</li>
+<li>păstrezi vectorii cu cele mai mari $\lambda$. Varianța pe direcția $u_1$ este chiar $\lambda_1$.</li>
+</ul>
+<p>Se folosește la compresie, vizualizare și extragere de trăsături.</p>
+</div><div class="schema">{{PCA}}<br>
+<p style="text-align:left"><b>ICA</b> separă surse <b>independente</b> amestecate: „cocktail party”, doi oameni vorbesc deodată și ai două microfoane.
+PCA găsește direcții <b>necorelate</b>, ICA găsește componente <b>independente</b> (care trebuie să fie ne-gaussiene).</p></div></div>
+
+<h2 class="pag"><span class="n">8</span>Foaia de formule: de copiat de mână (½ pagină)</h2>
+<p>Chenarul are exact o jumătate de A4. Pe foaie sunt doar formule, teoria o înveți din capitolele de mai sus. Copiaz-o mărunt și citește
+fiecare rând în timp ce îl scrii, ca să-l ții minte.</p>
+<div class="foaie"><div class="col">
+<p><b>Neuron:</b> $a = \sum_i w_i x_i + b$, $\;y = f(a)$</p>
+<p><b>Sigmoid:</b> $\sigma(x) = \frac{1}{1+e^{-x}}$, $\;\sigma' = \sigma(1-\sigma)$, $\;\sigma(0) = \frac12$</p>
+<p><b>tanh</b> $= 2\sigma(2x)-1$, $\;\tanh' = 1-\tanh^2$</p>
+<p><b>ReLU</b> $= \max(0,x)$, der. 1 / 0; <b>Leaky</b>: $0{,}01x$ pt $x&lt;0$</p>
+<p><b>Softmax:</b> $y_k = \frac{e^{a_k}}{\sum_j e^{a_j}}$</p>
+<p><b>MSE:</b> $E = \frac12\sum_k (y_k - t_k)^2$, $\;\frac{\partial E}{\partial y_k} = y_k - t_k$</p>
+<p><b>CE:</b> $L = -\sum_k t_k\ln y_k = -\ln y_{\text{corect}}$</p>
+<p><b>CE binar:</b> $L = -[t\ln y + (1-t)\ln(1-y)]$</p>
+<p><b>Bayes:</b> $p(C_k|x) = \frac{p(x|C_k)p(C_k)}{\sum_l p(x|C_l)p(C_l)}$</p>
+<p><b>Nr. param.</b> strat $n \to m$: $n\cdot m + m$</p>
+<p><b>Normalizare:</b> $\tilde x = (x-\mu)/\sigma$</p>
+</div><div class="col">
+<p><b>SGD:</b> $w \leftarrow w - \eta\,\frac{\partial E}{\partial w}$</p>
+<p><b>Momentum:</b> $\Delta w^{(t)} = -\eta\nabla E + \mu\Delta w^{(t-1)}$</p>
+<p><b>RMSProp:</b> $r \leftarrow \beta r + (1-\beta)g^2$, $\;w \leftarrow w - \frac{\eta\, g}{\sqrt{r+\delta}}$</p>
+<p><b>Adam:</b> $s \leftarrow \beta_1 s + (1-\beta_1) g$, $\;r \leftarrow \beta_2 r + (1-\beta_2) g^2$,<br>$\hat s = \frac{s}{1-\beta_1^t}$, $\hat r = \frac{r}{1-\beta_2^t}$, $\;w \leftarrow w - \frac{\eta\,\hat s}{\sqrt{\hat r}+\delta}$</p>
+<p><b>Backprop:</b> $\frac{\partial L}{\partial w_{ji}} = \delta_j z_i$, $\;\delta_k = y_k - t_k$, $\;\delta_j = h'(a_j)\sum_k w_{kj}\delta_k$</p>
+<p><b>Regularizare:</b> $\tilde L = L + \lambda R$; L2: $+\lambda w$; L1: $+\lambda\,\text{sign}(w)$</p>
+<p><b>MSE</b> $= \text{Bias}^2 + \text{Var} + \sigma^2_{zg}$</p>
+<p><b>CNN:</b> $\lfloor\frac{N+2P-M}{S}\rfloor + 1$; same: $P = \frac{M-1}{2}$; param. $(M^2C+1)C_{out}$</p>
+<p><b>PCA:</b> $K = \frac1N\sum(x_n-\bar x)(x_n-\bar x)^T$, $\;Ku = \lambda u$</p>
+<p><b>IoU</b> $= \frac{\cap}{\cup} > 0{,}5$</p>
+</div></div>
+
+<script>
+renderMathInElement(document.body, { delimiters: [{left: "$$", right: "$$", display: true}, {left: "$", right: "$", display: false}], throwOnError: false });
+</script>
+</body></html>
