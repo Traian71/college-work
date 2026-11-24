@@ -38,7 +38,7 @@ v2p1 = S.retea(
 
 sub = {"NEURON": S.neuron(), "RETEA_221": retea_221, "GRAFICE": S.activari(), "GRADIENT": S.gradient(),
        "BACKPROP": S.backprop(), "V1P1": v1p1, "MATRICE": S.matrice_A(), "V2P1": v2p1, "OVERFIT": S.overfit(),
-       "CONV": S.conv(), "POOL": S.pooling(), "PCA": S.pca()}
+       "CONV": S.conv(), "POOL": S.pooling(), "IOU": S.iou(), "NMS": S.nms(), "PCA": S.pca()}
 html = (D / "conspect_template.html").read_text(encoding="utf-8")
 for k, v in sub.items():
     html = html.replace("{{" + k + "}}", v)

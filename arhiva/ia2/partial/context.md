@@ -10,7 +10,7 @@
   pentru x = Ay + b cu A_ij = w_{i-j}. Rezolvarea din Drive are greșeli: la v2 h2 calculat cu w21 în loc de w12 (corect h2 = −0,5 →
   h4 = 0, o1 = 0, o2 = −1,5), la SGD lipsesc bias-urile, la v1 O1 = 1,0997 (nu 1,1006). Verificat în Python.
   În Drive mai sunt `Examen/Ce_s_a_dat.jpg` (salvat) și „Final exemplu” + „Foaie de formule Final” (pentru finalul din ianuarie, nedescărcate).
-- **Livrabil:** `ia2/partial/Conspect_IA2_lucrare_curs.pdf` (17 pagini), copiat pe Desktop. Refăcut pe 23 nov la cererea lui:
+- **Livrabil:** `ia2/partial/Conspect_IA2_lucrare_curs.pdf` (19 pagini), copiat pe Desktop. Refăcut pe 23 nov la cererea lui:
   nimic criptic, fiecare formulă explicată pe românește, scheme pentru fiecare rețea și calcul, pașii pe rânduri separate,
   culori calde (nu albastru), mult spațiu. Capitole: 1 neuronul, 2 rețeaua (cu explicația indicilor w_ji, w_j0, a_j, z_j),
   3 activări (grafice + plusuri/minusuri + răspunsuri gata făcute), 4 cost, 5 gradient descent + backprop (optimizatorii explicați pe larg cu notația din curs 5: momentum, Nesterov,
@@ -19,7 +19,9 @@
   `sursa/enunt/`; adăugat tot pe 23 nov la cererea lui), 7 restul (regularizare, CNN, clasificare, PCA/ICA), 8 foaia de formule (½ A4).
 - **24 nov:** la V1 P2 c) (SGD) a cerut fără tabel: acum pașii sunt scriși explicit, cum cere enunțul — ieșiri, erori $x_i - t_i$ (fără notația $e_i$, la cererea lui),
   E = 0,4354, apoi (la cererea lui) E scris complet cu ponderile și fiecare din cele 8 derivate desfăcută paranteză cu paranteză
-  (½·2·(paranteza)·ce rămâne, cu parametrul colorat; „0” unde nu apare), apoi pasul pe fiecare parametru. Conspectul are acum 17 pagini.
+  (½·2·(paranteza)·ce rămâne, cu parametrul colorat; „0” unde nu apare), apoi pasul pe fiecare parametru. 
+  Tot 24 nov: la capitolul 7 a cerut IoU și NMS mai pe larg → subsecțiune nouă „Detecția obiectelor: IoU și NMS” (curs 7, slide-urile 21–23),
+  cu schemă și exemple numerice (IoU 0,6 / 0,14 / 0,25), algoritmul NMS pas cu pas pe 5 dreptunghiuri, cele două praguri (0,7 și 0,5). Conspectul are acum 19 pagini.
 - **Surse:** `sursa/build_conspect.py` (rulează `python3 build_conspect.py`) = `conspect_template.html` (text, KaTeX din CDN)
   + `scheme.py` (toate schemele SVG) → `conspect.html` → PDF cu Chrome headless.
 - **Materiale:** `materiale/curs1–8.pdf`, `_curs_proinfo.pdf` (Moodle), `materiale/drive-ani-trecuti/`.

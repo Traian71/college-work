@@ -459,8 +459,64 @@ $(M^2C+1)\cdot C_{\text{out}}$.</p>
 <div class="doua"><div class="schema">{{POOL}}</div><div>
 <p><b>Pooling</b> micșorează imaginea: din fiecare bloc 2×2 păstrezi maximul (<b>max-pooling</b>) sau media. Nu are parametri.</p>
 <p>Rețele cunoscute: LeNet (cifre scrise de mână), AlexNet (2012, ImageNet), VGG (filtre 3×3), GoogLeNet / Inception, ResNet.
-<b>Detecție:</b> IoU = aria intersecției / aria reuniunii; detecția e corectă dacă IoU > 0,5. NMS păstrează dreptunghiul cel mai sigur și le
-șterge pe cele suprapuse peste el. Segmentare: U-Net.</p></div></div>
+Detecția obiectelor (IoU, NMS) e explicată mai jos. Segmentare: U-Net.</p></div></div>
+
+<h3>Detecția obiectelor: IoU și NMS (curs 7, slide-urile 21–23)</h3>
+<p><b>Ce face detecția.</b> La clasificare rețeaua spune doar <i>ce</i> e în imagine („mașină”). La detecție spune și <i>unde</i>: pentru fiecare
+obiect prezice un <b>dreptunghi</b> (bounding box) și <b>clasa</b> lui, adică $(b_x, b_y, b_W, b_H, c)$: poziția dreptunghiului, lățimea, înălțimea
+și clasa (în exemplul din curs: mașini, pietoni, semafoare). Cursul spune că există și alte convenții de scriere. Dacă $(b_x, b_y)$ e centrul,
+colțurile sunt la $b_x \pm b_W/2$ și $b_y \pm b_H/2$.</p>
+<p>Rămân două întrebări: <b>cum știm dacă un dreptunghi prezis e bun</b> (răspunsul e IoU) și <b>ce facem când rețeaua dă mai multe dreptunghiuri
+pentru același obiect</b> (răspunsul e NMS).</p>
+
+<h4 style="margin:12px 0 4px; color:#8a4a2a">1. IoU (Intersection over Union): cât de bine se potrivește dreptunghiul prezis</h4>
+<p style="text-align:center">$\text{IoU} = \dfrac{\text{aria intersecției}}{\text{aria reuniunii}} = \dfrac{\text{aria comună a celor două dreptunghiuri}}{\text{aria acoperită de cel puțin unul dintre ele}}$</p>
+<p>Compari dreptunghiul <b>prezis</b> de rețea cu dreptunghiul <b>adevărat</b> (cel desenat de om în setul de date). Predicția e considerată
+<b>corectă dacă IoU &gt; prag</b>, de obicei <b>prag = 0,5</b>.</p>
+<div class="schema">{{IOU}}</div>
+<div class="pas"><span class="nr">1</span><div>
+<div class="ec">Intersecția: lățimea = (cea mai mică margine din dreapta) − (cea mai mare margine din stânga); la fel pe înălțime</div>
+<div class="ex">în exemplu: $\min(4, 5) - \max(0, 1) = 3$ pe lățime, $\min(4,4) - \max(0,0) = 4$ pe înălțime. Dacă iese negativ, dreptunghiurile nu se ating: intersecția e 0.</div></div></div>
+<div class="pas"><span class="nr">2</span><div>
+<div class="ec">Reuniunea = aria lui R + aria lui P − intersecția</div>
+<div class="ex">scazi intersecția pentru că altfel ar fi numărată de două ori</div></div></div>
+<div class="pas"><span class="nr">3</span><div>
+<div class="ec">IoU = intersecția / reuniunea, apoi compari cu 0,5</div></div></div>
+<p><b>Ce valori poate lua:</b> între 0 și 1. <b>1</b> = dreptunghiurile coincid perfect. <b>0</b> = nu se ating deloc.
+Încă două exemple, cu același R (de la 0 la 4 pe ambele axe, aria 16):</p>
+<ul>
+<li><b>P mutat pe diagonală</b>, de la 2 la 6 pe ambele axe: intersecția e $2\cdot2 = 4$, reuniunea $16 + 16 - 4 = 28$, IoU $= 4/28 \approx$ <span class="rez">0,14</span>, deci <b>greșit</b>.
+Deși P acoperă un sfert din obiect, scorul e mic.</li>
+<li><b>P mult prea mare</b>, de la 0 la 8 pe ambele axe (aria 64): conține tot obiectul, deci intersecția e 16, dar reuniunea e 64, IoU $= 16/64 = $ <span class="rez">0,25</span>, deci tot <b>greșit</b>.</li>
+</ul>
+<div class="bun"><b>De ce se împarte la reuniune și nu doar la aria obiectului?</b> Dacă ai măsura doar cât din obiect e acoperit, un dreptunghi uriaș
+peste toată imaginea ar lua nota maximă. Reuniunea crește când dreptunghiul prezis e prea mare, așa că IoU pedepsește <b>și</b> dreptunghiurile
+mutate, <b>și</b> pe cele prea mari sau prea mici. Ca să ai IoU mare, trebuie să nimerești poziția <b>și</b> dimensiunea.</div>
+
+<h4 style="margin:14px 0 4px; color:#8a4a2a">2. NMS (Non-max suppression): un singur dreptunghi pentru fiecare obiect</h4>
+<p><b>Problema.</b> Detectorul plimbă o fereastră peste imagine. Când fereastra se deplasează puțin, același obiect e găsit de mai multe ori, în locații
+apropiate, deci ies <b>mai multe dreptunghiuri suprapuse pentru același obiect</b> (în poza din curs: 0,95, 0,91, 0,81, 0,75). Noi vrem câte unul.
+Fiecare dreptunghi are o <b>probabilitate</b> (scor) că în el e un obiect din clasa respectivă.</p>
+<div class="schema">{{NMS}}</div>
+<p><b>Algoritmul din curs</b>, pas cu pas:</p>
+<div class="pas"><span class="nr">1</span><div>
+<div class="ec">Arunci dreptunghiurile cu probabilitatea sub un prag, de obicei <b>0,7</b>. Dintre cele rămase îl alegi pe cel cu <b>probabilitatea maximă</b>: acesta e o detecție.</div></div></div>
+<div class="pas"><span class="nr">2</span><div>
+<div class="ec"><b>Anulezi</b> toate dreptunghiurile care au <b>IoU ≥ 0,5</b> cu cel ales: sunt prea suprapuse peste el, deci arată același obiect.</div></div></div>
+<div class="pas"><span class="nr">3</span><div>
+<div class="ec">Din ce a rămas alegi iar dreptunghiul cu probabilitatea cea mai mare și repeți pasul 2, până când fiecare dreptunghi e fie <b>anulat</b>, fie <b>păstrat ca detecție</b>.</div></div></div>
+<p><b>Exemplul din schemă</b> (2 pietoni, 5 dreptunghiuri):</p>
+<ul>
+<li><b>Pragul de 0,7:</b> E are 0,62, deci e aruncat. Rămân A 0,95, B 0,91, C 0,81 și D 0,75.</li>
+<li><b>Runda 1:</b> maximul e A (0,95), deci A e detecție. B și D sunt pe același pieton ca A, iar IoU-ul lor cu A e peste 0,5, deci sunt anulate.
+C e pe celălalt pieton, IoU-ul lui cu A e 0, deci rămâne.</li>
+<li><b>Runda 2:</b> a rămas doar C (0,81), deci C e detecție. Nu mai e nimic de verificat, gata.</li>
+<li><b>Rezultat:</b> 2 dreptunghiuri, A și C, câte unul pe fiecare pieton.</li>
+</ul>
+<div class="bun"><b>Nu încurca cele două praguri:</b> <b>0,7</b> e pentru <b>probabilitate</b> (cât de sigură e rețeaua că acolo e un obiect), iar
+<b>0,5</b> e pentru <b>IoU</b> (cât de mult se suprapun două dreptunghiuri). De ce funcționează NMS: două dreptunghiuri foarte suprapuse arată aproape sigur
+<b>același</b> obiect, deci îl păstrezi doar pe cel mai sigur. Două obiecte diferite au dreptunghiuri care se suprapun puțin, deci IoU mic, și amândouă rămân.
+NMS se face pentru obiecte din <b>aceeași clasă</b>, cum scrie în curs.</div>
 
 <h3>Clasificare: generativ și discriminant</h3>
 <ul>

@@ -249,3 +249,61 @@ def pca():
     o.append(f'<text x="8" y="164" font-size="10.5" fill="{MUTED}">u₁ = direcția cu varianța cea mai mare</text>')
     o.append("</svg>")
     return "".join(o)
+
+def iou():
+    # adevărat R = [0,4]x[0,4], prezis P = [1,5]x[0,4] (unități de grilă), y crește în sus
+    u, X0, Y0 = 34, 40, 200
+    def X(x): return X0 + x * u
+    def Y(y): return Y0 - y * u
+    o = ['<svg viewBox="0 0 560 235" width="100%" style="max-width:560px" font-family="Avenir Next, Helvetica, sans-serif">', _defs()]
+    for i in range(0, 7):
+        o.append(f'<line x1="{X(i)}" y1="{Y(0)}" x2="{X(i)}" y2="{Y(5)}" stroke="#eee3d6" stroke-width="1"/>')
+        o.append(f'<text x="{X(i)}" y="{Y(0)+15}" font-size="10" text-anchor="middle" fill="{MUTED}">{i}</text>')
+    for j in range(0, 6):
+        o.append(f'<line x1="{X(0)}" y1="{Y(j)}" x2="{X(6)}" y2="{Y(j)}" stroke="#eee3d6" stroke-width="1"/>')
+        o.append(f'<text x="{X(0)-10}" y="{Y(j)+4}" font-size="10" text-anchor="middle" fill="{MUTED}">{j}</text>')
+    o.append(f'<rect x="{X(1)}" y="{Y(4)}" width="{3*u}" height="{4*u}" fill="{FILL_O}" />')
+    o.append(f'<rect x="{X(0)}" y="{Y(4)}" width="{4*u}" height="{4*u}" fill="none" stroke="{GREEN}" stroke-width="2.4" stroke-dasharray="6 4"/>')
+    o.append(f'<rect x="{X(1)}" y="{Y(4)}" width="{4*u}" height="{4*u}" fill="none" stroke="{ACC}" stroke-width="2.4"/>')
+    o.append(_lbl(X(2.5), Y(2), "intersecția", ACC, 11.5, True))
+    o.append(_lbl(X(2.5), Y(1.45), "3 × 4 = 12", ACC, 11))
+    o.append(_lbl(X(0.5), Y(4) - 8, "adevărat R", GREEN, 11, True, bg=False))
+    o.append(_lbl(X(4.5), Y(4) - 8, "prezis P", ACC, 11, True, bg=False))
+    tx = 300
+    rows = [("R: x de la 0 la 4, y de la 0 la 4 → aria 16", GREEN),
+            ("P: x de la 1 la 5, y de la 0 la 4 → aria 16", ACC),
+            ("intersecția: x de la 1 la 4, y de la 0 la 4", INK),
+            ("   → aria 3 · 4 = 12", INK),
+            ("reuniunea = 16 + 16 − 12 = 20", INK),
+            ("   (intersecția s-ar număra de 2 ori)", MUTED),
+            ("IoU = 12 / 20 = 0,6 > 0,5 → corect", GREEN)]
+    for k, (t, c) in enumerate(rows):
+        o.append(f'<text x="{tx}" y="{48 + k*24}" font-size="11.5" fill="{c}"{" font-weight=\"700\"" if k == 6 else ""}>{t}</text>')
+    o.append("</svg>")
+    return "".join(o)
+
+def nms():
+    o = ['<svg viewBox="0 0 600 200" width="100%" style="max-width:600px" font-family="Avenir Next, Helvetica, sans-serif">', _defs()]
+    def scena(ox, cutii, titlu):
+        o.append(f'<text x="{ox+125}" y="12" font-size="11.5" text-anchor="middle" fill="{MUTED}" font-weight="700">{titlu}</text>')
+        o.append(f'<rect x="{ox}" y="26" width="250" height="165" rx="6" fill="#fffaf3" stroke="{LINE}"/>')
+        # două obiecte (pietoni), desenate simplu
+        for cx in (ox + 72, ox + 185):
+            o.append(f'<circle cx="{cx}" cy="70" r="11" fill="#d9cfc4"/>')
+            o.append(f'<rect x="{cx-15}" y="84" width="30" height="62" rx="8" fill="#d9cfc4"/>')
+            o.append(f'<rect x="{cx-14}" y="146" width="11" height="32" fill="#d9cfc4"/><rect x="{cx+3}" y="146" width="11" height="32" fill="#d9cfc4"/>')
+        for (x, y, w, h, nume, p, col, dash) in cutii:
+            o.append(f'<rect x="{ox+x}" y="{y}" width="{w}" height="{h}" fill="none" stroke="{col}" stroke-width="2"'
+                     f'{" stroke-dasharray=\"5 4\"" if dash else ""}/>')
+            ly = {"A": y + h - 6, "B": y - 4, "D": y + h / 2, "C": y + 12, "E": y + h - 6}[nume]
+            lx = {"A": ox + x + 26, "B": ox + x + 40, "D": ox + x + 4, "C": ox + x + 22, "E": ox + x + 40}[nume]
+            o.append(_lbl(lx, ly, f"{nume} {p}", col, 10.5, True))
+    toate = [(40, 48, 64, 136, "A", "0,95", ACC, False), (46, 40, 68, 140, "B", "0,91", MUTED, True),
+             (30, 58, 72, 124, "D", "0,75", MUTED, True), (152, 50, 66, 134, "C", "0,81", ACC2, False),
+             (165, 66, 70, 118, "E", "0,62", RED, True)]
+    scena(10, toate, "înainte: 5 dreptunghiuri pentru 2 obiecte")
+    o.append(f'<line x1="268" y1="108" x2="328" y2="108" stroke="{LINE}" stroke-width="1.6" marker-end="url(#ar)"/>')
+    o.append(f'<text x="298" y="100" font-size="10.5" text-anchor="middle" fill="{MUTED}">NMS</text>')
+    scena(340, [toate[0], toate[3]], "după: câte unul pe obiect")
+    o.append("</svg>")
+    return "".join(o)
