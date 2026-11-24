@@ -201,12 +201,75 @@ Ca să scadă costul, mergi <b>în sens invers</b>, cu un pas mic:</p>
 <p style="text-align:center; font-size:12pt">$w_{\text{nou}} = w - \eta \cdot \dfrac{\partial E}{\partial w}$</p>
 <p><b>$\eta$</b> (eta) este <b>rata de învățare</b>, adică mărimea pasului. Dacă e prea mică, merge încet. Dacă e prea mare, sare peste minim și oscilează.</p>
 </div><div class="schema">{{GRADIENT}}</div></div>
-<ul>
-<li><b>GD</b> calculează gradientul pe <b>tot</b> setul de date, apoi face un pas. <b>SGD</b> face un pas după <b>fiecare</b> exemplu (mai rapid, mai „zgomotos”). <b>Mini-batch</b> face un pas după un grup de 8, 16, 32… exemple.</li>
-<li><b>Momentum:</b> $\Delta w^{(t)} = -\eta\nabla E + \mu\,\Delta w^{(t-1)}$, apoi $w \leftarrow w + \Delta w$. Pasul ține minte o parte din pasul trecut ($\mu \approx 0{,}9$), ca o bilă care are inerție, deci oscilează mai puțin. <b>Nesterov</b>: calculezi gradientul în punctul unde te-ar duce inerția.</li>
-<li><b>AdaGrad:</b> fiecare pondere are pasul ei, împărțit la rădăcina sumei pătratelor gradienților de până atunci. Dezavantaj: la final pașii devin foarte mici. <b>RMSProp:</b> folosește o medie mobilă în loc de sumă. <b>Adam</b> = RMSProp + momentum, cu corecție la început; e cel mai folosit.</li>
-<li><b>Normalizarea datelor:</b> $\tilde{x} = (x-\mu)/\sigma$ (medie 0, varianță 1), cu aceleași $\mu$ și $\sigma$ la antrenare, validare și test. Ajută antrenarea să conveargă.</li>
-</ul>
+<div class="box"><b>Două alegeri separate, care se combină între ele.</b>
+<ol style="margin:6px 0 4px; padding-left:20px">
+<li><b>Pe câte exemple calculezi gradientul.</b> <b>GD:</b> pe <b>tot</b> setul de date, apoi un pas. <b>SGD:</b> un pas după <b>fiecare</b> exemplu
+(pași mai „zgomotoși”, dar mult mai mulți și mai rapizi). <b>Mini-batch:</b> un pas după un grup de 8, 16, 32… exemple.</li>
+<li><b>Cum transformi gradientul în pas:</b> simplu, momentum, Nesterov, AdaGrad, RMSProp, Adam (mai jos).</li>
+</ol>
+Orice metodă de la 2 primește gradientul calculat oricum de la 1. În practică se folosește „Adam cu mini-batch”.
+Mai jos scriu gradientul scurt: $\;g = \dfrac{\partial E}{\partial w}$.</div>
+
+<h3>Momentum</h3>
+<p>Ține minte pasul trecut $\Delta w^{(t-1)}$ și mai adaugă o parte din el:</p>
+<p style="text-align:center">$\Delta w^{(t)} = -\eta\, g + \mu\,\Delta w^{(t-1)}, \qquad w \leftarrow w + \Delta w^{(t)}, \qquad \mu \approx 0{,}9$</p>
+<p>Pasul de acum = pasul simplu + 0,9 din pasul trecut. E ca o bilă grea: dacă a coborât mult timp în aceeași direcție, prinde viteză.
+Dacă gradientul își schimbă semnul de la un pas la altul (zigzag), bucățile se anulează între ele, deci oscilează mai puțin.</p>
+
+<h3>Nesterov</h3>
+<p>Pasul de la momentum are două bucăți: inerția $\mu\,\Delta w^{(t-1)}$, pe care o faci oricum, și gradientul.
+Momentum calculează gradientul <b>unde ești acum</b>. Nesterov zice: „Știu deja că inerția mă duce în punctul $w + \mu\,\Delta w^{(t-1)}$. Mă uit la pantă <b>acolo</b>.”</p>
+<p style="text-align:center">$\Delta w^{(t)} = -\eta\, g\big(\,w + \mu\,\Delta w^{(t-1)}\big) + \mu\,\Delta w^{(t-1)}$</p>
+<p>Singura diferență față de momentum e <b>punctul în care calculezi gradientul</b>. De ce ajută: dacă inerția te-ar duce <b>dincolo</b> de minim,
+acolo panta arată deja înapoi, deci te frânează <b>înainte</b> să treci de minim, nu după. E ca un schior care se uită unde ajunge din avânt și corectează din timp.</p>
+
+<h3>AdaGrad</h3>
+<p>Fiecare pondere $w_i$ are variabila ei $r_i$, în care adună pătratele gradienților ei de la pașii trecuți. Pe ăștia îi calculezi oricum la fiecare pas,
+cu backprop, la ponderea de atunci. AdaGrad doar îi ține minte. Se împarte <b>pasul</b>, nu ponderea:</p>
+<p style="text-align:center">$r_i \leftarrow r_i + g_i^2, \qquad w_i \leftarrow w_i - \dfrac{\eta}{\sqrt{r_i + \delta}}\; g_i$</p>
+<p style="text-align:center; color:#7a6f64; font-size:9.6pt">$\delta \approx 10^{-8}$ e doar ca să nu împarți la 0</p>
+<div class="doua"><div>
+<table>
+<tr><th>pas</th><th>$r$</th><th>pasul făcut $= \dfrac{0{,}1}{\sqrt r}\cdot 2$</th></tr>
+<tr><td>1</td><td>4</td><td>0,1</td></tr>
+<tr><td>2</td><td>8</td><td>0,071</td></tr>
+<tr><td>3</td><td>12</td><td>0,058</td></tr>
+<tr><td>4</td><td>16</td><td>0,05</td></tr>
+</table></div><div>
+<p>Exemplu: $\eta = 0{,}1$ și gradientul 2 la fiecare pas.</p>
+<p>O pondere cu gradienți mari primește pași tot mai mici. Una care s-a mișcat rar păstrează pași mari. De aici „fiecare pondere are pasul ei”.</p>
+<p><b>Problema:</b> $r$ doar crește, deci spre final pașii ajung aproape 0 și învățarea devine foarte lentă.</p>
+</div></div>
+
+<h3>RMSProp</h3>
+<p>Repară problema lui AdaGrad. <b>În același loc</b> (sub radical, la numitor), în loc de <b>sumă</b> pune o <b>medie mobilă</b>, care uită treptat gradienții vechi:</p>
+<p style="text-align:center">$r_i \leftarrow \beta\, r_i + (1-\beta)\, g_i^2, \qquad w_i \leftarrow w_i - \dfrac{\eta}{\sqrt{r_i + \delta}}\; g_i, \qquad \beta \approx 0{,}9$</p>
+<p>Cu $\beta = 0{,}9$: la fiecare pas $r$ păstrează 90% din ce era și ia 10% din gradientul nou. Gradienții vechi contează tot mai puțin, deci $r$ nu crește
+la infinit și pasul nu moare. În exemplul de sus, $r$ se apropie de 4 și rămâne acolo, deci pasul rămâne în jur de 0,1 (la AdaGrad scădea întruna).</p>
+
+<h3>Adam = momentum + RMSProp + corecție</h3>
+<p>Ține minte <b>două</b> medii mobile pentru fiecare pondere:</p>
+<div class="pas"><span class="nr">1</span><div>
+<div class="ec">$s \leftarrow \beta_1 s + (1-\beta_1)\, g, \qquad \beta_1 \approx 0{,}9$</div>
+<div class="ex">media gradienților = <b>direcția</b> (rolul lui momentum)</div></div></div>
+<div class="pas"><span class="nr">2</span><div>
+<div class="ec">$r \leftarrow \beta_2 r + (1-\beta_2)\, g^2, \qquad \beta_2 \approx 0{,}99$</div>
+<div class="ex">media pătratelor = <b>mărimea pasului</b> (rolul lui RMSProp)</div></div></div>
+<div class="pas"><span class="nr">3</span><div>
+<div class="ec">$\hat s = \dfrac{s}{1-\beta_1^{\,t}}, \qquad \hat r = \dfrac{r}{1-\beta_2^{\,t}}$</div>
+<div class="ex">corecția; $t$ = numărul pasului (1, 2, 3, …)</div></div></div>
+<div class="pas"><span class="nr">4</span><div>
+<div class="ec">$w \leftarrow w - \eta\, \dfrac{\hat s}{\sqrt{\hat r + \delta}}$</div></div></div>
+<div class="box"><b>De ce e nevoie de corecție.</b> $s$ și $r$ pornesc de la 0. La primul pas: $s = 0{,}1\,g$, adică de 10 ori mai mic decât gradientul real,
+iar $r = 0{,}01\,g^2$, de 100 de ori mai mic. Mediile sunt trase spre 0 doar pentru că au pornit de la 0, nu pentru că gradientul ar fi mic.
+Corecția compensează: la $t = 1$, $\;\hat s = \dfrac{0{,}1\,g}{1-0{,}9} = \dfrac{0{,}1\,g}{0{,}1} = g$, exact cât trebuie.
+După mulți pași $\beta^t$ ajunge aproape 0, deci împarți la 1 și corecția dispare singură. E doar o reparație pentru primii pași.</div>
+
+<div class="bun"><b>Pe scurt.</b> <b>Momentum:</b> ține minte direcția. <b>Nesterov:</b> momentum, dar se uită la pantă puțin înainte.
+<b>AdaGrad:</b> fiecare pondere își micșorează pasul după cât de mari au fost gradienții ei. <b>RMSProp:</b> AdaGrad cu memorie scurtă, ca să nu se oprească.
+<b>Adam:</b> direcția de la momentum + pasul de la RMSProp + corecția de la început; e cel mai folosit.</div>
+
+<p><b>Normalizarea datelor:</b> $\tilde{x} = (x-\mu)/\sigma$ (medie 0, varianță 1), cu aceleași $\mu$ și $\sigma$ la antrenare, validare și test. Ajută antrenarea să conveargă.</p>
 
 <h3>Backpropagation: cum se calculează derivatele</h3>
 <p>Se folosește <b>regula lanțului</b>: derivata unui nod = derivata care vine din dreapta × derivata locală a nodului. Exemplul din curs,
@@ -415,9 +478,9 @@ fiecare rând în timp ce îl scrii, ca să-l ții minte.</p>
 <p><b>Normalizare:</b> $\tilde x = (x-\mu)/\sigma$</p>
 </div><div class="col">
 <p><b>SGD:</b> $w \leftarrow w - \eta\,\frac{\partial E}{\partial w}$</p>
-<p><b>Momentum:</b> $\Delta w^{(t)} = -\eta\nabla E + \mu\Delta w^{(t-1)}$</p>
-<p><b>RMSProp:</b> $r \leftarrow \beta r + (1-\beta)g^2$, $\;w \leftarrow w - \frac{\eta\, g}{\sqrt{r+\delta}}$</p>
-<p><b>Adam:</b> $s \leftarrow \beta_1 s + (1-\beta_1) g$, $\;r \leftarrow \beta_2 r + (1-\beta_2) g^2$,<br>$\hat s = \frac{s}{1-\beta_1^t}$, $\hat r = \frac{r}{1-\beta_2^t}$, $\;w \leftarrow w - \frac{\eta\,\hat s}{\sqrt{\hat r}+\delta}$</p>
+<p><b>Momentum:</b> $\Delta w^{(t)} = -\eta\nabla E + \mu\Delta w^{(t-1)}$ (Nesterov: $\nabla E$ în $w+\mu\Delta w^{(t-1)}$)</p>
+<p><b>AdaGrad:</b> $r \leftarrow r + g^2$; <b>RMSProp:</b> $r \leftarrow \beta r + (1-\beta)g^2$; $\;w \leftarrow w - \frac{\eta\, g}{\sqrt{r+\delta}}$</p>
+<p><b>Adam:</b> $s \leftarrow \beta_1 s + (1-\beta_1) g$, $\;r \leftarrow \beta_2 r + (1-\beta_2) g^2$,<br>$\hat s = \frac{s}{1-\beta_1^t}$, $\hat r = \frac{r}{1-\beta_2^t}$, $\;w \leftarrow w - \frac{\eta\,\hat s}{\sqrt{\hat r+\delta}}$</p>
 <p><b>Backprop:</b> $\frac{\partial L}{\partial w_{ji}} = \delta_j z_i$, $\;\delta_k = y_k - t_k$, $\;\delta_j = h'(a_j)\sum_k w_{kj}\delta_k$</p>
 <p><b>Regularizare:</b> $\tilde L = L + \lambda R$; L2: $+\lambda w$; L1: $+\lambda\,\text{sign}(w)$</p>
 <p><b>MSE</b> $= \text{Bias}^2 + \text{Var} + \sigma^2_{zg}$</p>
