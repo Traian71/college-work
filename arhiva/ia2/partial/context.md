@@ -17,6 +17,8 @@
   AdaGrad cu exemplu numeric, RMSProp, Adam cu corecția; adăugat pe 24 nov la cererea lui),
   6 subiectele de anul trecut rezolvate cu scheme (fiecare cu enunțul integral transcris + schema originală decupată din poză,
   `sursa/enunt/`; adăugat tot pe 23 nov la cererea lui), 7 restul (regularizare, CNN, clasificare, PCA/ICA), 8 foaia de formule (½ A4).
+- **24 nov:** la V1 P2 c) (SGD) a cerut fără tabel: acum pașii sunt scriși explicit, cum cere enunțul — ieșiri, erori $e_i$,
+  E = 0,4354, cele 8 derivate cu litere ($\partial E/\partial w = \sum e_i\cdot$ ce stă lângă $w$), apoi pasul pe fiecare parametru.
 - **Surse:** `sursa/build_conspect.py` (rulează `python3 build_conspect.py`) = `conspect_template.html` (text, KaTeX din CDN)
   + `scheme.py` (toate schemele SVG) → `conspect.html` → PDF cu Chrome headless.
 - **Materiale:** `materiale/curs1–8.pdf`, `_curs_proinfo.pdf` (Moodle), `materiale/drive-ani-trecuti/`.

@@ -326,27 +326,38 @@ Matricea $A$ e specială: căsuța din rândul $i$, coloana $j$ conține pondere
 <div class="schema">{{MATRICE}}</div>
 <p><b>a)</b> Ieșirile sunt scrise în dreapta schemei. Parametri: 5 ponderi ($w_{-2}, w_{-1}, w_0, w_1, w_2$) + 3 bias-uri ($b_0, b_1, b_2$) = <span class="rez">8 parametri</span>.</p>
 <p><b>b)</b> $\;E = \tfrac12\left[(x_0-t_0)^2 + (x_1-t_1)^2 + (x_2-t_2)^2\right]$</p>
-<p><b>c)</b> Date: $y = [0{,}6;\ 0;\ 0{,}4]$, $t = [1;\ 0;\ 0]$, $\eta = 0{,}01$, $w_{-2} = 0{,}2$, $w_{-1} = 0{,}1$, $w_0 = 0$, $w_1 = 0{,}1$, $w_2 = 0{,}2$, toate $b = 0$.</p>
+<p><b>c)</b> Enunțul cere pașii SGD „sub formă explicită”: adică <b>formulele cu litere</b> pentru fiecare parametru, nu doar numerele.
+Ordinea: ieșirile → erorile → costul → derivatele (cu litere) → pasul $w_{\text{nou}} = w - \eta\cdot\dfrac{\partial E}{\partial w}$.</p>
+<p>Date: $y = [0{,}6;\ 0;\ 0{,}4]$, $t = [1;\ 0;\ 0]$, $\eta = 0{,}01$, $w_{-2} = 0{,}2$, $w_{-1} = 0{,}1$, $w_0 = 0$, $w_1 = 0{,}1$, $w_2 = 0{,}2$, toate $b = 0$.</p>
 <div class="pas"><span class="nr">1</span><div>
-<div class="ec">$x_0 = 0\cdot0{,}6 + 0{,}1\cdot0 + 0{,}2\cdot0{,}4 = 0{,}08;\quad x_1 = 0{,}1\cdot0{,}6 + 0 + 0{,}1\cdot0{,}4 = 0{,}1;\quad x_2 = 0{,}2\cdot0{,}6 + 0 + 0 = 0{,}12$</div>
-<div class="ex">forward: calculezi ieșirile cu ponderile de acum</div></div></div>
+<div class="ec">Ieșirile cu ponderile de acum (formulele de la a)):</div>
+<div class="ec">$x_0 = w_0y_0 + w_{-1}y_1 + w_{-2}y_2 + b_0 = 0\cdot0{,}6 + 0{,}1\cdot0 + 0{,}2\cdot0{,}4 + 0 = $ <span class="rez">0,08</span></div>
+<div class="ec">$x_1 = w_1y_0 + w_0y_1 + w_{-1}y_2 + b_1 = 0{,}1\cdot0{,}6 + 0\cdot0 + 0{,}1\cdot0{,}4 + 0 = $ <span class="rez">0,1</span></div>
+<div class="ec">$x_2 = w_2y_0 + w_1y_1 + w_0y_2 + b_2 = 0{,}2\cdot0{,}6 + 0{,}1\cdot0 + 0\cdot0{,}4 + 0 = $ <span class="rez">0,12</span></div></div></div>
 <div class="pas"><span class="nr">2</span><div>
-<div class="ec">$e = x - t = [-0{,}92;\ 0{,}1;\ 0{,}12], \qquad E = \tfrac12(0{,}8464 + 0{,}01 + 0{,}0144) = $ <span class="rez">0,4354</span></div>
-<div class="ex">eroarea fiecărei ieșiri: cât a greșit</div></div></div>
+<div class="ec">Eroarea fiecărei ieșiri, $\;e_i = x_i - t_i$:</div>
+<div class="ec">$e_0 = 0{,}08 - 1 = $ <span class="rez">−0,92</span>$\qquad e_1 = 0{,}1 - 0 = $ <span class="rez">0,1</span>$\qquad e_2 = 0{,}12 - 0 = $ <span class="rez">0,12</span></div>
+<div class="ec">Costul: $\;E = \tfrac12(e_0^2 + e_1^2 + e_2^2) = \tfrac12(0{,}8464 + 0{,}01 + 0{,}0144) = $ <span class="rez">0,4354</span></div>
+<div class="ex">costul nu intră în pasul SGD, dar arată cât greșește rețeaua înainte de pas</div></div></div>
 <div class="pas"><span class="nr">3</span><div>
-<div class="ec">$\dfrac{\partial E}{\partial w} = $ suma, pe toate locurile unde apare $w$, din (eroarea rândului) × ($y$-ul de lângă $w$)</div>
-<div class="ex">De ce: $E$ conține $\tfrac12 e_i^2$, iar derivata dă $e_i \cdot \dfrac{\partial x_i}{\partial w}$. În $x_i$, lângă $w$ stă un $y$, deci $\dfrac{\partial x_i}{\partial w}$ = acel $y$.
-Uită-te pe culori în schemă: de exemplu, $w_0$ apare în $x_0$ lângă $y_0$, în $x_1$ lângă $y_1$ și în $x_2$ lângă $y_2$.</div></div></div>
-<table>
-<tr><th>pondere</th><th>unde apare</th><th>gradient</th><th>pondere nouă $\;w - 0{,}01\cdot\text{grad}$</th></tr>
-<tr><td>$w_0$</td><td>$x_0$ lângă $y_0$, $x_1$ lângă $y_1$, $x_2$ lângă $y_2$</td><td>$-0{,}92\cdot0{,}6 + 0{,}1\cdot0 + 0{,}12\cdot0{,}4 = -0{,}504$</td><td>$0 + 0{,}00504 = $ <span class="rez">0,00504</span></td></tr>
-<tr><td>$w_1$</td><td>$x_1$ lângă $y_0$, $x_2$ lângă $y_1$</td><td>$0{,}1\cdot0{,}6 + 0{,}12\cdot0 = 0{,}06$</td><td>$0{,}1 - 0{,}0006 = $ <span class="rez">0,0994</span></td></tr>
-<tr><td>$w_{-1}$</td><td>$x_0$ lângă $y_1$, $x_1$ lângă $y_2$</td><td>$-0{,}92\cdot0 + 0{,}1\cdot0{,}4 = 0{,}04$</td><td>$0{,}1 - 0{,}0004 = $ <span class="rez">0,0996</span></td></tr>
-<tr><td>$w_2$</td><td>$x_2$ lângă $y_0$</td><td>$0{,}12\cdot0{,}6 = 0{,}072$</td><td>$0{,}2 - 0{,}00072 = $ <span class="rez">0,19928</span></td></tr>
-<tr><td>$w_{-2}$</td><td>$x_0$ lângă $y_2$</td><td>$-0{,}92\cdot0{,}4 = -0{,}368$</td><td>$0{,}2 + 0{,}00368 = $ <span class="rez">0,20368</span></td></tr>
-<tr><td>$b_0, b_1, b_2$</td><td>câte unul în fiecare $x_i$, înmulțit cu 1</td><td>gradientul e chiar eroarea: $-0{,}92;\ 0{,}1;\ 0{,}12$</td><td><span class="rez">0,0092;&nbsp; −0,001;&nbsp; −0,0012</span></td></tr>
-</table>
-<div class="atent">Pe Drive lipsesc bias-urile la pasul SGD. Și ele sunt parametri, deci se actualizează.</div>
+<div class="ec">Derivatele, cu litere. $E = \tfrac12 e_0^2 + \tfrac12 e_1^2 + \tfrac12 e_2^2$, iar derivata lui $\tfrac12 e_i^2$ după un parametru este
+$e_i\cdot$(ce stă lângă parametru în $x_i$). Se adună pe toate ieșirile în care apare parametrul:</div>
+<div class="ec">$\dfrac{\partial E}{\partial w_0} = e_0y_0 + e_1y_1 + e_2y_2 \qquad \dfrac{\partial E}{\partial w_1} = e_1y_0 + e_2y_1 \qquad \dfrac{\partial E}{\partial w_{-1}} = e_0y_1 + e_1y_2$</div>
+<div class="ec" style="margin-top:6px">$\dfrac{\partial E}{\partial w_2} = e_2y_0 \qquad \dfrac{\partial E}{\partial w_{-2}} = e_0y_2$</div>
+<div class="ec" style="margin-top:6px">$\dfrac{\partial E}{\partial b_0} = e_0 \qquad \dfrac{\partial E}{\partial b_1} = e_1 \qquad \dfrac{\partial E}{\partial b_2} = e_2$</div>
+<div class="ex">$\tfrac12$ se simplifică cu 2-ul din derivata pătratului. Lângă bias stă 1. Uită-te pe schema matricei: $w_0$ e pe diagonala principală,
+deci apare în toate trei ieșirile; $w_2$ și $w_{-2}$ sunt în colțuri, deci apar o singură dată.</div></div></div>
+<div class="pas"><span class="nr">4</span><div>
+<div class="ec">Pasul SGD, $\;w_{\text{nou}} = w - \eta\cdot\dfrac{\partial E}{\partial w}$, cu $\eta = 0{,}01$:</div>
+<div class="ec">$w_0 = 0 - 0{,}01\cdot(-0{,}92\cdot0{,}6 + 0{,}1\cdot0 + 0{,}12\cdot0{,}4) = 0 - 0{,}01\cdot(-0{,}504) = $ <span class="rez">0,00504</span></div>
+<div class="ec">$w_1 = 0{,}1 - 0{,}01\cdot(0{,}1\cdot0{,}6 + 0{,}12\cdot0) = 0{,}1 - 0{,}01\cdot0{,}06 = $ <span class="rez">0,0994</span></div>
+<div class="ec">$w_{-1} = 0{,}1 - 0{,}01\cdot(-0{,}92\cdot0 + 0{,}1\cdot0{,}4) = 0{,}1 - 0{,}01\cdot0{,}04 = $ <span class="rez">0,0996</span></div>
+<div class="ec">$w_2 = 0{,}2 - 0{,}01\cdot(0{,}12\cdot0{,}6) = 0{,}2 - 0{,}01\cdot0{,}072 = $ <span class="rez">0,19928</span></div>
+<div class="ec">$w_{-2} = 0{,}2 - 0{,}01\cdot(-0{,}92\cdot0{,}4) = 0{,}2 - 0{,}01\cdot(-0{,}368) = $ <span class="rez">0,20368</span></div>
+<div class="ec">$b_0 = 0 - 0{,}01\cdot(-0{,}92) = $ <span class="rez">0,0092</span></div>
+<div class="ec">$b_1 = 0 - 0{,}01\cdot0{,}1 = $ <span class="rez">−0,001</span></div>
+<div class="ec">$b_2 = 0 - 0{,}01\cdot0{,}12 = $ <span class="rez">−0,0012</span></div></div></div>
+<div class="atent">Pe Drive lipsesc bias-urile la pasul SGD. Și ele sunt parametri, deci se actualizează (ultimele trei rânduri de mai sus).</div>
 
 <h3>Varianta 2 · Problema 1: rețea cu ReLU</h3>
 <div class="enunt"><div class="et">ENUNȚUL, EXACT CUM S-A DAT</div>
