@@ -32,9 +32,9 @@ def adaptiv_orientat(vec, size):
 
     center = size // 2
     # medie orizontala ( 0 grade )
-    med0 = np.mean(vec[center, :])
+    med0 = np.sum(vec[center, :]) / size
     # medie verticala ( 90 grade )
-    med90 = np.mean(vec[:, center])
+    med90 = np.sum(vec[:, center]) / size
     # medie diagonala 45 grade
     med45 = 0
     for i in range(size):
@@ -76,7 +76,7 @@ def apply_filter(img, size):
             # extrage vecinatate
             vec = img[i-capat:i+capat+1, j-capat:j+capat+1]
             # populeaza imaginea noua cu rezultatul filtrarii
-            new_img[i,j] = adaptiv_orientat(vec, size)
+            new_img[i,j] = adaptiv_orientat(vec, vec.shape[0])
 
     # intoarce noul rezultat
     return new_img
@@ -85,14 +85,14 @@ def apply_filter(img, size):
 img = io.imread('lena.png')
 # conversie nivele de gri si gama 0-255, uint 8
 img = color.rgb2gray(img)
-img = (img * 255).astype(np.uint8)
+img = np.uint8(img*255)
 # afisare imagine originala
-plt.figure(), plt.imshow(img, cmap='gray'), plt.title('Imagine originala')
+plt.figure(), plt.imshow(img, cmap='gray')
 
 # aplica zgomot
 img_noise = add_gaussian_noise(img, 20)
 # afiseaza imaginea cu zgomot
-plt.figure(), plt.imshow(img_noise, cmap='gray'), plt.title('Imagine cu zgomot')
+plt.figure(), plt.imshow(img_noise, cmap='gray')
 # afiseaza MSE imagine cu zgomot
 print('MSE imagine cu zgomot: {}'.format(mse(img,img_noise,0)))
 
@@ -104,15 +104,15 @@ capat = filter_size // 2
 mask = np.ones([filter_size, filter_size]) / (filter_size ** 2)
 img_mediere = signal.convolve2d(img_noise, mask, mode='same')
 # afiseaza imaginea filtrata prin filtru de mediere
-plt.figure(), plt.imshow(img_mediere, cmap='gray'), plt.title('Filtru de mediere')
+plt.figure(), plt.imshow(img_mediere, cmap='gray')
 # afiseaza MSE imagine cu zgomot filtrata prin filtru de mediere
-print('MSE imagine filtrata liniar: {}'.format(mse(img,img_mediere,capat)))
+print('MSE imagine filtrata liniar: {}'.format(mse(img, img_mediere, capat)))
 
 # aplicare filtrare adaptiva
 img_filt = apply_filter(img_noise, filter_size)
 # afiseaza imaginea filtrata prin filtru adaptiv
-plt.figure(), plt.imshow(img_filt, cmap='gray'), plt.title('Filtru adaptiv directional')
+plt.figure(), plt.imshow(img_filt, cmap='gray')
 # afiseaza MSE imagine cu zgomot filtrata prin filtru de mediere
-print('MSE imagine filtrata adaptiv: {}'.format(mse(img,img_filt,capat)))
+print('MSE imagine filtrata adaptiv: {}'.format(mse(img, img_filt, capat)))
 
 plt.show()
