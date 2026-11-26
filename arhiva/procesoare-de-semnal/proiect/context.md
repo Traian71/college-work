@@ -26,3 +26,6 @@
   devreme, iar Traian a răspuns că nu mai e cazul să se grăbească, rămân și o așteaptă (o neînțelegere:
   au aflat de mutare abia la facultate).
   Captura: `materiale/teams-2026-11-26.png`. **P0–P2 se prezintă tot azi, după 18.**
+- **De reținut la date:** setul UCI „Air Quality” e o singură stație (un an, orar) și NU are PM2.5/PM10, doar CO,
+  NOx, NO2, benzen, temperatură și umiditate. Pentru PM și mai multe stații reale se potrivește UCI „Beijing
+  Multi-Site Air Quality” (12 stații, orar, PM2.5, PM10, NO2, CO, SO2, O3, temperatură și altele).
