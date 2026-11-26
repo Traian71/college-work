@@ -21,3 +21,7 @@
 - **26 nov 2026:** discuția pe P0–P2 era la 17:00 și s-a mutat la 18:30. Traian a avut laborator 15–17, lucrează full-time și
   stă departe (mai sunt colegi în situație similară), deci a trimis profesoarei un mesaj pe Teams cerând susținere online.
   Mesajul e în `sursa/mesaj-teams-2026-11-26.txt`.
+  Profesoara: online nu, dar se poate discuta mâine la laborator (dacă sunt doar 3). Traian: nu mai e nevoie, au
+  laborator cu ea săptămâna viitoare. Ea a întrebat cine sunt ceilalți 2 și a zis că încearcă să ajungă mai
+  devreme, iar Traian a răspuns că nu mai e cazul (o neînțelegere: au aflat de mutare abia la facultate).
+  Captura: `materiale/teams-2026-11-26.png`. **P0–P2 se discută la laboratorul de săptămâna viitoare.**
