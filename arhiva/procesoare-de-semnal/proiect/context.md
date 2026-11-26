@@ -18,6 +18,6 @@
   lipsă = −200), cu un nod fizic ESP32 + BME280 ca extensie posibilă, același format JSON.
 - StudentID 131451 = `idnumber` din profilul Moodle.
 - Sursa: `sursa/P0_P1_P2.html`, tipărită în PDF cu Chrome headless.
-- **26 nov 2026:** discuția pe P0–P2 era la 17:00 și s-a mutat la 18:30. Traian e angajat full-time (mai sunt
-  colegi cu job/internship), deci a trimis profesoarei un mesaj pe Teams cerând susținere online.
+- **26 nov 2026:** discuția pe P0–P2 era la 17:00 și s-a mutat la 18:30. Traian lucrează full-time și stă departe (mai sunt
+  colegi în situație similară), deci a trimis profesoarei un mesaj pe Teams cerând susținere online.
   Mesajul e în `sursa/mesaj-teams-2026-11-26.txt`.
