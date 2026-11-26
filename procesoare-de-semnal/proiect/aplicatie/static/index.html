@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Văzduh</title>
+<meta name="description" content="Calitatea aerului în București, stație cu stație, cu prognoză pe 24 de ore.">
+<link rel="stylesheet" href="vendor/leaflet.css">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<!--continut-->
+<div id="harta" role="application" aria-label="Harta stațiilor de monitorizare din București"></div>
+
+<aside id="panou" aria-label="Calitatea aerului">
+  <div class="maner" id="maner" aria-hidden="true"></div>
+  <div class="continut" id="continut"></div>
+</aside>
+
+<div class="cronologie" id="cronologie">
+  <button id="reda" aria-label="Redă ultimele 24 de ore"></button>
+  <input type="range" id="ora" min="0" max="23" value="23" aria-label="Ora afișată pe hartă">
+  <output id="ora-txt" class="num">Acum</output>
+</div>
+
+<button class="buton-legenda" id="buton-legenda" aria-label="Legendă" aria-expanded="false">
+  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="8" cy="8" r="6.2"/><path d="M8 7.3v3.6M8 5.1v.1"/></svg>
+</button>
+<div class="legenda" id="legenda"></div>
+
+<div class="zoom">
+  <button id="zoom-plus" aria-label="Mărește"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 3.5v9M3.5 8h9"/></svg></button>
+  <button id="zoom-minus" aria-label="Micșorează"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3.5 8h9"/></svg></button>
+</div>
+<!--/continut-->
+<script src="vendor/leaflet.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+[
+  {"id": "victoriei",   "nume": "Piața Victoriei",          "tip": "trafic",     "lat": 44.4522, "lon": 26.0859},
+  {"id": "unirii",      "nume": "Piața Unirii",             "tip": "trafic",     "lat": 44.4270, "lon": 26.1030},
+  {"id": "obor",        "nume": "Obor",                     "tip": "trafic",     "lat": 44.4500, "lon": 26.1260},
+  {"id": "razoare",     "nume": "Răzoare",                  "tip": "trafic",     "lat": 44.4206, "lon": 26.0574},
+  {"id": "sudului",     "nume": "Piața Sudului",            "tip": "trafic",     "lat": 44.3880, "lon": 26.1205},
+  {"id": "basarab",     "nume": "Pasajul Basarab",          "tip": "trafic",     "lat": 44.4468, "lon": 26.0738},
+  {"id": "herastrau",   "nume": "Parcul Herăstrău",         "tip": "parc",       "lat": 44.4710, "lon": 26.0805},
+  {"id": "tineretului", "nume": "Parcul Tineretului",       "tip": "parc",       "lat": 44.4080, "lon": 26.1060},
+  {"id": "ior",         "nume": "Parcul IOR",               "tip": "parc",       "lat": 44.4185, "lon": 26.1550},
+  {"id": "vacaresti",   "nume": "Parcul Natural Văcărești", "tip": "parc",       "lat": 44.3990, "lon": 26.1310},
+  {"id": "botanica",    "nume": "Grădina Botanică",         "tip": "parc",       "lat": 44.4370, "lon": 26.0630},
+  {"id": "sfsava",      "nume": "Colegiul Sf. Sava",        "tip": "scoala",     "lat": 44.4372, "lon": 26.1000},
+  {"id": "mviteazul",   "nume": "Colegiul Mihai Viteazul",  "tip": "scoala",     "lat": 44.4365, "lon": 26.1170},
+  {"id": "lazar",       "nume": "Colegiul Gheorghe Lazăr",  "tip": "scoala",     "lat": 44.4357, "lon": 26.0880},
+  {"id": "upb",         "nume": "Campus Politehnica",       "tip": "scoala",     "lat": 44.4383, "lon": 26.0500},
+  {"id": "grozavesti",  "nume": "CET Grozăvești",           "tip": "industrial", "lat": 44.4427, "lon": 26.0605},
+  {"id": "preciziei",   "nume": "Platforma Preciziei",      "tip": "industrial", "lat": 44.4320, "lon": 25.9945},
+  {"id": "pallady",     "nume": "Platforma Pallady",        "tip": "industrial", "lat": 44.4100, "lon": 26.1880}
+]
