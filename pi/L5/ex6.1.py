@@ -54,15 +54,7 @@ def adaptiv_orientat(vec, size):
 
     # comparam diferentele si intoarcem media corespunzatoare
     # mediei minime
-    delta_min = min(delta0, delta90, delta45, delta135)
-    if delta_min == delta0:
-        return med0
-    elif delta_min == delta90:
-        return med90
-    elif delta_min == delta45:
-        return med45
-    else:
-        return med135
+    return min((delta0, med0), (delta90, med90), (delta45, med45), (delta135, med135))[1]
 
 
 def apply_filter(img, size):
