@@ -11,4 +11,7 @@
   pixel stays. Deliverable `pi/L5/ex6.2.py`, T = 60 (≈3σ of the noise; T=20 → MSE ≈ 340, T=30 → 254, T=60 → 103,
   T=100 → 94, i.e. it tends to plain averaging).
 - Style: matched to the solved Lab 4 notebook (`pi/L_4_archive`), on Traian's request.
-- **Status:** 6.1 and 6.2 done 26 Nov 2026.
+- **Ex. 6.3** „Filtrul LLMMSE” (Lee): alpha = 1 − σn²/σ²(local), set to 0 when negative, result
+  alpha·f + (1−alpha)·mean, 7×7 window, σn = 20. Deliverable `pi/L5/ex6.3.py`. MSE: noise ≈ 400,
+  7×7 averaging ≈ 136, Lee ≈ 80.
+- **Status:** 6.1, 6.2, 6.3 done 26 Nov 2026.
