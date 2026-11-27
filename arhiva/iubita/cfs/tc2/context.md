@@ -1,6 +1,6 @@
 # Iubita – CFS, Activitate TC 2 (eseu, stratificare socială)
 
-- **Pentru cine:** iubita lui Traian (folderul `iubita/` din repo e pentru temele ei; aceleași reguli din CLAUDE.md).
+- **Pentru cine:** Maria Anastasia Tablică, iubita lui Traian (folderul `iubita/` din repo e pentru temele ei; aceleași reguli din CLAUDE.md).
 - **Materia:** CFS (cursul 9: „Stratificare socială și inegalitate socială”). Numele complet al materiei nu apare în
   materiale.
 - **Cerința (verbatim, `materiale/act_cfs_241126.pdf`):** „Pentru întâlnirea de astăzi, vă rog să alegeți unul dintre
@@ -15,5 +15,6 @@
 - **Poziție:** împotrivă — clasele sunt mai deschise decât castele/apartheid, dar nu formează o societate dreaptă
   (punct de start inegal, plusvaloare, ideologie, alienare); comunismul n-a rezolvat-o; soluție: educație, sănătate,
   impozitare.
-- **Livrabil:** `iubita/cfs/tc2/Clasele_sociale_TC2.pdf` (~1,3 pagini cu tot cu bibliografia, fără nume pe el).
+- **Livrabil:** `iubita/cfs/tc2/Maria Anastasia Tablică.pdf` (~1,3 pagini cu tot cu bibliografia; numele ei e și
+  în antet, cerut de Traian).
   Sursa: `sursa/eseu.html`, tipărit cu Chromium. Făcut pe 27 nov 2026.
