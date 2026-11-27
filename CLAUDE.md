@@ -16,6 +16,8 @@ wrote in about an hour.
 - **Ask before adding anything extra.** One line, before building it, not after.
 - Write in the task's language (usually Romanian, with diacritics).
 - One folder per subject, named after it (e.g. `inginerie-software/`), one subfolder per task.
+- `iubita/` holds my girlfriend's homework, with the same rules and layout inside it (`iubita/<materie>/<task>/`,
+  archive in `arhiva/iubita/...`).
 
 ## Two chats
 
