@@ -1,0 +1,134 @@
+<!doctype html><html lang="ro"><head><meta charset="utf-8"><title>Lucrarea 5 APD</title><style>
+@page { size: A4; margin: 17mm 17mm; }
+body { font-family: Arial, sans-serif; font-size: 10.8pt; line-height: 1.4; color: #000; }
+h1 { font-size: 16pt; margin: 0 0 4px; } h2 { font-size: 12.5pt; margin: 14px 0 5px; break-after: avoid; }
+p { margin: 5px 0; } ul { margin: 4px 0; padding-left: 20px; } li { margin: 2px 0; }
+code { font-family: Menlo, Consolas, monospace; font-size: 9.3pt; }
+pre { font-family: Menlo, Consolas, monospace; font-size: 8.2pt; line-height: 1.28; background: #f4f4f4; border: 1px solid #ccc; padding: 5px 8px; white-space: pre-wrap; break-inside: avoid; margin: 5px 0; }
+pre.out { background: #1e1e1e; color: #e6e6e6; }
+table { border-collapse: collapse; margin: 6px 0; font-size: 10pt; break-inside: avoid; } td, th { border: 1px solid #888; padding: 3px 8px; } th { background: #e8e8e8; }
+td.n { text-align: right; }
+.cap { color: #333; font-size: 10pt; }
+.doua { display: flex; gap: 14px; } .doua > div { flex: 1; }
+</style></head><body>
+<h1>Lucrarea 5 – Implementarea algoritmilor paraleli. Sortarea. Recursivitate</h1>
+<p class="cap">Laborator Algoritmi Paraleli și Distribuiți – rezolvarea exercițiilor · File-Mitita Traian, 441A</p>
+<p>Cele patru sortări sunt în același program (<code>L5/Program.cs</code>), cu codul din fișă. Programul sortează întâi vectorul de 64 de elemente
+din fișă cu toate cele patru variante, apoi verifică sortarea pentru mai multe lungimi și măsoară timpii.
+L-am rulat de două ori: cu valori între 0 și 42, ca în fișă, și cu valori între 0 și 999.999, pe macOS 26.7.2, Apple M2, 8 procesoare logice, .NET 8 Release, 27.11.2026 17:24.
+Fiecare timp este media a 3 rulări pe același vector de intrare. Înainte de măsurători fiecare sortare se rulează o dată nemăsurat,
+pentru că prima rulare după pornirea programului e mai lentă.</p>
+
+<h2>EXERCIȚIUL 1 – QuickSort serial</h2>
+<p>Am folosit <code>QuickSort</code>, <code>Partition</code> și <code>Swap</code> exact ca în fișă (pivotul este ultimul element al partiției).
+Pentru verificare, o funcție parcurge vectorul sortat și verifică că fiecare element e mai mic sau egal cu următorul:</p>
+<pre>public static bool EsteSortat(int[] m)
+{
+    for (int i = 0; i &lt; m.Length - 1; i++)
+    {
+        if (m[i] &gt; m[i + 1])
+            return false;
+    }
+    return true;
+}</pre>
+<pre class="out">N = 1: QuickSort corect = True, MergeSort corect = True
+N = 2: QuickSort corect = True, MergeSort corect = True
+N = 5: QuickSort corect = True, MergeSort corect = True
+N = 10: QuickSort corect = True, MergeSort corect = True
+N = 64: QuickSort corect = True, MergeSort corect = True
+N = 1000: QuickSort corect = True, MergeSort corect = True
+N = 10000: QuickSort corect = True, MergeSort corect = True</pre>
+<p>Sortarea este corectă pentru toate lungimile încercate, inclusiv pentru cazurile limită cu 1 și 2 elemente.</p>
+
+<h2>EXERCIȚIUL 2 – QuickSort paralel</h2>
+<p>După prima partiționare, cele două părți se sortează în două threaduri, fiecare cu <code>QuickSort</code> serial, apoi se așteaptă cu <code>Join</code>:</p>
+<pre>public static void QuickSortPar(int left, int right)
+{
+    if (left &lt; right)
+    {
+        int pivotIndex = Partition(left, right);
+
+        // Create two threads to sort the left and right subarrays
+        Thread leftThread = new Thread(() =&gt; QuickSort(left, pivotIndex - 1));
+        Thread rightThread = new Thread(() =&gt; QuickSort(pivotIndex + 1, right));
+
+        // Start the threads
+        leftThread.Start();
+        rightThread.Start();
+
+        // Wait for the threads to finish
+        leftThread.Join();
+        rightThread.Join();
+    }
+}</pre>
+<p>Corectitudinea față de varianta serială: ambele variante pornesc de la o copie a aceluiași vector, iar o funcție compară element cu element
+rezultatul paralel cu cel serial. Rezultatul a fost identic la toate dimensiunile (<code>egal cu serial: True</code>).</p>
+<p><b>Valori între 0 și 999.999:</b></p>
+<table><tr><th>N</th><th>QuickSort (ms)</th><th>QuickSortPar (ms)</th><th>accelerare</th></tr><tr><td class='n'>1.000</td><td class='n'>0,10</td><td class='n'>0,19</td><td class='n'>0,53</td></tr><tr><td class='n'>10.000</td><td class='n'>1,10</td><td class='n'>1,10</td><td class='n'>1,00</td></tr><tr><td class='n'>100.000</td><td class='n'>12,04</td><td class='n'>6,64</td><td class='n'>1,81</td></tr><tr><td class='n'>1.000.000</td><td class='n'>64,53</td><td class='n'>43,92</td><td class='n'>1,47</td></tr></table>
+<ul>
+<li>La N = 1000 varianta paralelă e mai lentă (0,19 față de 0,10 ms), pentru că pornirea celor două threaduri costă mai mult decât sortarea.</li>
+<li>Accelerarea nu poate trece de 2, pentru că se folosesc doar două threaduri. În plus, prima partiționare (O(N)) se face serial, iar
+cele două părți nu sunt egale: depind de unde cade pivotul. La N = 100.000 primul pivot a împărțit vectorul în 52.582 și 47.417
+elemente, aproape egal, și accelerarea a fost 1,81. La N = 1.000.000 împărțirea a fost 693.667 și 306.332, iar threadul cu partea
+mare a lucrat mult mai mult, deci accelerarea a scăzut la 1,47.</li>
+</ul>
+<p><b>Valori între 0 și 42 (ca în fișă):</b></p>
+<table><tr><th>N</th><th>QuickSort (ms)</th><th>QuickSortPar (ms)</th><th>accelerare</th></tr><tr><td class='n'>1.000</td><td class='n'>0,15</td><td class='n'>0,20</td><td class='n'>0,75</td></tr><tr><td class='n'>10.000</td><td class='n'>9,02</td><td class='n'>6,90</td><td class='n'>1,31</td></tr><tr><td class='n'>100.000</td><td class='n'>103,61</td><td class='n'>66,05</td><td class='n'>1,57</td></tr></table>
+<ul>
+<li>Aici vectorul are foarte multe valori egale (la N = 100.000, fiecare valoare apare de aproximativ 2300 de ori). Cu <code>a[j] &lt;= pivotValue</code>,
+o partiție în care toate elementele sunt egale cu pivotul se împarte în 0 și restul, adică exact cazul cel mai defavorabil din fișă: QuickSort devine O(N²).
+La N = 100.000 durează 103,61 ms, față de 12,04 ms cu valori diferite.</li>
+<li>La N = 1.000.000 adâncimea recursivității ajunge la zeci de mii de apeluri, iar programul se oprește cu <code>Stack overflow</code> chiar în threadul
+creat de <code>QuickSortPar</code> (threadurile create au o stivă mai mică decât threadul principal):</li>
+</ul>
+<pre class="out">Stack overflow.
+Repeat 11160 times:
+   at L5.Program.QuickSort(Int32, Int32)
+   ...
+   at L5.Program+&lt;&gt;c__DisplayClass12_0.&lt;QuickSortPar&gt;b__0()</pre>
+<p>De aceea tabelul cu valori 0–42 se oprește la 100.000.</p>
+
+<h2>EXERCIȚIUL 3 – MergeSort serial</h2>
+<p>Am folosit <code>MergeSort</code> și <code>Merge</code> ca în fișă; verificarea se face cu aceeași funcție <code>EsteSortat</code>, pe aceleași
+lungimi (partea <code>MergeSort corect</code> din ieșirea de la Exercițiul 1). Sortarea este corectă pentru toate lungimile. Spre deosebire de QuickSort, MergeSort împarte mereu vectorul la jumătate, deci
+nu depinde de valori: cu valori 0–42 a funcționat la fel de bine (chiar mai repede).</p>
+
+<h2>EXERCIȚIUL 4 – MergeSort paralel</h2>
+<p>Cele două jumătăți se sortează în două threaduri, iar după <code>Join</code> threadul principal face <code>Merge</code>:</p>
+<pre>public static void MergeSortPar(int l, int r)
+{
+    if (l &lt; r)
+    {
+        int m = l + (r - l) / 2;
+
+        // Create two threads to sort left and right sub-arrays
+        Thread leftThread = new Thread(() =&gt; MergeSort(l, m));
+        Thread rightThread = new Thread(() =&gt; MergeSort(m + 1, r));
+
+        // Start the threads
+        leftThread.Start();
+        rightThread.Start();
+
+        // Wait for the threads to finish
+        leftThread.Join();
+        rightThread.Join();
+
+        Merge(l, m, r);
+    }
+}</pre>
+<p>Rezultatul a fost identic cu cel serial la toate dimensiunile.</p>
+<div class="doua"><div><p><b>Valori între 0 și 999.999:</b></p><table><tr><th>N</th><th>MergeSort (ms)</th><th>MergeSortPar (ms)</th><th>accelerare</th></tr><tr><td class='n'>1.000</td><td class='n'>0,16</td><td class='n'>0,20</td><td class='n'>0,80</td></tr><tr><td class='n'>10.000</td><td class='n'>1,72</td><td class='n'>1,04</td><td class='n'>1,65</td></tr><tr><td class='n'>100.000</td><td class='n'>16,84</td><td class='n'>9,07</td><td class='n'>1,86</td></tr><tr><td class='n'>1.000.000</td><td class='n'>97,82</td><td class='n'>53,14</td><td class='n'>1,84</td></tr></table></div>
+<div><p><b>Valori între 0 și 42:</b></p><table><tr><th>N</th><th>MergeSort (ms)</th><th>MergeSortPar (ms)</th><th>accelerare</th></tr><tr><td class='n'>1.000</td><td class='n'>0,21</td><td class='n'>0,18</td><td class='n'>1,17</td></tr><tr><td class='n'>10.000</td><td class='n'>1,60</td><td class='n'>0,97</td><td class='n'>1,65</td></tr><tr><td class='n'>100.000</td><td class='n'>6,24</td><td class='n'>3,37</td><td class='n'>1,85</td></tr></table></div></div>
+<p>Accelerarea este aproape constantă, în jur de 1,84, pentru că jumătățile sunt mereu egale. Nu ajunge la 2 pentru că ultimul
+<code>Merge</code> (N elemente) se face serial, după ce s-au terminat ambele threaduri.</p>
+
+<h2>Comparație QuickSort – MergeSort (ms, valori între 0 și 999.999)</h2>
+<table><tr><th>N</th><th>QuickSort</th><th>QuickSortPar</th><th>MergeSort</th><th>MergeSortPar</th></tr><tr><td class='n'>1.000</td><td class='n'>0,10</td><td class='n'>0,19</td><td class='n'>0,16</td><td class='n'>0,20</td></tr><tr><td class='n'>10.000</td><td class='n'>1,10</td><td class='n'>1,10</td><td class='n'>1,72</td><td class='n'>1,04</td></tr><tr><td class='n'>100.000</td><td class='n'>12,04</td><td class='n'>6,64</td><td class='n'>16,84</td><td class='n'>9,07</td></tr><tr><td class='n'>1.000.000</td><td class='n'>64,53</td><td class='n'>43,92</td><td class='n'>97,82</td><td class='n'>53,14</td></tr></table>
+<ul>
+<li>Serial, QuickSort este mai rapid (64,53 față de 97,82 ms la N = 1.000.000): lucrează în același vector, pe când MergeSort
+alocă vectorii <code>L</code> și <code>R</code> la fiecare <code>Merge</code>.</li>
+<li>Paralel, QuickSortPar a fost mai rapid (43,92 față de 53,14 ms), dar câștigul lui depinde de pivot. MergeSortPar are o accelerare
+mai stabilă, pentru că împarte mereu în două jumătăți egale.</li>
+<li>Cu multe valori egale (0–42), MergeSort e de departe mai bun: QuickSort ajunge la O(N²) și poate depăși stiva, MergeSort rămâne O(N log N).</li>
+</ul>
+</body></html>
